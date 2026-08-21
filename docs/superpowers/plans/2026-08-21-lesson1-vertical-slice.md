@@ -1341,6 +1341,10 @@ export interface Link {
 
 /** 이 거리보다 멀면 선을 그리지 않는다. 0~1 정규화 좌표 기준. */
 export const LINK_THRESHOLD = 0.22;
+// 실데이터(18단어)로 검증한 값이다. 이 임계값에서 링크 16개가 생기고
+// 전부 같은 카테고리끼리 연결된다. 0.30까지 올리면 카테고리를 넘나드는
+// 오연결이 4개 생겨 "선 = 비슷함"이라는 메시지가 깨진다.
+// 데이터셋을 새로 만들면 같은 방식으로 다시 검증할 것.
 
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
 
@@ -1725,7 +1729,8 @@ export default function EmbeddingMap({
                 x2={link.to.x * 100}
                 y2={link.to.y * 100}
                 stroke="var(--color-ink)"
-                strokeWidth={link.width / 4}
+                strokeWidth={link.width}
+                vectorEffect="non-scaling-stroke"
                 strokeLinecap="round"
                 opacity={link.opacity}
               />
@@ -1778,6 +1783,8 @@ export default function EmbeddingMap({
 
 Run: `npm run test playgrounds/embedding-map/EmbeddingMap`
 Expected: PASS — `5 passed`
+
+**연결선에 `vectorEffect="non-scaling-stroke"`가 반드시 필요하다.** SVG가 `preserveAspectRatio="none"`으로 뷰박스 100×100을 컨테이너 비율에 맞춰 찌그러뜨리는데, 이 변환은 좌표뿐 아니라 **선 두께에도 적용된다.** 지도가 4:3이므로 가로선과 세로선이 서로 다른 두께로 그려지고 대각선은 길이를 따라 두께가 변한다. "두께 = 가까움"이라는 설계가 방향에 따라 왜곡되는 것이다. `non-scaling-stroke`를 쓰면 두께가 화면 픽셀 단위로 고정되므로, `linkStyle`이 돌려주는 2~7이 그대로 픽셀 두께가 된다(나누지 않는다).
 
 **배치 연출은 이동 거리가 짧아도 눈에 띄어야 한다.** `initial={{ scale: 1.3, opacity: 0.7 }}`가 그 역할을 한다. 부엉이가 첫 배치 직후 "네가 놓은 자리가 아니라 제자리로 가네?"라고 말하는데, 아이가 우연히 진짜 좌표 근처에 놓으면 이동이 거의 없다 — 지도 중앙에서 물고기까지는 0.126밖에 안 된다. 이동이 안 보여도 칩이 크게 나타났다 줄어드는 연출 덕에 "뭔가 일어났다"는 신호는 간다. 이 값을 줄이지 말 것.
 
@@ -2105,7 +2112,8 @@ export default function EmbeddingMap({
                 x2={link.to.x * 100}
                 y2={link.to.y * 100}
                 stroke="var(--color-ink)"
-                strokeWidth={link.width / 4}
+                strokeWidth={link.width}
+                vectorEffect="non-scaling-stroke"
                 strokeLinecap="round"
                 opacity={link.opacity}
               />
