@@ -1106,7 +1106,13 @@ git commit -m "feat: 임베딩 사전 계산 도구와 첫 데이터셋 추가"
 
 ```ts
 import { describe, it, expect } from "vitest";
-import { getLesson, getDataset, listLessons, assertPlayable } from "./content";
+import {
+  getLesson,
+  getDataset,
+  listLessons,
+  assertPlayable,
+  assertPlaygroundExists,
+} from "./content";
 
 describe("content 로더", () => {
   it("embedding-map 레슨을 검증해서 읽는다", () => {
@@ -1144,6 +1150,17 @@ describe("content 로더", () => {
 
     expect(() => assertPlayable(lesson, tooFew)).toThrow(/minPlaced/);
   });
+
+  it("레슨이 참조하는 놀이터가 실제로 등록돼 있다", () => {
+    expect(() =>
+      assertPlaygroundExists(getLesson("embedding-map")),
+    ).not.toThrow();
+  });
+
+  it("등록되지 않은 놀이터를 참조하면 거부한다", () => {
+    const lesson = { ...getLesson("embedding-map"), playground: "EmbedingMap" };
+    expect(() => assertPlaygroundExists(lesson)).toThrow(/EmbedingMap/);
+  });
 });
 ```
 
@@ -1161,6 +1178,7 @@ Expected: FAIL — `Failed to resolve import "./content"`
 ```ts
 import { lessonSchema, type Lesson } from "./lesson-schema";
 import { datasetSchema, type Dataset } from "./dataset-schema";
+import { getPlayground } from "@/playgrounds/registry";
 
 import embeddingMapLesson from "@/lessons/embedding-map.json";
 import wordsAnimalsVehicles from "@/datasets/words-animals-vehicles.json";
@@ -1200,12 +1218,23 @@ export function assertPlayable(lesson: Lesson, dataset: Dataset): void {
   });
 }
 
+/**
+ * 레슨이 참조하는 놀이터가 레지스트리에 실제로 있는지 확인한다.
+ *
+ * 이게 없으면 레슨 JSON의 오타("EmbedingMap")를 아이가 그 레슨을 열 때까지
+ * 아무도 모른다. 빌드도 테스트도 통과하고, 화면만 비어 있다.
+ */
+export function assertPlaygroundExists(lesson: Lesson): void {
+  getPlayground(lesson.playground);
+}
+
 export function getLesson(id: string): Lesson {
   const raw = rawLessons[id];
   if (!raw) throw new Error(`알 수 없는 레슨: ${id}`);
 
   const lesson = lessonSchema.parse(raw);
   assertPlayable(lesson, getDataset(lesson.dataset));
+  assertPlaygroundExists(lesson);
 
   return lesson;
 }
@@ -1228,7 +1257,7 @@ export function listLessons(): Lesson[] {
 - [ ] **Step 6: 테스트 실행해서 통과 확인**
 
 Run: `npm run test lib/content`
-Expected: PASS — `6 passed`
+Expected: PASS — `8 passed`
 
 - [ ] **Step 7: 커밋**
 
@@ -1451,10 +1480,11 @@ export type PlaygroundComponent = ComponentType<PlaygroundProps>;
 ```ts
 import { describe, it, expect } from "vitest";
 import { getPlayground } from "./registry";
+import EmbeddingMap from "./embedding-map/EmbeddingMap";
 
 describe("놀이터 레지스트리", () => {
   it("EmbeddingMap을 이름으로 찾는다", () => {
-    expect(getPlayground("EmbeddingMap")).toBeTypeOf("function");
+    expect(getPlayground("EmbeddingMap")).toBe(EmbeddingMap);
   });
 
   it("없는 놀이터를 요청하면 에러를 던진다", () => {
