@@ -1,8 +1,20 @@
+# 단어 선정 규칙 (레슨을 늘릴 때 반드시 지킬 것)
+#
+# 1. 다의어 금지. 임베딩은 뜻으로 모으는데 뜻이 여러 개면 모델이 그 사이에 놓는다.
+#    걸렸던 예: 배(ship/pear/belly), 사과(apple/apology), 새(bird/new)
+#
+# 2. 카테고리는 '사람이 묶은 분류'가 아니라 '의미적으로 가까운 것끼리'여야 한다.
+#    걸렸던 예: '먹을 것'은 생과일과 가공 디저트가 섞여 두 덩이로 쪼개졌다.
+#    → '과일'로 좁히니 하나의 무리가 됐다.
+#
+# 3. 바꾼 뒤에는 반드시 클러스터 품질을 숫자로 재검증한다.
+#    좌표는 어떤 경우에도 손으로 고치지 않는다.
+
 id: words-animals-vehicles
 categories:
   - { id: animal,  label: 동물,     color: "#FF6B6B" }
   - { id: vehicle, label: 탈것,     color: "#4ECDC4" }
-  - { id: food,    label: 먹을 것,  color: "#FFD93D" }
+  - { id: fruit,   label: 과일,     color: "#FFD93D" }
 words:
   - { id: dog,      label: 강아지,   emoji: "🐶", category: animal }
   - { id: cat,      label: 고양이,   emoji: "🐱", category: animal }
@@ -17,8 +29,8 @@ words:
   - { id: bike,     label: 자전거,   emoji: "🚲", category: vehicle }
   - { id: airplane, label: 비행기,   emoji: "✈️", category: vehicle }
   - { id: truck,    label: 트럭,     emoji: "🚚", category: vehicle }
-  - { id: strawberry, label: 딸기,   emoji: "🍓", category: food }
-  - { id: banana,   label: 바나나,   emoji: "🍌", category: food }
-  - { id: bread,    label: 빵,       emoji: "🍞", category: food }
-  - { id: pizza,    label: 피자,     emoji: "🍕", category: food }
-  - { id: icecream, label: 아이스크림, emoji: "🍦", category: food }
+  - { id: strawberry, label: 딸기,   emoji: "🍓", category: fruit }
+  - { id: banana,     label: 바나나, emoji: "🍌", category: fruit }
+  - { id: grape,      label: 포도,   emoji: "🍇", category: fruit }
+  - { id: watermelon, label: 수박,   emoji: "🍉", category: fruit }
+  - { id: tangerine,  label: 귤,     emoji: "🍊", category: fruit }
