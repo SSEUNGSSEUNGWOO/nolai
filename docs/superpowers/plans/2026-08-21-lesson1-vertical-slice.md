@@ -743,30 +743,51 @@ uv add --dev pytest
 `tools/embed/words.yaml`:
 
 ```yaml
+# 단어 선정 규칙 (레슨을 늘릴 때 반드시 지킬 것)
+#
+# 1. 다의어 금지. 임베딩은 뜻으로 모으는데 뜻이 여러 개면 모델이 그 사이에 놓는다.
+#    걸렸던 예: 배(ship/pear/belly), 사과(apple/apology), 새(bird/new)
+#
+# 2. 카테고리는 '사람이 묶은 분류'가 아니라 '의미적으로 가까운 것끼리'여야 한다.
+#    걸렸던 예: '먹을 것'은 생과일과 가공 디저트가 섞여 두 덩이로 쪼개졌다.
+#    → '과일'로 좁히니 하나의 무리가 됐다.
+#
+# 3. 바꾼 뒤에는 반드시 클러스터 품질을 숫자로 재검증한다.
+#    좌표는 어떤 경우에도 손으로 고치지 않는다.
+#
+# 검토해서 통과시킨 경계 사례 (다시 따지지 않아도 됨):
+#   병아리 — '초보자'라는 비유적 뜻이 있으나 실제 이웃은 호랑이·물고기·코끼리로
+#            동물 무리에 정확히 붙는다
+#   포도   — 사어가 된 동음이의어 捕盜(포도청)가 있으나 실제 이웃은 귤·수박으로
+#            과일 무리에 정확히 붙는다
+#
+# 규칙 1이 막으려는 건 '뜻이 갈려 모델이 중간에 놓는 것'이지 사전적 중의성 자체가
+# 아니다. 애매하면 바꾸지 말고 먼저 실제 이웃을 찍어보고 판단할 것.
+
 id: words-animals-vehicles
 categories:
   - { id: animal,  label: 동물,     color: "#FF6B6B" }
   - { id: vehicle, label: 탈것,     color: "#4ECDC4" }
-  - { id: food,    label: 먹을 것,  color: "#FFD93D" }
+  - { id: fruit,   label: 과일,     color: "#FFD93D" }
 words:
   - { id: dog,      label: 강아지,   emoji: "🐶", category: animal }
   - { id: cat,      label: 고양이,   emoji: "🐱", category: animal }
   - { id: rabbit,   label: 토끼,     emoji: "🐰", category: animal }
   - { id: tiger,    label: 호랑이,   emoji: "🐯", category: animal }
   - { id: elephant, label: 코끼리,   emoji: "🐘", category: animal }
-  - { id: bird,     label: 새,       emoji: "🐦", category: animal }
+  - { id: chick,    label: 병아리,   emoji: "🐤", category: animal }
   - { id: fish,     label: 물고기,   emoji: "🐟", category: animal }
   - { id: car,      label: 자동차,   emoji: "🚗", category: vehicle }
   - { id: bus,      label: 버스,     emoji: "🚌", category: vehicle }
   - { id: train,    label: 기차,     emoji: "🚆", category: vehicle }
   - { id: bike,     label: 자전거,   emoji: "🚲", category: vehicle }
   - { id: airplane, label: 비행기,   emoji: "✈️", category: vehicle }
-  - { id: ship,     label: 배,       emoji: "🚢", category: vehicle }
-  - { id: apple,    label: 사과,     emoji: "🍎", category: food }
-  - { id: banana,   label: 바나나,   emoji: "🍌", category: food }
-  - { id: bread,    label: 빵,       emoji: "🍞", category: food }
-  - { id: pizza,    label: 피자,     emoji: "🍕", category: food }
-  - { id: icecream, label: 아이스크림, emoji: "🍦", category: food }
+  - { id: truck,    label: 트럭,     emoji: "🚚", category: vehicle }
+  - { id: strawberry, label: 딸기,   emoji: "🍓", category: fruit }
+  - { id: banana,     label: 바나나, emoji: "🍌", category: fruit }
+  - { id: grape,      label: 포도,   emoji: "🍇", category: fruit }
+  - { id: watermelon, label: 수박,   emoji: "🍉", category: fruit }
+  - { id: tangerine,  label: 귤,     emoji: "🍊", category: fruit }
 ```
 
 - [ ] **Step 3: 좌표 정규화 함수의 실패하는 테스트 작성**
@@ -883,10 +904,23 @@ def main() -> None:
     vectors = embed(labels)
     distances = cosine_distance_matrix(vectors)
 
+    # init="classical_mds"인 이유:
+    # 기본값 'random'은 n=18 같은 작은 점 집합에서 SMACOF가 지역 최솟값에
+    # 빠져 특정 카테고리만 압축이 덜 되는 현상이 있었다. 원본 1024차원에서는
+    # 세 카테고리 응집도가 0.38~0.47로 비슷한데, random 초기화 2D에서는
+    # 0.22 / 0.25 / 0.43으로 과일만 안 눌렸다. classical 초기화는 셋 다
+    # 고르게 압축하고(0.22 / 0.26 / 0.26) 결정적이다.
+    #
+    # random_state를 두지 않은 이유: classical 초기화에서는 sklearn 내부
+    # RNG 경로에 도달하지 않는다(init이 배열로 들어가면 random 초기화 분기를
+    # 타지 않는다). 남겨두면 무언가 하는 것처럼 오해를 준다.
+    # n_init=1은 명시적으로 고정한다 — 배열 init에서는 어차피 1로 강제되는데,
+    # 미래 버전의 기본값 변경으로 경고가 뜨는 걸 막는다.
     mds = MDS(
         n_components=2,
-        dissimilarity="precomputed",
-        random_state=42,
+        metric="precomputed",
+        init="classical_mds",
+        n_init=1,
         normalized_stress="auto",
     )
     coords = normalize_coords(mds.fit_transform(distances), margin=0.08)
@@ -940,13 +974,40 @@ wrote .../frontend/datasets/words-animals-vehicles.json (18 words)
 
 첫 실행은 모델 다운로드(약 2GB) 때문에 몇 분 걸린다. `on cpu`로 뜨면 GPU를 못 잡은 것이니 CUDA 지원 torch가 설치됐는지 확인한다 — 단어 18개라 CPU로도 끝나지만 데이터셋을 늘릴 때 느려진다.
 
-- [ ] **Step 8: 생성된 좌표를 육안 검수**
+- [ ] **Step 8: 클러스터 품질을 숫자로 검증**
 
-`frontend/datasets/words-animals-vehicles.json`을 열고 확인:
-- 같은 category끼리 좌표가 서로 가까운가
-- 세 카테고리가 시각적으로 구분되는 덩어리를 이루는가
+육안 검수는 검증이 아니다. 임시 스크립트로 아래를 계산해서 확인한다(커밋하지 않는다).
 
-덩어리가 안 나오면 **`words.yaml`의 단어를 바꿔서 재생성한다.** 좌표를 손으로 고치지 않는다 — "모든 숫자는 진짜"가 설계 원칙이다.
+측정 항목:
+- 같은 카테고리 쌍의 평균 2D 거리, 다른 카테고리 쌍의 평균 거리, 그 비율
+- 카테고리별 응집도(카테고리 내부 평균 쌍거리) 3개
+- 카테고리 무게중심 3개와 서로 간 거리
+- 가장 가까운 5쌍, 가장 먼 5쌍 (라벨과 같음/다름 표시)
+
+합격 기준:
+
+| 항목 | 기준 | 실제 달성값 |
+|---|---|---|
+| 같은/다른 카테고리 비율 | ≥ 2.0배 | **2.12배** |
+| 응집도 편차 (최대/최소) | ≤ 1.6배 | **1.13배** |
+| 무게중심 최소 이격 | ≥ 0.25 | **0.5435** |
+| 가장 가까운 5쌍 | 전부 같은 카테고리 | **5/5** |
+| 가장 먼 5쌍의 같은 카테고리 | ≤ 1개 | **0개** |
+
+기준을 못 넘으면 **`words.yaml`을 고쳐 재생성한다. 좌표는 어떤 경우에도 손으로 고치지 않는다.**
+
+다만 기준 미달일 때 **단어부터 의심하지 말 것.** 이 프로젝트에서 실제로 두 번 헛짚었다. 먼저 원본 1024차원 코사인 거리 기준으로 같은 지표를 내서, 원본에서도 퍼져 있는지(단어 문제) 2D에서만 퍼지는지(투영 문제)를 구분한다. 실제 원인은 MDS 초기화였다.
+
+- [ ] **Step 8-1: 재현성 확인**
+
+`build_dataset.py`를 두 번 돌려서 출력 JSON의 SHA256이 동일한지 확인한다.
+
+```bash
+uv run python build_dataset.py && sha256sum ../../frontend/datasets/words-animals-vehicles.json
+uv run python build_dataset.py && sha256sum ../../frontend/datasets/words-animals-vehicles.json
+```
+
+Expected: 두 해시가 동일. 다르면 파이프라인에 무작위성이 남아 있는 것이다.
 
 - [ ] **Step 9: 커밋**
 
@@ -1003,7 +1064,7 @@ git commit -m "feat: 임베딩 사전 계산 도구와 첫 데이터셋 추가"
     {
       "type": "challenge",
       "question": "'호랑이'는 어디에 놓일까?",
-      "choices": ["강아지 근처", "자동차 근처", "사과 근처"],
+      "choices": ["강아지 근처", "자동차 근처", "딸기 근처"],
       "answer": 0,
       "explain": "호랑이도 동물이니까 강아지·고양이 쪽으로 가!"
     },
@@ -1622,45 +1683,54 @@ export default function EmbeddingMap({
         data-testid="map-area"
         className="relative aspect-[4/3] w-full rounded-pop border-[3px] border-ink bg-paper shadow-[0_4px_0_var(--color-ink)]"
       >
-        <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-          {links.map((link) => (
-            <line
-              key={`${link.fromId}-${link.toId}`}
-              data-testid={`link-${link.fromId}-${link.toId}`}
-              x1={link.from.x * 100}
-              y1={link.from.y * 100}
-              x2={link.to.x * 100}
-              y2={link.to.y * 100}
-              stroke="var(--color-ink)"
-              strokeWidth={link.width / 4}
-              strokeLinecap="round"
-              opacity={link.opacity}
-            />
-          ))}
-        </svg>
-
-        {placedWords.map((word) => (
-          <motion.div
-            key={word.id}
-            data-testid={`placed-word-${word.id}`}
-            className="absolute -translate-x-1/2 -translate-y-1/2"
-            initial={{ scale: 1.3, opacity: 0.7 }}
-            animate={{
-              left: `${word.x * 100}%`,
-              top: `${word.y * 100}%`,
-              scale: 1,
-              opacity: 1,
-            }}
-            transition={{ type: "spring", stiffness: 260, damping: 18 }}
+        {/* 좌표 레이어 — 지도 테두리보다 안쪽으로 들여놓는다.
+            칩은 좌표를 중심으로 그려지므로, 가장자리 칩이 지도 밖으로
+            삐져나가지 않으려면 칩 반폭만큼의 여백이 필요하다. */}
+        <div className="absolute inset-x-12 inset-y-6">
+          <svg
+            className="absolute inset-0 h-full w-full"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
           >
-            <WordChip
-              testId={`chip-${word.id}`}
-              label={word.label}
-              emoji={word.emoji}
-              color={colorOf(word.category)}
-            />
-          </motion.div>
-        ))}
+            {links.map((link) => (
+              <line
+                key={`${link.fromId}-${link.toId}`}
+                data-testid={`link-${link.fromId}-${link.toId}`}
+                x1={link.from.x * 100}
+                y1={link.from.y * 100}
+                x2={link.to.x * 100}
+                y2={link.to.y * 100}
+                stroke="var(--color-ink)"
+                strokeWidth={link.width / 4}
+                strokeLinecap="round"
+                opacity={link.opacity}
+              />
+            ))}
+          </svg>
+
+          {placedWords.map((word) => (
+            <motion.div
+              key={word.id}
+              data-testid={`placed-word-${word.id}`}
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              initial={{ scale: 1.3, opacity: 0.7 }}
+              animate={{
+                left: `${word.x * 100}%`,
+                top: `${word.y * 100}%`,
+                scale: 1,
+                opacity: 1,
+              }}
+              transition={{ type: "spring", stiffness: 260, damping: 18 }}
+            >
+              <WordChip
+                testId={`chip-${word.id}`}
+                label={word.label}
+                emoji={word.emoji}
+                color={colorOf(word.category)}
+              />
+            </motion.div>
+          ))}
+        </div>
       </div>
 
       <div data-testid="word-drawer" className="flex flex-wrap gap-2">
@@ -1990,49 +2060,55 @@ export default function EmbeddingMap({
         data-testid="map-area"
         className="relative aspect-[4/3] w-full rounded-pop border-[3px] border-ink bg-paper shadow-[0_4px_0_var(--color-ink)]"
       >
-        <svg
-          className="absolute inset-0 h-full w-full"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-        >
-          {links.map((link) => (
-            <line
-              key={`${link.fromId}-${link.toId}`}
-              data-testid={`link-${link.fromId}-${link.toId}`}
-              x1={link.from.x * 100}
-              y1={link.from.y * 100}
-              x2={link.to.x * 100}
-              y2={link.to.y * 100}
-              stroke="var(--color-ink)"
-              strokeWidth={link.width / 4}
-              strokeLinecap="round"
-              opacity={link.opacity}
-            />
-          ))}
-        </svg>
-
-        {placedWords.map((word) => (
-          <motion.div
-            key={word.id}
-            data-testid={`placed-word-${word.id}`}
-            className="absolute -translate-x-1/2 -translate-y-1/2"
-            initial={{ scale: 1.3, opacity: 0.7 }}
-            animate={{
-              left: `${word.x * 100}%`,
-              top: `${word.y * 100}%`,
-              scale: 1,
-              opacity: 1,
-            }}
-            transition={{ type: "spring", stiffness: 260, damping: 18 }}
+        {/* 좌표 레이어 — 지도 테두리보다 안쪽으로 들여놓는다.
+            칩은 좌표를 중심으로 그려지므로, 가장자리 칩이 지도 밖으로
+            삐져나가지 않으려면 칩 반폭만큼의 여백이 필요하다.
+            드롭 판정은 바깥 map-area 전체를 쓴다(어디에 놓든 받아준다). */}
+        <div className="absolute inset-x-12 inset-y-6">
+          <svg
+            className="absolute inset-0 h-full w-full"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
           >
-            <WordChip
-              testId={`chip-${word.id}`}
-              label={word.label}
-              emoji={word.emoji}
-              color={colorOf(word.category)}
-            />
-          </motion.div>
-        ))}
+            {links.map((link) => (
+              <line
+                key={`${link.fromId}-${link.toId}`}
+                data-testid={`link-${link.fromId}-${link.toId}`}
+                x1={link.from.x * 100}
+                y1={link.from.y * 100}
+                x2={link.to.x * 100}
+                y2={link.to.y * 100}
+                stroke="var(--color-ink)"
+                strokeWidth={link.width / 4}
+                strokeLinecap="round"
+                opacity={link.opacity}
+              />
+            ))}
+          </svg>
+
+          {placedWords.map((word) => (
+            <motion.div
+              key={word.id}
+              data-testid={`placed-word-${word.id}`}
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              initial={{ scale: 1.3, opacity: 0.7 }}
+              animate={{
+                left: `${word.x * 100}%`,
+                top: `${word.y * 100}%`,
+                scale: 1,
+                opacity: 1,
+              }}
+              transition={{ type: "spring", stiffness: 260, damping: 18 }}
+            >
+              <WordChip
+                testId={`chip-${word.id}`}
+                label={word.label}
+                emoji={word.emoji}
+                color={colorOf(word.category)}
+              />
+            </motion.div>
+          ))}
+        </div>
       </div>
 
       <div data-testid="word-drawer" className="flex flex-wrap gap-2">
@@ -3074,12 +3150,47 @@ test("진짜 마우스로 끌어다 놓아도 배치된다", async ({ page }) =>
 
   await expect(page.getByTestId("placed-word-dog")).toBeVisible();
 });
+
+test("배치된 칩이 지도 밖으로 삐져나가지 않는다", async ({ page }) => {
+  await page.goto("/lesson/embedding-map");
+  await page.getByRole("button", { name: "궁금해!" }).click();
+
+  // 전부 놓는다 — 가장자리 좌표를 가진 단어까지 확인해야 한다
+  const drawer = page.locator('[data-testid^="drawer-word-"]');
+  for (let remaining = await drawer.count(); remaining > 0; remaining--) {
+    await drawer.first().click();
+  }
+
+  // 스프링 애니메이션이 끝날 때까지 기다린다
+  await page.waitForTimeout(1200);
+
+  const map = (await page.getByTestId("map-area").boundingBox())!;
+  const chips = page.locator('[data-testid^="placed-word-"]');
+  const count = await chips.count();
+  expect(count).toBe(18);
+
+  for (let i = 0; i < count; i++) {
+    const chip = (await chips.nth(i).boundingBox())!;
+    const label = await chips.nth(i).getAttribute("data-testid");
+
+    expect(chip.x, `${label} 왼쪽`).toBeGreaterThanOrEqual(map.x - 1);
+    expect(chip.y, `${label} 위쪽`).toBeGreaterThanOrEqual(map.y - 1);
+    expect(chip.x + chip.width, `${label} 오른쪽`).toBeLessThanOrEqual(
+      map.x + map.width + 1,
+    );
+    expect(chip.y + chip.height, `${label} 아래쪽`).toBeLessThanOrEqual(
+      map.y + map.height + 1,
+    );
+  }
+});
 ```
+
+> 이 테스트가 필요한 이유: 칩은 좌표를 **중심**으로 그려지므로 가장자리 단어의 칩은 좌표보다 반폭만큼 더 뻗어 나간다. 데이터의 margin은 0.08(지도 폭의 8%)인데 "🐶 강아지" 칩의 반폭은 지도 폭의 약 11%다. 좌표 레이어를 안쪽으로 들여놓지 않으면 실제로 잘린다. jsdom은 레이아웃을 계산하지 않으므로 이 보증은 E2E에서만 가능하다.
 
 - [ ] **Step 4: E2E 실행**
 
 Run: `npm run test:e2e`
-Expected: PASS — `3 passed`
+Expected: PASS — `4 passed`
 
 실패하면 개발 서버 로그와 Playwright 리포트(`npx playwright show-report`)를 확인한다.
 
@@ -3167,7 +3278,7 @@ git commit -m "docs: frontend README 작성"
 이 계획은 다음이 모두 참일 때 끝난다.
 
 1. `npm run test` 통과 (단위 테스트 전체)
-2. `npm run test:e2e` 통과 (완주 2건 + 드래그 1건)
+2. `npm run test:e2e` 통과 (완주 2건 + 드래그 1건 + 칩 경계 1건)
 3. `npm run build` 성공
 4. `uv run pytest` 통과 (파이썬 도구 3건)
 5. 브라우저에서 레슨 1을 손으로 완주할 수 있다
