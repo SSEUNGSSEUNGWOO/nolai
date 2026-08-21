@@ -97,6 +97,23 @@ describe("lessonSchema", () => {
     expect(() => lessonSchema.parse(bad)).toThrow(/중복/);
   });
 
+  it("보상 스텝이 없으면 거부한다", () => {
+    const bad = {
+      ...validLesson,
+      steps: validLesson.steps.filter((s) => s.type !== "reward"),
+    };
+    expect(() => lessonSchema.parse(bad)).toThrow(/보상/);
+  });
+
+  it("보상 스텝이 마지막이 아니면 거부한다", () => {
+    const reward = { type: "reward", badge: "map-explorer" };
+    const bad = {
+      ...validLesson,
+      steps: [reward, ...validLesson.steps.filter((s) => s.type !== "reward")],
+    };
+    expect(() => lessonSchema.parse(bad)).toThrow(/마지막/);
+  });
+
   it("스텝의 오타를 해당 필드만 짚어서 알려준다", () => {
     const bad = {
       ...validLesson,

@@ -49,6 +49,30 @@ export const lessonSchema = z
     steps: z.array(lessonStepSchema).min(1),
   })
   .superRefine((lesson, ctx) => {
+    const rewardIndexes = lesson.steps
+      .map((step, index) => (step.type === "reward" ? index : -1))
+      .filter((index) => index !== -1);
+
+    if (rewardIndexes.length === 0) {
+      ctx.addIssue({
+        code: "custom",
+        message: "보상(reward) 스텝이 정확히 하나 있어야 합니다",
+        path: ["steps"],
+      });
+    } else if (rewardIndexes.length > 1) {
+      ctx.addIssue({
+        code: "custom",
+        message: "보상(reward) 스텝은 정확히 하나여야 합니다",
+        path: ["steps"],
+      });
+    } else if (rewardIndexes[0] !== lesson.steps.length - 1) {
+      ctx.addIssue({
+        code: "custom",
+        message: "보상(reward) 스텝은 마지막 스텝이어야 합니다",
+        path: ["steps"],
+      });
+    }
+
     lesson.steps.forEach((step, index) => {
       if (step.type !== "challenge") return;
 
