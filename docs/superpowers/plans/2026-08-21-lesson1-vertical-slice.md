@@ -1982,8 +1982,8 @@ Expected: PASS — `10 passed`
     setup();
     const chip = screen.getByTestId("drawer-word-dog");
 
-    fireEvent.pointerDown(chip, { clientX: 10, clientY: 380 });
-    fireEvent.pointerMove(window, { clientX: 200, clientY: 200 });
+    fireEvent.pointerDown(chip, { clientX: 10, clientY: 380, buttons: 1 });
+    fireEvent.pointerMove(window, { clientX: 200, clientY: 200, buttons: 1 });
     fireEvent.pointerUp(window, { clientX: 200, clientY: 200 });
 
     expect(screen.getByTestId("placed-word-dog")).toBeInTheDocument();
@@ -1993,8 +1993,8 @@ Expected: PASS — `10 passed`
     setup();
     const chip = screen.getByTestId("drawer-word-dog");
 
-    fireEvent.pointerDown(chip, { clientX: 10, clientY: 380 });
-    fireEvent.pointerMove(window, { clientX: 900, clientY: 900 });
+    fireEvent.pointerDown(chip, { clientX: 10, clientY: 380, buttons: 1 });
+    fireEvent.pointerMove(window, { clientX: 900, clientY: 900, buttons: 1 });
     fireEvent.pointerUp(window, { clientX: 900, clientY: 900 });
 
     expect(screen.queryByTestId("placed-word-dog")).not.toBeInTheDocument();
@@ -2007,12 +2007,52 @@ Expected: PASS — `10 passed`
     fireEvent.pointerDown(screen.getByTestId("drawer-word-dog"), {
       clientX: 10,
       clientY: 380,
+      buttons: 1,
     });
-    fireEvent.pointerMove(window, { clientX: 120, clientY: 150 });
+    fireEvent.pointerMove(window, { clientX: 120, clientY: 150, buttons: 1 });
 
     expect(screen.getByTestId("drag-ghost")).toBeInTheDocument();
   });
+
+  it("창 밖에서 손을 뗐다 돌아오면 유령 칩이 사라진다", () => {
+    setup();
+
+    fireEvent.pointerDown(screen.getByTestId("drawer-word-dog"), {
+      clientX: 10,
+      clientY: 380,
+      buttons: 1,
+    });
+    fireEvent.pointerMove(window, { clientX: 120, clientY: 150, buttons: 1 });
+    expect(screen.getByTestId("drag-ghost")).toBeInTheDocument();
+
+    // 창 밖에서 버튼을 뗀 뒤 다시 들어옴 — pointerup은 못 받았다
+    fireEvent.pointerMove(window, { clientX: 200, clientY: 200, buttons: 0 });
+
+    expect(screen.queryByTestId("drag-ghost")).not.toBeInTheDocument();
+    expect(screen.getByTestId("drawer-word-dog")).toBeInTheDocument();
+    expect(screen.queryByTestId("placed-word-dog")).not.toBeInTheDocument();
+  });
+
+  it("드래그가 취소되면 유령 칩이 사라진다", () => {
+    setup();
+
+    fireEvent.pointerDown(screen.getByTestId("drawer-word-dog"), {
+      clientX: 10,
+      clientY: 380,
+      buttons: 1,
+    });
+    expect(screen.getByTestId("drag-ghost")).toBeInTheDocument();
+
+    fireEvent.pointerCancel(window);
+
+    expect(screen.queryByTestId("drag-ghost")).not.toBeInTheDocument();
+    expect(screen.getByTestId("drawer-word-dog")).toBeInTheDocument();
+  });
 ```
+
+> **`buttons: 1`은 편법이 아니라 실제 브라우저 동작이다.** jsdom의 `PointerEvent` 폴리필은 `MouseEvent` 기반이라 `buttons` 기본값이 0인데, 진짜 브라우저에서는 버튼을 누른 채 움직이면 1이다. 0으로 두면 새 가드가 드래그를 즉시 취소해버린다.
+
+> **창 밖 릴리스를 왜 이렇게 막는가:** 마우스는 `pointerdown` 시 암묵적 포인터 캡처가 걸리지 않는다(터치·펜만 걸린다). 그래서 창 밖에서 버튼을 떼면 `pointerup`이 OS로 가고 페이지는 못 받는다. `setPointerCapture`도 이 경우를 완전히 해결하지 못하고 jsdom 목킹이 필요해진다. `buttons === 0` 검사가 가장 확실한 방어선이고, `pointercancel`·`blur`는 보조다.
 
 > `getBoundingClientRect`가 모든 요소에 대해 `0,0,400,400`을 돌려주도록 목킹돼 있으므로 `(200,200)`은 지도 안, `(900,900)`은 지도 밖이다.
 
@@ -2135,8 +2175,21 @@ export default function EmbeddingMap({
 
   useEffect(() => {
     if (!draggingId) return;
+    // 중첩 함수 경계를 넘으면 TypeScript가 string | null을 좁히지 못한다
+    const wordId = draggingId;
+
+    function cancel() {
+      setDrag(null);
+    }
 
     function move(event: PointerEvent) {
+      // 창 밖에서 손을 뗐다가 다시 들어온 경우, 눌린 버튼이 없다.
+      // 이걸 안 잡으면 유령 칩이 커서를 영원히 따라다닌다.
+      if (event.buttons === 0) {
+        cancel();
+        return;
+      }
+
       setDrag((current) =>
         current ? { ...current, x: event.clientX, y: event.clientY } : current,
       );
@@ -2147,16 +2200,20 @@ export default function EmbeddingMap({
       setDrag(null);
 
       if (rect && isInsideRect({ x: event.clientX, y: event.clientY }, rect)) {
-        place(draggingId);
+        place(wordId);
       }
     }
 
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", cancel);
+    window.addEventListener("blur", cancel);
 
     return () => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", cancel);
+      window.removeEventListener("blur", cancel);
     };
     // place는 ref를 통해 최신 상태를 읽으므로 의존성에 넣지 않는다
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -2267,7 +2324,7 @@ export default function EmbeddingMap({
 - [ ] **Step 10: 테스트 실행해서 통과 확인**
 
 Run: `npm run test playgrounds/embedding-map`
-Expected: PASS — `19 passed` (geometry 10건 + EmbeddingMap 9건)
+Expected: PASS — `21 passed` (geometry 10건 + EmbeddingMap 11건)
 
 - [ ] **Step 11: 커밋**
 
