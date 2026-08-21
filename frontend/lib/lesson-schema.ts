@@ -59,6 +59,14 @@ export const lessonSchema = z
           path: ["steps", index, "answer"],
         });
       }
+
+      if (new Set(step.choices).size !== step.choices.length) {
+        ctx.addIssue({
+          code: "custom",
+          message: "choices에 중복된 선택지가 있습니다",
+          path: ["steps", index, "choices"],
+        });
+      }
     });
   });
 

@@ -81,6 +81,22 @@ describe("lessonSchema", () => {
     expect(() => lessonSchema.parse(bad)).toThrow();
   });
 
+  it("도전 선택지가 중복되면 거부한다", () => {
+    const bad = {
+      ...validLesson,
+      steps: [
+        {
+          type: "challenge",
+          question: "q",
+          choices: ["같은 답", "다른 답", "같은 답"],
+          answer: 0,
+          explain: "e",
+        },
+      ],
+    };
+    expect(() => lessonSchema.parse(bad)).toThrow(/중복/);
+  });
+
   it("스텝의 오타를 해당 필드만 짚어서 알려준다", () => {
     const bad = {
       ...validLesson,
