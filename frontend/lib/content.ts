@@ -1,5 +1,6 @@
 import { lessonSchema, type Lesson } from "./lesson-schema";
 import { datasetSchema, type Dataset } from "./dataset-schema";
+import { getPlayground } from "@/playgrounds/registry";
 
 import embeddingMapLesson from "@/lessons/embedding-map.json";
 import wordsAnimalsVehicles from "@/datasets/words-animals-vehicles.json";
@@ -39,12 +40,23 @@ export function assertPlayable(lesson: Lesson, dataset: Dataset): void {
   });
 }
 
+/**
+ * 레슨이 참조하는 놀이터가 레지스트리에 실제로 있는지 확인한다.
+ *
+ * 이게 없으면 레슨 JSON의 오타("EmbedingMap")를 아이가 그 레슨을 열 때까지
+ * 아무도 모른다. 화면이 비어 있을 뿐 에러도 안 난다.
+ */
+export function assertPlaygroundExists(lesson: Lesson): void {
+  getPlayground(lesson.playground);
+}
+
 export function getLesson(id: string): Lesson {
   const raw = rawLessons[id];
   if (!raw) throw new Error(`알 수 없는 레슨: ${id}`);
 
   const lesson = lessonSchema.parse(raw);
   assertPlayable(lesson, getDataset(lesson.dataset));
+  assertPlaygroundExists(lesson);
 
   return lesson;
 }

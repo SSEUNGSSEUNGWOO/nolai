@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { getLesson, getDataset, listLessons, assertPlayable } from "./content";
+import {
+  getLesson,
+  getDataset,
+  listLessons,
+  assertPlayable,
+  assertPlaygroundExists,
+} from "./content";
 
 describe("content 로더", () => {
   it("embedding-map 레슨을 검증해서 읽는다", () => {
@@ -36,5 +42,16 @@ describe("content 로더", () => {
     const tooFew = { ...dataset, words: dataset.words.slice(0, 2) };
 
     expect(() => assertPlayable(lesson, tooFew)).toThrow(/minPlaced/);
+  });
+
+  it("레슨이 참조하는 놀이터가 실제로 등록돼 있다", () => {
+    expect(() =>
+      assertPlaygroundExists(getLesson("embedding-map")),
+    ).not.toThrow();
+  });
+
+  it("등록되지 않은 놀이터를 참조하면 거부한다", () => {
+    const lesson = { ...getLesson("embedding-map"), playground: "EmbedingMap" };
+    expect(() => assertPlaygroundExists(lesson)).toThrow(/EmbedingMap/);
   });
 });
