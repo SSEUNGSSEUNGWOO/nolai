@@ -205,14 +205,22 @@ git commit -m "chore: Next.js + Vitest 프로젝트 셋업"
 - Modify: `frontend/app/globals.css`
 - Modify: `frontend/app/layout.tsx`
 
-- [ ] **Step 1: globals.css를 토큰 정의로 교체**
+- [ ] **Step 1: Pretendard 폰트 패키지 설치**
+
+```bash
+cd frontend
+npm install pretendard
+```
+
+> CDN(jsDelivr)에서 불러오지 않고 **자체 호스팅**한다. 이 서비스의 주 사용 환경이 학교·가정 네트워크인데, CDN이 막히면 렌더가 지연된다. npm 패키지를 쓰면 번들러가 woff2를 정적 자산으로 emit해준다(dynamic subset 92개, unicode-range로 필요한 것만 내려받음).
+
+- [ ] **Step 2: globals.css를 토큰 정의로 교체**
 
 `frontend/app/globals.css` 전체를 다음으로 교체:
 
 ```css
+@import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 @import "tailwindcss";
-
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
 
 @theme {
   --color-ink: #1f2430;
@@ -221,7 +229,7 @@ git commit -m "chore: Next.js + Vitest 프로젝트 셋업"
   --color-candy-red: #ff6b6b;
   --color-candy-teal: #4ecdc4;
   --color-candy-yellow: #ffd93d;
-  --color-muted: #8a8172;
+  --color-muted: #736b5a;
 
   --font-sans: "Pretendard Variable", system-ui, sans-serif;
 
@@ -237,7 +245,11 @@ git commit -m "chore: Next.js + Vitest 프로젝트 셋업"
 }
 ```
 
-- [ ] **Step 2: layout.tsx 메타데이터 설정**
+> **폰트 `@import`가 반드시 첫 줄이어야 한다.** CSS 규격상 `@import`는 `@charset`/`@layer` 외 모든 규칙보다 앞에 와야 하는데, `@import "tailwindcss"`가 내부적으로 `@layer` 규칙들로 확장되기 때문에 그 뒤에 폰트 import를 두면 규격 위반이 된다. Turbopack의 CSS 최적화기(lightningcss)가 **경고만 내고 그 import를 통째로 버린다.** 빌드는 성공하는데 폰트는 안 걸리는 상태가 되므로 육안으로 보기 전엔 모른다.
+
+> **`--color-muted`는 접근성 때문에 이 값이다.** 원래 `#8a8172`였는데 크림 배경에서 대비가 3.49:1로 WCAG AA(4.5:1) 미달이었다. `#736b5a`는 cream에서 4.79:1, paper에서 5.19:1이다. 이 값을 밝게 바꾸지 말 것.
+
+- [ ] **Step 3: layout.tsx 메타데이터 설정**
 
 `frontend/app/layout.tsx` 전체를 다음으로 교체:
 
@@ -264,13 +276,46 @@ export default function RootLayout({
 }
 ```
 
-- [ ] **Step 3: 개발 서버로 배경색이 적용됐는지 확인**
+- [ ] **Step 4: 토큰이 실제로 유틸리티로 생성되는지 확인**
 
-Run: `npm run dev`
-브라우저에서 `http://localhost:3000` 열기
-Expected: 배경이 크림색(`#FFF3D6`)이고 글꼴이 Pretendard
+눈으로 볼 수 없으므로 빌드 산출물을 직접 확인한다.
 
-- [ ] **Step 4: 커밋**
+`app/page.tsx`에 프로브를 임시로 넣는다:
+
+```tsx
+<div className="bg-candy-red border-ink text-muted bg-paper rounded-pop" />
+```
+
+Run: `npm run build`
+
+그다음 생성된 CSS를 grep한다 (Turbopack은 `.next/static/chunks/*.css`에 emit한다. `.next/static/css/`가 아니다):
+
+```bash
+grep -o "\.bg-candy-red{[^}]*}" .next/static/chunks/*.css
+grep -o "\.rounded-pop{[^}]*}" .next/static/chunks/*.css
+grep -ic "pretendard" .next/static/chunks/*.css
+ls .next/static/media/*.woff2 | wc -l
+```
+
+Expected:
+```
+.bg-candy-red{background-color:var(--color-candy-red)}
+.rounded-pop{border-radius:var(--radius-pop)}
+2          ← @font-face와 --font-sans 값
+92         ← woff2가 로컬로 emit됨
+```
+
+`jsdelivr`로 grep했을 때 **0건**이어야 한다. 1건이라도 나오면 자체 호스팅이 안 된 것이다.
+
+확인 후 프로브를 되돌린다:
+
+```bash
+git checkout -- app/page.tsx
+```
+
+> `app/page.tsx`는 Task 15에서 통째로 교체한다. 여기서 커밋하지 않는다.
+
+- [ ] **Step 5: 커밋**
 
 ```bash
 git add frontend/app
@@ -1416,7 +1461,7 @@ export default function EmbeddingMap({
     <div className="flex flex-col gap-3">
       <div
         data-testid="map-area"
-        className="relative aspect-[4/3] w-full rounded-[14px] border-[3px] border-ink bg-paper shadow-[0_4px_0_var(--color-ink)]"
+        className="relative aspect-[4/3] w-full rounded-pop border-[3px] border-ink bg-paper shadow-[0_4px_0_var(--color-ink)]"
       >
         <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
           {links.map((link) => (
@@ -1784,7 +1829,7 @@ export default function EmbeddingMap({
       <div
         ref={mapRef}
         data-testid="map-area"
-        className="relative aspect-[4/3] w-full rounded-[14px] border-[3px] border-ink bg-paper shadow-[0_4px_0_var(--color-ink)]"
+        className="relative aspect-[4/3] w-full rounded-pop border-[3px] border-ink bg-paper shadow-[0_4px_0_var(--color-ink)]"
       >
         <svg
           className="absolute inset-0 h-full w-full"
@@ -1952,7 +1997,7 @@ import { ui } from "@/copy/ui";
 
 export default function OwlBubble({ text }: { text: string }) {
   return (
-    <div className="flex items-start gap-2 rounded-[14px] border-[2.5px] border-ink bg-white px-3 py-2 shadow-[0_3px_0_var(--color-ink)]">
+    <div className="flex items-start gap-2 rounded-pop border-[2.5px] border-ink bg-white px-3 py-2 shadow-[0_3px_0_var(--color-ink)]">
       <span className="text-xl leading-none" aria-hidden>
         🦉
       </span>
@@ -2081,7 +2126,7 @@ import OwlBubble from "../OwlBubble";
 import { ui } from "@/copy/ui";
 
 export const popButton =
-  "rounded-[12px] border-[2.5px] border-ink bg-candy-red px-5 py-2 font-extrabold text-white shadow-[0_3px_0_var(--color-ink)]";
+  "rounded-pop border-[2.5px] border-ink bg-candy-red px-5 py-2 font-extrabold text-white shadow-[0_3px_0_var(--color-ink)]";
 
 export default function HookStep({
   owl,
@@ -2126,7 +2171,7 @@ export default function NameStep({
   return (
     <div className="flex flex-col items-center gap-4 py-8">
       <p className="text-lg font-extrabold">방금 한 게 👉</p>
-      <p className="rounded-[10px] border-[2.5px] border-ink bg-candy-yellow px-4 py-1 text-xl font-black">
+      <p className="rounded-pop border-[2.5px] border-ink bg-candy-yellow px-4 py-1 text-xl font-black">
         {concept}
       </p>
       <p className="max-w-md text-center text-sm leading-relaxed">{body}</p>
@@ -2175,7 +2220,7 @@ export default function ChallengeStep({
           key={choice}
           type="button"
           onClick={() => setPicked(index)}
-          className={`rounded-[12px] border-[2.5px] border-ink px-4 py-2 font-extrabold shadow-[0_3px_0_var(--color-ink)] ${
+          className={`rounded-pop border-[2.5px] border-ink px-4 py-2 font-extrabold shadow-[0_3px_0_var(--color-ink)] ${
             picked === index ? "bg-candy-teal" : "bg-white"
           }`}
         >
@@ -2620,7 +2665,7 @@ export default function Home() {
           <Link
             key={lesson.id}
             href={`/lesson/${lesson.id}`}
-            className="rounded-[12px] border-[2.5px] border-ink bg-candy-red px-5 py-3 font-extrabold text-white shadow-[0_3px_0_var(--color-ink)]"
+            className="rounded-pop border-[2.5px] border-ink bg-candy-red px-5 py-3 font-extrabold text-white shadow-[0_3px_0_var(--color-ink)]"
           >
             {lesson.order}. {lesson.title}
           </Link>
@@ -2702,7 +2747,7 @@ export default function LessonClient({
           <p className="text-xl font-black">{ui.lessonComplete}</p>
           <Link
             href="/"
-            className="rounded-[12px] border-[2.5px] border-ink bg-candy-teal px-5 py-2 font-extrabold shadow-[0_3px_0_var(--color-ink)]"
+            className="rounded-pop border-[2.5px] border-ink bg-candy-teal px-5 py-2 font-extrabold shadow-[0_3px_0_var(--color-ink)]"
           >
             처음으로
           </Link>
