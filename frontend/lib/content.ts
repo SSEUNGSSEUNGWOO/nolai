@@ -1,6 +1,7 @@
 import { lessonSchema, type Lesson } from "./lesson-schema";
 import { datasetSchema, type Dataset } from "./dataset-schema";
 import { getPlayground } from "@/playgrounds/registry";
+import { badgeNames } from "@/copy/ui";
 
 import embeddingMapLesson from "@/lessons/embedding-map.json";
 import wordsAnimalsVehicles from "@/datasets/words-animals-vehicles.json";
@@ -50,6 +51,25 @@ export function assertPlaygroundExists(lesson: Lesson): void {
   getPlayground(lesson.playground);
 }
 
+/**
+ * 레슨이 주는 배지에 한글 이름이 있는지 확인한다.
+ *
+ * 없으면 아이의 보상 화면에 "map-explorer" 같은 영문 id가 그대로 뜬다.
+ * 다른 콘텐츠 검사와 같은 급의 문제라 로드 시점에 막는다.
+ */
+export function assertBadgeNamesExist(lesson: Lesson): void {
+  lesson.steps.forEach((step) => {
+    if (step.type !== "reward") return;
+
+    if (!badgeNames[step.badge]) {
+      throw new Error(
+        `레슨 ${lesson.id}: 배지 "${step.badge}"에 한글 이름이 없습니다. ` +
+          `copy/ui.ts의 badgeNames에 추가하세요.`,
+      );
+    }
+  });
+}
+
 export function getLesson(id: string): Lesson {
   const raw = rawLessons[id];
   if (!raw) throw new Error(`알 수 없는 레슨: ${id}`);
@@ -57,6 +77,7 @@ export function getLesson(id: string): Lesson {
   const lesson = lessonSchema.parse(raw);
   assertPlayable(lesson, getDataset(lesson.dataset));
   assertPlaygroundExists(lesson);
+  assertBadgeNamesExist(lesson);
 
   return lesson;
 }

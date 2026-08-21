@@ -1,6 +1,6 @@
 "use client";
 
-import { popButton } from "./HookStep";
+import { popButton } from "./styles";
 import { ui } from "@/copy/ui";
 
 export default function NameStep({

@@ -5,6 +5,7 @@ import {
   listLessons,
   assertPlayable,
   assertPlaygroundExists,
+  assertBadgeNamesExist,
 } from "./content";
 
 describe("content 로더", () => {
@@ -53,5 +54,23 @@ describe("content 로더", () => {
   it("등록되지 않은 놀이터를 참조하면 거부한다", () => {
     const lesson = { ...getLesson("embedding-map"), playground: "EmbedingMap" };
     expect(() => assertPlaygroundExists(lesson)).toThrow(/EmbedingMap/);
+  });
+
+  it("레슨이 주는 배지에 한글 이름이 있다", () => {
+    expect(() =>
+      assertBadgeNamesExist(getLesson("embedding-map")),
+    ).not.toThrow();
+  });
+
+  it("한글 이름이 없는 배지를 주면 거부한다", () => {
+    const lesson = getLesson("embedding-map");
+    const broken = {
+      ...lesson,
+      steps: lesson.steps.map((step) =>
+        step.type === "reward" ? { ...step, badge: "unknown-badge" } : step,
+      ),
+    };
+
+    expect(() => assertBadgeNamesExist(broken)).toThrow(/unknown-badge/);
   });
 });

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import OwlBubble from "../OwlBubble";
-import { popButton } from "./HookStep";
+import { popButton } from "./styles";
 import { ui } from "@/copy/ui";
 
 export default function ChallengeStep({
@@ -31,7 +31,7 @@ export default function ChallengeStep({
           type="button"
           onClick={() => setPicked(index)}
           className={`rounded-pop border-[2.5px] border-ink px-4 py-2 font-extrabold shadow-[0_3px_0_var(--color-ink)] ${
-            picked === index ? "bg-candy-teal" : "bg-white"
+            picked === index ? "bg-candy-teal" : "bg-paper"
           }`}
         >
           {choice}

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { popButton } from "./HookStep";
+import { popButton } from "./styles";
 import { ui, badgeNames } from "@/copy/ui";
 
 export default function RewardStep({
