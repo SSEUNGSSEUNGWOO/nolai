@@ -6,9 +6,17 @@
 
 **Architecture:** 레슨은 zod로 검증되는 JSON 데이터이고, 놀이터는 독립 React 컴포넌트다. `LessonRunner`가 JSON의 스텝을 순서대로 진행하며 놀이터에서 올라오는 이벤트를 받아 다음 단계로 넘어갈지 판단한다. 놀이터는 레슨 흐름을 전혀 모른다. 임베딩 좌표는 파이썬 스크립트가 사전 계산해 정적 JSON으로 커밋하며, 런타임에 AI API를 호출하지 않는다.
 
-**Tech Stack:** Next.js 15 (App Router) · TypeScript · Tailwind CSS v4 · motion (구 Framer Motion) · zod · Vitest + Testing Library · Playwright · Python 3.12 (uv) + sentence-transformers(KURE-v1, 로컬 GPU) + scikit-learn MDS
+**Tech Stack:** Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4 · motion (구 Framer Motion) · zod · Vitest + Testing Library · Playwright · Python 3.12 (uv) + sentence-transformers(KURE-v1, 로컬 GPU) + scikit-learn MDS
 
 **설계 문서:** `docs/superpowers/specs/2026-08-21-nolai-design.md`
+
+---
+
+## 타입 체크에 관한 주의
+
+**`npx tsc --noEmit`만 단독으로 믿지 말 것.** Next 16은 `app/layout.tsx`가 쓰는 `LayoutProps` 같은 전역 타입을 `.next/types/`에 코드 생성한다. 빌드를 한 번도 안 돌린 상태에서 `tsc --noEmit`을 실행하면 `TS2304: Cannot find name 'LayoutProps'`로 실패한다 — 코드가 잘못된 게 아니라 생성된 타입이 아직 없는 것이다.
+
+타입 검증은 항상 **`npm run build`**로 한다. 이 계획의 모든 검증 단계가 그렇게 돼 있다.
 
 ---
 
@@ -118,9 +126,28 @@ export default defineConfig({
 
 ```ts
 import "@testing-library/jest-dom/vitest";
+import { afterEach } from "vitest";
+import { cleanup } from "@testing-library/react";
+
+// @testing-library/react의 자동 cleanup은 설정에 의존한다. 명시적으로 건다.
+afterEach(() => {
+  cleanup();
+});
 ```
 
-- [ ] **Step 4: package.json에 스크립트 추가**
+> cleanup을 명시적으로 거는 이유: 뒤 태스크의 테스트 파일들은 한 파일에서 `render()`를 여러 번 부른다. cleanup이 안 되면 DOM이 누적되어 `getByTestId`가 중복 매치로 실패한다.
+
+- [ ] **Step 4: tsconfig에 vitest 타입 추가**
+
+`frontend/tsconfig.json`의 `compilerOptions`에 추가:
+
+```json
+"types": ["vitest/globals", "node"]
+```
+
+> 이게 없으면 테스트 파일이 `vitest run`은 통과하는데 **`npm run build`가 깨진다.** `tsconfig.json`의 `include`가 `**/*.ts`라 테스트 파일도 타입 체크 대상인데, `globals: true`로 쓰는 `describe`/`it`/`expect`의 타입이 없기 때문이다. `"node"`를 반드시 함께 넣어야 한다 — `types`를 지정하면 `@types/*` 자동 포함이 그 목록으로 제한되는데 `vitest.config.ts`가 `node:path`와 `__dirname`을 쓴다.
+
+- [ ] **Step 5: package.json에 스크립트 추가**
 
 `frontend/package.json`의 `"scripts"` 에 추가:
 
@@ -129,29 +156,40 @@ import "@testing-library/jest-dom/vitest";
 "test:watch": "vitest"
 ```
 
-- [ ] **Step 5: 스모크 테스트로 설정이 동작하는지 확인**
+- [ ] **Step 6: 스모크 테스트로 설정이 동작하는지 확인**
 
-`frontend/lib/smoke.test.ts`:
+`frontend/lib/smoke.test.tsx`:
 
-```ts
-import { describe, it, expect } from "vitest";
+```tsx
+import { render, screen } from "@testing-library/react";
+
+function Probe() {
+  return <span data-testid="probe">hi</span>;
+}
 
 describe("setup", () => {
-  it("runs vitest", () => {
-    expect(1 + 1).toBe(2);
+  it("컴포넌트를 렌더하고 매처가 동작한다", () => {
+    render(<Probe />);
+    expect(screen.getByTestId("probe")).toBeInTheDocument();
   });
 });
 ```
 
-- [ ] **Step 6: 테스트 실행**
+> 일부러 `describe`/`it`/`expect`를 import하지 않았다. `globals: true`와 Step 4의 `types` 설정이 둘 다 제대로 걸렸는지 확인하는 것이 이 스모크 테스트의 목적이다.
+
+- [ ] **Step 7: 테스트와 빌드 실행**
 
 Run: `npm run test`
 Expected: PASS — `1 passed`
 
-- [ ] **Step 7: 스모크 테스트 삭제 후 커밋**
+Run: `npm run build`
+Expected: 성공. 여기서 `TS2582: Cannot find name 'describe'`가 나오면 Step 4의 `types` 설정이 빠진 것이다.
+
+- [ ] **Step 8: 스모크 테스트 삭제 후 커밋**
 
 ```bash
-rm lib/smoke.test.ts
+rm lib/smoke.test.tsx
+npm run build   # 테스트 파일이 없어도 여전히 성공하는지 확인
 cd ..
 git add frontend
 git commit -m "chore: Next.js + Vitest 프로젝트 셋업"
@@ -1472,6 +1510,8 @@ jsdom에는 `PointerEvent`가 없어 포인터 이벤트 테스트가 `PointerEv
 
 ```ts
 import "@testing-library/jest-dom/vitest";
+import { afterEach } from "vitest";
+import { cleanup } from "@testing-library/react";
 
 // jsdom은 PointerEvent를 구현하지 않는다. MouseEvent로 대체한다.
 if (typeof window !== "undefined" && !window.PointerEvent) {
@@ -1482,6 +1522,11 @@ if (typeof window !== "undefined" && !window.PointerEvent) {
   }
   window.PointerEvent = PointerEventPolyfill as unknown as typeof PointerEvent;
 }
+
+// @testing-library/react의 자동 cleanup은 설정에 의존한다. 명시적으로 건다.
+afterEach(() => {
+  cleanup();
+});
 ```
 
 - [ ] **Step 2: isInsideRect의 실패하는 테스트 추가**
