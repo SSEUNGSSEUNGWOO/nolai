@@ -1,0 +1,41 @@
+{
+  "id": "embedding-map",
+  "order": 1,
+  "lang": "ko",
+  "title": "비슷한 말끼리 모여라",
+  "playground": "EmbeddingMap",
+  "dataset": "words-animals-vehicles",
+  "steps": [
+    {
+      "type": "hook",
+      "owl": "컴퓨터는 '강아지'라는 말을 몰라. 그럼 어떻게 알아듣지?"
+    },
+    {
+      "type": "play",
+      "owl": [
+        "아무거나 끌어다 놔봐!",
+        "오! 자리를 찾아가네?",
+        "어? 강아지랑 고양이가 붙었네. 왜 그럴까?",
+        "자동차도 한번 놔볼래?",
+        "이제 세 덩어리가 보이지?"
+      ],
+      "goal": { "minPlaced": 6 }
+    },
+    {
+      "type": "name",
+      "concept": "임베딩",
+      "body": "컴퓨터는 말을 숫자로 바꿔서 기억해. 비슷한 뜻일수록 숫자가 비슷해지고, 그래서 지도에서 가까이 붙는 거야."
+    },
+    {
+      "type": "challenge",
+      "question": "'호랑이'는 어디에 놓일까?",
+      "choices": ["강아지 근처", "자동차 근처", "딸기 근처"],
+      "answer": 0,
+      "explain": "호랑이도 동물이니까 강아지·고양이 쪽으로 가!"
+    },
+    {
+      "type": "reward",
+      "badge": "map-explorer"
+    }
+  ]
+}
