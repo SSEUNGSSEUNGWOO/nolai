@@ -1,7 +1,7 @@
 import EmbeddingMap from "./embedding-map/EmbeddingMap";
 import type { PlaygroundComponent } from "./types";
 
-const registry: Record<string, PlaygroundComponent> = {
+export const registry: Record<string, PlaygroundComponent> = {
   EmbeddingMap,
 };
 

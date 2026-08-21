@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import type { Lesson } from "@/lib/lesson-schema";
 import type { Dataset } from "@/lib/dataset-schema";
 import type { Artifact, PlaygroundEvent } from "@/playgrounds/types";
-import { getPlayground } from "@/playgrounds/registry";
+import { registry } from "@/playgrounds/registry";
 import OwlBubble from "./OwlBubble";
 import HookStep from "./steps/HookStep";
 import NameStep from "./steps/NameStep";
@@ -35,7 +35,12 @@ export default function LessonRunner({
   const artifactRef = useRef<Artifact | null>(null);
 
   const step = lesson.steps[stepIndex];
-  const Playground = getPlayground(lesson.playground);
+  // getPlayground()가 아니라 registry를 직접 읽는다: 함수 호출의 결과를 JSX
+  // 태그로 쓰면 react-hooks/static-components가 "렌더 중 컴포넌트 생성"으로
+  // 오탐한다(레지스트리 조회가 매번 새 컴포넌트를 만드는 것과 구별하지 못함).
+  // lib/content.ts의 assertPlaygroundExists가 로드 시점에 이미
+  // lesson.playground를 검증하므로, 여기서는 존재를 다시 확인할 필요가 없다.
+  const Playground = registry[lesson.playground];
 
   function next() {
     if (stepIndex + 1 < lesson.steps.length) {

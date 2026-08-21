@@ -6,18 +6,22 @@ export function generateStaticParams() {
   return listLessons().map((lesson) => ({ lessonId: lesson.id }));
 }
 
+function loadLesson(lessonId: string) {
+  try {
+    const lesson = getLesson(lessonId);
+    return { lesson, dataset: getDataset(lesson.dataset) };
+  } catch {
+    notFound();
+  }
+}
+
 export default async function LessonPage({
   params,
 }: {
   params: Promise<{ lessonId: string }>;
 }) {
   const { lessonId } = await params;
+  const { lesson, dataset } = loadLesson(lessonId);
 
-  try {
-    const lesson = getLesson(lessonId);
-    const dataset = getDataset(lesson.dataset);
-    return <LessonClient lesson={lesson} dataset={dataset} />;
-  } catch {
-    notFound();
-  }
+  return <LessonClient lesson={lesson} dataset={dataset} />;
 }
