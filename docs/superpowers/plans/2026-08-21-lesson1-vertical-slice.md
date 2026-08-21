@@ -2783,7 +2783,7 @@ export function isCompleted(lessonId: string): boolean {
 - [ ] **Step 4: 테스트 실행해서 통과 확인**
 
 Run: `npm run test lib/local-progress`
-Expected: PASS — `6 passed`
+Expected: PASS — `4 passed`
 
 - [ ] **Step 5: 커밋**
 
