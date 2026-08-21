@@ -1,0 +1,59 @@
+import { describe, it, expect } from "vitest";
+import { lessonSchema } from "./lesson-schema";
+
+const validLesson = {
+  id: "embedding-map",
+  order: 1,
+  lang: "ko",
+  title: "비슷한 말끼리 모여라",
+  playground: "EmbeddingMap",
+  dataset: "words-animals-vehicles",
+  steps: [
+    { type: "hook", owl: "컴퓨터는 '강아지'라는 말을 몰라." },
+    { type: "play", owl: ["아무거나 끌어다 놔봐!"], goal: { minPlaced: 5 } },
+    { type: "name", concept: "임베딩", body: "말을 숫자로 바꿔서 기억해." },
+    {
+      type: "challenge",
+      question: "'호랑이'는 어디에 놓일까?",
+      choices: ["강아지 근처", "자동차 근처"],
+      answer: 0,
+      explain: "호랑이도 동물이니까!",
+    },
+    { type: "reward", badge: "map-explorer" },
+  ],
+};
+
+describe("lessonSchema", () => {
+  it("올바른 레슨을 통과시킨다", () => {
+    expect(lessonSchema.parse(validLesson).id).toBe("embedding-map");
+  });
+
+  it("모르는 스텝 타입을 거부한다", () => {
+    const bad = { ...validLesson, steps: [{ type: "dance", owl: "hi" }] };
+    expect(() => lessonSchema.parse(bad)).toThrow();
+  });
+
+  it("challenge의 answer가 choices 범위를 벗어나면 거부한다", () => {
+    const bad = {
+      ...validLesson,
+      steps: [
+        {
+          type: "challenge",
+          question: "q",
+          choices: ["a", "b"],
+          answer: 5,
+          explain: "e",
+        },
+      ],
+    };
+    expect(() => lessonSchema.parse(bad)).toThrow(/answer/);
+  });
+
+  it("play 스텝의 owl 대사가 비어 있으면 거부한다", () => {
+    const bad = {
+      ...validLesson,
+      steps: [{ type: "play", owl: [], goal: { minPlaced: 1 } }],
+    };
+    expect(() => lessonSchema.parse(bad)).toThrow();
+  });
+});
