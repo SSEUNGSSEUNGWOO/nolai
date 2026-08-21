@@ -100,9 +100,9 @@ describe("EmbeddingMap", () => {
     setup();
     const chip = screen.getByTestId("drawer-word-dog");
 
-    fireEvent.pointerDown(chip, { clientX: 10, clientY: 380, buttons: 1 });
-    fireEvent.pointerMove(window, { clientX: 200, clientY: 200, buttons: 1 });
-    fireEvent.pointerUp(window, { clientX: 200, clientY: 200 });
+    fireEvent.pointerDown(chip, { pointerId: 1, clientX: 10, clientY: 380, buttons: 1 });
+    fireEvent.pointerMove(window, { pointerId: 1, clientX: 200, clientY: 200, buttons: 1 });
+    fireEvent.pointerUp(window, { pointerId: 1, clientX: 200, clientY: 200 });
 
     expect(screen.getByTestId("placed-word-dog")).toBeInTheDocument();
   });
@@ -111,9 +111,9 @@ describe("EmbeddingMap", () => {
     setup();
     const chip = screen.getByTestId("drawer-word-dog");
 
-    fireEvent.pointerDown(chip, { clientX: 10, clientY: 380, buttons: 1 });
-    fireEvent.pointerMove(window, { clientX: 900, clientY: 900, buttons: 1 });
-    fireEvent.pointerUp(window, { clientX: 900, clientY: 900 });
+    fireEvent.pointerDown(chip, { pointerId: 1, clientX: 10, clientY: 380, buttons: 1 });
+    fireEvent.pointerMove(window, { pointerId: 1, clientX: 900, clientY: 900, buttons: 1 });
+    fireEvent.pointerUp(window, { pointerId: 1, clientX: 900, clientY: 900 });
 
     expect(screen.queryByTestId("placed-word-dog")).not.toBeInTheDocument();
     expect(screen.getByTestId("drawer-word-dog")).toBeInTheDocument();
@@ -123,11 +123,12 @@ describe("EmbeddingMap", () => {
     setup();
 
     fireEvent.pointerDown(screen.getByTestId("drawer-word-dog"), {
+      pointerId: 1,
       clientX: 10,
       clientY: 380,
       buttons: 1,
     });
-    fireEvent.pointerMove(window, { clientX: 120, clientY: 150, buttons: 1 });
+    fireEvent.pointerMove(window, { pointerId: 1, clientX: 120, clientY: 150, buttons: 1 });
 
     expect(screen.getByTestId("drag-ghost")).toBeInTheDocument();
   });
@@ -136,14 +137,15 @@ describe("EmbeddingMap", () => {
     setup();
 
     fireEvent.pointerDown(screen.getByTestId("drawer-word-dog"), {
+      pointerId: 1,
       clientX: 10,
       clientY: 380,
     });
-    fireEvent.pointerMove(window, { clientX: 120, clientY: 150, buttons: 1 });
+    fireEvent.pointerMove(window, { pointerId: 1, clientX: 120, clientY: 150, buttons: 1 });
     expect(screen.getByTestId("drag-ghost")).toBeInTheDocument();
 
     // 창 밖에서 버튼을 뗀 뒤 다시 들어옴 — pointerup은 못 받았다
-    fireEvent.pointerMove(window, { clientX: 200, clientY: 200, buttons: 0 });
+    fireEvent.pointerMove(window, { pointerId: 1, clientX: 200, clientY: 200, buttons: 0 });
 
     expect(screen.queryByTestId("drag-ghost")).not.toBeInTheDocument();
     // 단어는 배치되지 않고 서랍에 남아야 한다
@@ -155,14 +157,45 @@ describe("EmbeddingMap", () => {
     setup();
 
     fireEvent.pointerDown(screen.getByTestId("drawer-word-dog"), {
+      pointerId: 1,
       clientX: 10,
       clientY: 380,
     });
     expect(screen.getByTestId("drag-ghost")).toBeInTheDocument();
 
-    fireEvent.pointerCancel(window);
+    fireEvent.pointerCancel(window, { pointerId: 1 });
 
     expect(screen.queryByTestId("drag-ghost")).not.toBeInTheDocument();
     expect(screen.getByTestId("drawer-word-dog")).toBeInTheDocument();
+  });
+
+  it("다른 손가락의 이벤트는 진행 중인 드래그를 끝내지 않는다", () => {
+    setup();
+
+    // 첫 손가락으로 강아지를 집는다
+    fireEvent.pointerDown(screen.getByTestId("drawer-word-dog"), {
+      pointerId: 1,
+      clientX: 10,
+      clientY: 380,
+      buttons: 1,
+    });
+    fireEvent.pointerMove(window, {
+      pointerId: 1,
+      clientX: 120,
+      clientY: 150,
+      buttons: 1,
+    });
+    expect(screen.getByTestId("drag-ghost")).toBeInTheDocument();
+
+    // 두 번째 손가락이 지도 안에서 떼어진다 — 첫 손가락은 아직 눌려 있다
+    fireEvent.pointerUp(window, { pointerId: 2, clientX: 200, clientY: 200 });
+
+    // 강아지는 배치되지 않아야 하고, 드래그는 계속되어야 한다
+    expect(screen.queryByTestId("placed-word-dog")).not.toBeInTheDocument();
+    expect(screen.getByTestId("drag-ghost")).toBeInTheDocument();
+
+    // 첫 손가락으로 떼면 그때 배치된다
+    fireEvent.pointerUp(window, { pointerId: 1, clientX: 200, clientY: 200 });
+    expect(screen.getByTestId("placed-word-dog")).toBeInTheDocument();
   });
 });

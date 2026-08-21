@@ -9,6 +9,7 @@ import { buildLinks, isInsideRect } from "./geometry";
 
 interface DragState {
   wordId: string;
+  pointerId: number;
   x: number;
   y: number;
 }
@@ -61,20 +62,24 @@ export default function EmbeddingMap({
   }
 
   const draggingId = drag?.wordId ?? null;
+  const draggingPointerId = drag?.pointerId ?? null;
 
   useEffect(() => {
     if (!draggingId) return;
     const wordId = draggingId;
 
-    function cancel() {
+    // blur는 pointerId가 없는 일반 Event이므로 어느 손가락이든 무조건 취소한다.
+    function cancelUnconditionally() {
       setDrag(null);
     }
 
     function move(event: PointerEvent) {
+      if (event.pointerId !== draggingPointerId) return;
+
       // 창 밖에서 손을 뗐다가 다시 들어온 경우, 눌린 버튼이 없다.
       // 이걸 안 잡으면 유령 칩이 커서를 영원히 따라다닌다.
       if (event.buttons === 0) {
-        cancel();
+        cancelUnconditionally();
         return;
       }
 
@@ -84,6 +89,8 @@ export default function EmbeddingMap({
     }
 
     function up(event: PointerEvent) {
+      if (event.pointerId !== draggingPointerId) return;
+
       const rect = mapRef.current?.getBoundingClientRect();
       setDrag(null);
 
@@ -92,20 +99,25 @@ export default function EmbeddingMap({
       }
     }
 
+    function pointercancel(event: PointerEvent) {
+      if (event.pointerId !== draggingPointerId) return;
+      cancelUnconditionally();
+    }
+
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);
-    window.addEventListener("pointercancel", cancel);
-    window.addEventListener("blur", cancel);
+    window.addEventListener("pointercancel", pointercancel);
+    window.addEventListener("blur", cancelUnconditionally);
 
     return () => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
-      window.removeEventListener("pointercancel", cancel);
-      window.removeEventListener("blur", cancel);
+      window.removeEventListener("pointercancel", pointercancel);
+      window.removeEventListener("blur", cancelUnconditionally);
     };
     // place는 ref를 통해 최신 상태를 읽으므로 의존성에 넣지 않는다
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [draggingId]);
+  }, [draggingId, draggingPointerId]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -175,7 +187,12 @@ export default function EmbeddingMap({
             color={colorOf(word.category)}
             onActivate={() => place(word.id)}
             onDragStart={(event) =>
-              setDrag({ wordId: word.id, x: event.clientX, y: event.clientY })
+              setDrag({
+                wordId: word.id,
+                pointerId: event.pointerId,
+                x: event.clientX,
+                y: event.clientY,
+              })
             }
           />
         ))}
