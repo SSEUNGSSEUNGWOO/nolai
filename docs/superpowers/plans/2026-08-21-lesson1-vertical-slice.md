@@ -3450,13 +3450,48 @@ git commit -m "docs: frontend README 작성"
 이 계획은 다음이 모두 참일 때 끝난다.
 
 1. `npm run test` 통과 (단위 테스트 전체)
-2. `npm run test:e2e` 통과 (완주 2건 + 드래그 1건 + 칩 경계 1건)
+2. `npm run test:e2e` 통과 (완주 2건 + 드래그 1건 + 칩 경계 2건 — 데스크톱·작은 폰)
 3. `npm run build` 성공
 4. `uv run pytest` 통과 (파이썬 도구 3건)
 5. 브라우저에서 레슨 1을 손으로 완주할 수 있다
 6. 새로고침해도 진도가 남아 있다
 
 ---
+
+## 실행 결과 (2026-08-21 완료)
+
+17개 태스크 전부 완료. 최종 상태:
+
+```
+단위 테스트  60 통과 (10개 파일)
+E2E         5 통과 (Playwright, 데스크톱 + 360px 폰)
+파이썬       3 통과
+빌드        성공, / 와 /lesson/embedding-map 정적 생성
+```
+
+**설계 원칙 검증**
+
+- *설명보다 조작이 먼저* — 놀이터에 도달하기까지 나오는 설명은 부엉이 질문 한 문장(7어절)과 버튼 하나뿐
+- *틀린 답이 없다* — `ChallengeStep`에 `disabled`가 어디에도 없고 `score` 필드도 존재하지 않음
+- *한 레슨은 10분* — 최소 경로 2.5~4분, 전부 놓고 천천히 읽어도 5~8분
+- *모든 숫자는 진짜다* — 데이터셋 재생성 후 SHA256 동일. 손으로 고친 흔적 없음
+
+**콘텐츠 오류가 실제로 빌드에서 막히는지 확인함**
+
+| 고의로 낸 오류 | 빌드 에러 |
+|---|---|
+| `playground`를 `EmbedingMap`으로 | `알 수 없는 놀이터: EmbedingMap` |
+| 한글 이름 없는 배지 | `배지 "..."에 한글 이름이 없습니다` |
+| `minPlaced: 99` | `minPlaced(99)가 데이터셋 단어 수(18)보다 많습니다` |
+
+셋 다 `generateStaticParams` 단계에서 실패한다. 아이에게 도달하지 않는다.
+
+**정리하지 않고 남겨둔 것** (계획 2에서 판단)
+
+- `frontend/public/*.svg` — create-next-app 기본 자산 5개, 사용처 없음
+- `frontend/next.config.ts` — 스캐폴드 주석 그대로
+- `tools/embed/README.md` — `uv init`이 만든 0바이트 파일
+- `tools/embed/test_build_dataset.py`가 `normalize_coords`만 검사한다. `embed()`, `cosine_distance_matrix()`, MDS 파이프라인은 테스트가 없다 — 모델 다운로드가 필요해 합리적이지만, 회귀는 SHA 비교로만 잡힌다
 
 ## 다음 계획
 
