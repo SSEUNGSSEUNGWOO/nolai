@@ -600,8 +600,31 @@ describe("datasetSchema", () => {
     };
     expect(() => datasetSchema.parse(bad)).toThrow(/category/);
   });
+
+  it("word id가 중복되면 거부한다", () => {
+    const bad = {
+      ...valid,
+      words: [valid.words[0], { ...valid.words[1], id: "dog" }],
+    };
+    expect(() => datasetSchema.parse(bad)).toThrow(/중복/);
+  });
+
+  it("category id가 중복되면 거부한다", () => {
+    const bad = {
+      ...valid,
+      categories: [
+        ...valid.categories,
+        { id: "animal", label: "동물2", color: "#000000" },
+      ],
+    };
+    expect(() => datasetSchema.parse(bad)).toThrow(/중복/);
+  });
 });
 ```
+
+> **중복 id 검사가 필요한 이유:** Task 9의 놀이터는 `new Map(words.map(w => [w.id, w]))`로 조회 맵을 만들고 React에서 `key={word.id}`를 쓴다. 중복이 있으면 **단어 하나가 아무 에러 없이 사라진다.** 데이터셋의 원본인 `words.yaml`은 사람이 손으로 편집하므로 복붙 중복이 현실적인 실수다.
+
+> 참고: `z.number()`는 `NaN`과 `Infinity`를 `invalid_type`으로 거부한다. 생성기 버그로 좌표가 `NaN`이 되면 카드가 `left: NaN%`로 안 보이게 될 텐데, 스키마에서 먼저 막힌다.
 
 - [ ] **Step 2: 테스트 실행해서 실패 확인**
 
@@ -640,7 +663,30 @@ export const datasetSchema = z
   })
   .superRefine((data, ctx) => {
     const known = new Set(data.categories.map((c) => c.id));
+
+    const seenCategoryIds = new Set<string>();
+    data.categories.forEach((c, i) => {
+      if (seenCategoryIds.has(c.id)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `category id가 중복됩니다: ${c.id}`,
+          path: ["categories", i, "id"],
+        });
+      }
+      seenCategoryIds.add(c.id);
+    });
+
+    const seenWordIds = new Set<string>();
     data.words.forEach((w, i) => {
+      if (seenWordIds.has(w.id)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `word id가 중복됩니다: ${w.id}`,
+          path: ["words", i, "id"],
+        });
+      }
+      seenWordIds.add(w.id);
+
       if (!known.has(w.category)) {
         ctx.addIssue({
           code: "custom",
@@ -659,7 +705,7 @@ export type DatasetCategory = z.infer<typeof category>;
 - [ ] **Step 4: 테스트 실행해서 통과 확인**
 
 Run: `npm run test lib/dataset-schema`
-Expected: PASS — `3 passed`
+Expected: PASS — `5 passed`
 
 - [ ] **Step 5: 커밋**
 
@@ -975,7 +1021,7 @@ git commit -m "feat: 임베딩 사전 계산 도구와 첫 데이터셋 추가"
 
 ```ts
 import { describe, it, expect } from "vitest";
-import { getLesson, getDataset, listLessons } from "./content";
+import { getLesson, getDataset, listLessons, assertPlayable } from "./content";
 
 describe("content 로더", () => {
   it("embedding-map 레슨을 검증해서 읽는다", () => {
@@ -998,8 +1044,25 @@ describe("content 로더", () => {
     const orders = listLessons().map((l) => l.order);
     expect(orders).toEqual([...orders].sort((a, b) => a - b));
   });
+
+  it("실제 레슨과 데이터셋 조합은 끝까지 진행 가능하다", () => {
+    const lesson = getLesson("embedding-map");
+    expect(() =>
+      assertPlayable(lesson, getDataset(lesson.dataset)),
+    ).not.toThrow();
+  });
+
+  it("데이터셋 단어 수보다 minPlaced가 크면 거부한다", () => {
+    const lesson = getLesson("embedding-map");
+    const dataset = getDataset(lesson.dataset);
+    const tooFew = { ...dataset, words: dataset.words.slice(0, 2) };
+
+    expect(() => assertPlayable(lesson, tooFew)).toThrow(/minPlaced/);
+  });
 });
 ```
+
+> 마지막 두 테스트가 **소프트락**을 막는다. `play` 스텝의 `minPlaced`가 데이터셋 단어 수보다 크면 아이가 단어를 전부 놓아도 "다 했어요" 버튼이 안 나온다. 스키마는 레슨 파일과 데이터셋 파일을 따로 검증하므로 이 조합 검사는 로더에서만 할 수 있다. `words.yaml`에서 단어를 지우는 순간 터지는 종류의 사고다.
 
 - [ ] **Step 3: 테스트 실행해서 실패 확인**
 
@@ -1025,16 +1088,41 @@ const rawDatasets: Record<string, unknown> = {
   "words-animals-vehicles": wordsAnimalsVehicles,
 };
 
-export function getLesson(id: string): Lesson {
-  const raw = rawLessons[id];
-  if (!raw) throw new Error(`알 수 없는 레슨: ${id}`);
-  return lessonSchema.parse(raw);
-}
-
 export function getDataset(id: string): Dataset {
   const raw = rawDatasets[id];
   if (!raw) throw new Error(`알 수 없는 데이터셋: ${id}`);
   return datasetSchema.parse(raw);
+}
+
+/**
+ * 레슨이 자기 데이터셋으로 실제로 끝까지 진행 가능한지 확인한다.
+ *
+ * play 스텝의 minPlaced가 데이터셋 단어 수보다 크면, 아이가 단어를 전부
+ * 놓아도 목표를 못 채워 다음 단계로 못 넘어간다 — 소프트락이다.
+ * 스키마는 두 파일을 따로 보므로 이 검사는 여기서만 할 수 있다.
+ */
+export function assertPlayable(lesson: Lesson, dataset: Dataset): void {
+  lesson.steps.forEach((step) => {
+    if (step.type !== "play") return;
+
+    if (step.goal.minPlaced > dataset.words.length) {
+      throw new Error(
+        `레슨 ${lesson.id}: minPlaced(${step.goal.minPlaced})가 ` +
+          `데이터셋 단어 수(${dataset.words.length})보다 많습니다. ` +
+          `아이가 전부 놓아도 다음으로 넘어갈 수 없습니다.`,
+      );
+    }
+  });
+}
+
+export function getLesson(id: string): Lesson {
+  const raw = rawLessons[id];
+  if (!raw) throw new Error(`알 수 없는 레슨: ${id}`);
+
+  const lesson = lessonSchema.parse(raw);
+  assertPlayable(lesson, getDataset(lesson.dataset));
+
+  return lesson;
 }
 
 export function listLessons(): Lesson[] {
@@ -1055,7 +1143,7 @@ export function listLessons(): Lesson[] {
 - [ ] **Step 6: 테스트 실행해서 통과 확인**
 
 Run: `npm run test lib/content`
-Expected: PASS — `4 passed`
+Expected: PASS — `6 passed`
 
 - [ ] **Step 7: 커밋**
 
@@ -2695,7 +2783,7 @@ export function isCompleted(lessonId: string): boolean {
 - [ ] **Step 4: 테스트 실행해서 통과 확인**
 
 Run: `npm run test lib/local-progress`
-Expected: PASS — `4 passed`
+Expected: PASS — `6 passed`
 
 - [ ] **Step 5: 커밋**
 
