@@ -1,0 +1,24 @@
+id: words-animals-vehicles
+categories:
+  - { id: animal,  label: 동물,     color: "#FF6B6B" }
+  - { id: vehicle, label: 탈것,     color: "#4ECDC4" }
+  - { id: food,    label: 먹을 것,  color: "#FFD93D" }
+words:
+  - { id: dog,      label: 강아지,   emoji: "🐶", category: animal }
+  - { id: cat,      label: 고양이,   emoji: "🐱", category: animal }
+  - { id: rabbit,   label: 토끼,     emoji: "🐰", category: animal }
+  - { id: tiger,    label: 호랑이,   emoji: "🐯", category: animal }
+  - { id: elephant, label: 코끼리,   emoji: "🐘", category: animal }
+  - { id: chick,    label: 병아리,   emoji: "🐤", category: animal }
+  - { id: fish,     label: 물고기,   emoji: "🐟", category: animal }
+  - { id: car,      label: 자동차,   emoji: "🚗", category: vehicle }
+  - { id: bus,      label: 버스,     emoji: "🚌", category: vehicle }
+  - { id: train,    label: 기차,     emoji: "🚆", category: vehicle }
+  - { id: bike,     label: 자전거,   emoji: "🚲", category: vehicle }
+  - { id: airplane, label: 비행기,   emoji: "✈️", category: vehicle }
+  - { id: truck,    label: 트럭,     emoji: "🚚", category: vehicle }
+  - { id: strawberry, label: 딸기,   emoji: "🍓", category: food }
+  - { id: banana,   label: 바나나,   emoji: "🍌", category: food }
+  - { id: bread,    label: 빵,       emoji: "🍞", category: food }
+  - { id: pizza,    label: 피자,     emoji: "🍕", category: food }
+  - { id: icecream, label: 아이스크림, emoji: "🍦", category: food }
