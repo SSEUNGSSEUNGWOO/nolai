@@ -56,4 +56,43 @@ describe("lessonSchema", () => {
     };
     expect(() => lessonSchema.parse(bad)).toThrow();
   });
+
+  it("goal.minPlaced가 0이면 거부한다", () => {
+    const bad = {
+      ...validLesson,
+      steps: [{ type: "play", owl: ["가"], goal: { minPlaced: 0 } }],
+    };
+    expect(() => lessonSchema.parse(bad)).toThrow();
+  });
+
+  it("choices가 2개 미만이면 거부한다", () => {
+    const bad = {
+      ...validLesson,
+      steps: [
+        {
+          type: "challenge",
+          question: "q",
+          choices: ["하나뿐"],
+          answer: 0,
+          explain: "e",
+        },
+      ],
+    };
+    expect(() => lessonSchema.parse(bad)).toThrow();
+  });
+
+  it("스텝의 오타를 해당 필드만 짚어서 알려준다", () => {
+    const bad = {
+      ...validLesson,
+      steps: [{ type: "play", owl: ["가"], goal: { minPlace: 5 } }],
+    };
+
+    const result = lessonSchema.safeParse(bad);
+    expect(result.success).toBe(false);
+
+    const issues = JSON.stringify(result.error!.issues);
+    expect(issues).toMatch(/minPlace/);
+    // 다른 스텝 타입의 필드가 섞여 나오면 안 된다
+    expect(issues).not.toMatch(/concept|badge|question/);
+  });
 });
