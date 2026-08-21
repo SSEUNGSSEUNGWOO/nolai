@@ -100,8 +100,8 @@ describe("EmbeddingMap", () => {
     setup();
     const chip = screen.getByTestId("drawer-word-dog");
 
-    fireEvent.pointerDown(chip, { clientX: 10, clientY: 380 });
-    fireEvent.pointerMove(window, { clientX: 200, clientY: 200 });
+    fireEvent.pointerDown(chip, { clientX: 10, clientY: 380, buttons: 1 });
+    fireEvent.pointerMove(window, { clientX: 200, clientY: 200, buttons: 1 });
     fireEvent.pointerUp(window, { clientX: 200, clientY: 200 });
 
     expect(screen.getByTestId("placed-word-dog")).toBeInTheDocument();
@@ -111,8 +111,8 @@ describe("EmbeddingMap", () => {
     setup();
     const chip = screen.getByTestId("drawer-word-dog");
 
-    fireEvent.pointerDown(chip, { clientX: 10, clientY: 380 });
-    fireEvent.pointerMove(window, { clientX: 900, clientY: 900 });
+    fireEvent.pointerDown(chip, { clientX: 10, clientY: 380, buttons: 1 });
+    fireEvent.pointerMove(window, { clientX: 900, clientY: 900, buttons: 1 });
     fireEvent.pointerUp(window, { clientX: 900, clientY: 900 });
 
     expect(screen.queryByTestId("placed-word-dog")).not.toBeInTheDocument();
@@ -125,9 +125,44 @@ describe("EmbeddingMap", () => {
     fireEvent.pointerDown(screen.getByTestId("drawer-word-dog"), {
       clientX: 10,
       clientY: 380,
+      buttons: 1,
     });
-    fireEvent.pointerMove(window, { clientX: 120, clientY: 150 });
+    fireEvent.pointerMove(window, { clientX: 120, clientY: 150, buttons: 1 });
 
     expect(screen.getByTestId("drag-ghost")).toBeInTheDocument();
+  });
+
+  it("창 밖에서 손을 뗐다 돌아오면 유령 칩이 사라진다", () => {
+    setup();
+
+    fireEvent.pointerDown(screen.getByTestId("drawer-word-dog"), {
+      clientX: 10,
+      clientY: 380,
+    });
+    fireEvent.pointerMove(window, { clientX: 120, clientY: 150, buttons: 1 });
+    expect(screen.getByTestId("drag-ghost")).toBeInTheDocument();
+
+    // 창 밖에서 버튼을 뗀 뒤 다시 들어옴 — pointerup은 못 받았다
+    fireEvent.pointerMove(window, { clientX: 200, clientY: 200, buttons: 0 });
+
+    expect(screen.queryByTestId("drag-ghost")).not.toBeInTheDocument();
+    // 단어는 배치되지 않고 서랍에 남아야 한다
+    expect(screen.getByTestId("drawer-word-dog")).toBeInTheDocument();
+    expect(screen.queryByTestId("placed-word-dog")).not.toBeInTheDocument();
+  });
+
+  it("드래그가 취소되면 유령 칩이 사라진다", () => {
+    setup();
+
+    fireEvent.pointerDown(screen.getByTestId("drawer-word-dog"), {
+      clientX: 10,
+      clientY: 380,
+    });
+    expect(screen.getByTestId("drag-ghost")).toBeInTheDocument();
+
+    fireEvent.pointerCancel(window);
+
+    expect(screen.queryByTestId("drag-ghost")).not.toBeInTheDocument();
+    expect(screen.getByTestId("drawer-word-dog")).toBeInTheDocument();
   });
 });

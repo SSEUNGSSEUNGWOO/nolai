@@ -66,7 +66,18 @@ export default function EmbeddingMap({
     if (!draggingId) return;
     const wordId = draggingId;
 
+    function cancel() {
+      setDrag(null);
+    }
+
     function move(event: PointerEvent) {
+      // 창 밖에서 손을 뗐다가 다시 들어온 경우, 눌린 버튼이 없다.
+      // 이걸 안 잡으면 유령 칩이 커서를 영원히 따라다닌다.
+      if (event.buttons === 0) {
+        cancel();
+        return;
+      }
+
       setDrag((current) =>
         current ? { ...current, x: event.clientX, y: event.clientY } : current,
       );
@@ -83,10 +94,14 @@ export default function EmbeddingMap({
 
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", cancel);
+    window.addEventListener("blur", cancel);
 
     return () => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", cancel);
+      window.removeEventListener("blur", cancel);
     };
     // place는 ref를 통해 최신 상태를 읽으므로 의존성에 넣지 않는다
     // eslint-disable-next-line react-hooks/exhaustive-deps
