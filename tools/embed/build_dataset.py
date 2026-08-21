@@ -69,11 +69,28 @@ def main() -> None:
     vectors = embed(labels)
     distances = cosine_distance_matrix(vectors)
 
+    # init="classical_mds"인 이유:
+    # 기본값 'random'은 n=18 같은 작은 점 집합에서 SMACOF가 지역 최솟값에
+    # 빠져 특정 카테고리만 압축이 덜 되는 현상이 있었다. 원본 1024차원에서는
+    # 세 카테고리 응집도가 0.38~0.47로 비슷한데, random 초기화 2D에서는
+    # 0.22 / 0.25 / 0.43으로 과일만 안 눌렸다. classical 초기화는 셋 다
+    # 고르게 압축하고(0.22 / 0.26 / 0.26) 결정적이다.
+    #
+    # random_state를 쓰지 않는 이유:
+    # init 배열이 주어지면 sklearn의 _smacof_single은 그 배열을 그대로
+    # 시작점으로 쓰고, random_state는 init=None일 때만 초기 좌표를 뽑는 데
+    # 쓰인다(sklearn/manifold/_mds.py 확인). classical_mds init을 쓰는 한
+    # random_state는 결과에 아무 영향이 없는 죽은 인자라 남겨두지 않는다.
+    #
+    # n_init=1인 이유:
+    # 명시적 init 배열을 넘기면 n_init은 항상 1로 강제되고, n_init != 1이면
+    # sklearn이 경고를 낸다. 기본값이 이미 1이라 지금은 경고가 없지만,
+    # 값을 명시해두면 sklearn이 기본값을 다시 바꿔도 경고가 나지 않는다.
     mds = MDS(
         n_components=2,
         metric="precomputed",
-        init="random",
-        random_state=42,
+        init="classical_mds",
+        n_init=1,
         normalized_stress="auto",
     )
     coords = normalize_coords(mds.fit_transform(distances), margin=0.08)

@@ -25,144 +25,144 @@
       "label": "강아지",
       "emoji": "🐶",
       "category": "animal",
-      "x": 0.4144,
-      "y": 0.5537
+      "x": 0.4894,
+      "y": 0.7594
     },
     {
       "id": "cat",
       "label": "고양이",
       "emoji": "🐱",
       "category": "animal",
-      "x": 0.3191,
-      "y": 0.5846
+      "x": 0.5171,
+      "y": 0.92
     },
     {
       "id": "rabbit",
       "label": "토끼",
       "emoji": "🐰",
       "category": "animal",
-      "x": 0.5373,
-      "y": 0.7842
+      "x": 0.369,
+      "y": 0.898
     },
     {
       "id": "tiger",
       "label": "호랑이",
       "emoji": "🐯",
       "category": "animal",
-      "x": 0.3404,
-      "y": 0.7908
+      "x": 0.2354,
+      "y": 0.6997
     },
     {
       "id": "elephant",
       "label": "코끼리",
       "emoji": "🐘",
       "category": "animal",
-      "x": 0.4765,
-      "y": 0.92
+      "x": 0.2113,
+      "y": 0.9156
     },
     {
       "id": "chick",
       "label": "병아리",
       "emoji": "🐤",
       "category": "animal",
-      "x": 0.1223,
-      "y": 0.7461
+      "x": 0.08,
+      "y": 0.581
     },
     {
       "id": "fish",
       "label": "물고기",
       "emoji": "🐟",
       "category": "animal",
-      "x": 0.6253,
-      "y": 0.593
+      "x": 0.3738,
+      "y": 0.4989
     },
     {
       "id": "car",
       "label": "자동차",
       "emoji": "🚗",
       "category": "vehicle",
-      "x": 0.337,
-      "y": 0.2337
+      "x": 0.8512,
+      "y": 0.7467
     },
     {
       "id": "bus",
       "label": "버스",
       "emoji": "🚌",
       "category": "vehicle",
-      "x": 0.4355,
-      "y": 0.08
+      "x": 0.92,
+      "y": 0.4943
     },
     {
       "id": "train",
       "label": "기차",
       "emoji": "🚆",
       "category": "vehicle",
-      "x": 0.5167,
-      "y": 0.1331
+      "x": 0.8942,
+      "y": 0.6213
     },
     {
       "id": "bike",
       "label": "자전거",
       "emoji": "🚲",
       "category": "vehicle",
-      "x": 0.6559,
-      "y": 0.1682
+      "x": 0.7225,
+      "y": 0.4361
     },
     {
       "id": "airplane",
       "label": "비행기",
       "emoji": "✈️",
       "category": "vehicle",
-      "x": 0.1605,
-      "y": 0.2864
+      "x": 0.7645,
+      "y": 0.8559
     },
     {
       "id": "truck",
       "label": "트럭",
       "emoji": "🚚",
       "category": "vehicle",
-      "x": 0.2803,
-      "y": 0.1117
+      "x": 0.8967,
+      "y": 0.3472
     },
     {
       "id": "strawberry",
       "label": "딸기",
       "emoji": "🍓",
       "category": "fruit",
-      "x": 0.08,
-      "y": 0.5551
+      "x": 0.1468,
+      "y": 0.2894
     },
     {
       "id": "banana",
       "label": "바나나",
       "emoji": "🍌",
       "category": "fruit",
-      "x": 0.8417,
-      "y": 0.4383
+      "x": 0.2739,
+      "y": 0.2636
     },
     {
       "id": "grape",
       "label": "포도",
       "emoji": "🍇",
       "category": "fruit",
-      "x": 0.9037,
-      "y": 0.2793
+      "x": 0.6985,
+      "y": 0.1016
     },
     {
       "id": "watermelon",
       "label": "수박",
       "emoji": "🍉",
       "category": "fruit",
-      "x": 0.8402,
-      "y": 0.7629
+      "x": 0.3473,
+      "y": 0.08
     },
     {
       "id": "tangerine",
       "label": "귤",
       "emoji": "🍊",
       "category": "fruit",
-      "x": 0.92,
-      "y": 0.5832
+      "x": 0.5073,
+      "y": 0.0911
     }
   ]
 }
