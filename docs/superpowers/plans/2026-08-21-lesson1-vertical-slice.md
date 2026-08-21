@@ -1629,16 +1629,32 @@ describe("EmbeddingMap", () => {
     expect(screen.getAllByTestId(/^link-/)).toHaveLength(1);
   });
 
-  it("모든 단어를 놓으면 작품을 올려보낸다", () => {
+  it("놓을 때마다 현재 지도 상태를 작품으로 올려보낸다", () => {
     const { onArtifact } = setup();
-    fireEvent.click(screen.getByTestId("drawer-word-dog"));
-    fireEvent.click(screen.getByTestId("drawer-word-cat"));
-    fireEvent.click(screen.getByTestId("drawer-word-car"));
 
-    expect(onArtifact).toHaveBeenCalledWith({
+    fireEvent.click(screen.getByTestId("drawer-word-dog"));
+    expect(onArtifact).toHaveBeenLastCalledWith({
       kind: "embedding-map",
-      payload: { datasetId: "test", placedIds: ["dog", "cat", "car"] },
+      payload: { datasetId: "test", placedIds: ["dog"] },
     });
+
+    fireEvent.click(screen.getByTestId("drawer-word-cat"));
+    expect(onArtifact).toHaveBeenLastCalledWith({
+      kind: "embedding-map",
+      payload: { datasetId: "test", placedIds: ["dog", "cat"] },
+    });
+
+    expect(onArtifact).toHaveBeenCalledTimes(2);
+  });
+
+  it("배치된 칩은 초점을 받지 않는다", () => {
+    setup();
+    fireEvent.click(screen.getByTestId("drawer-word-dog"));
+
+    // 서랍의 칩은 누를 수 있어야 하고
+    expect(screen.getByTestId("drawer-word-cat").tagName).toBe("BUTTON");
+    // 지도에 놓인 칩은 죽은 정거장이 되면 안 된다
+    expect(screen.getByTestId("chip-dog").tagName).toBe("SPAN");
   });
 });
 ```
@@ -1665,6 +1681,9 @@ interface WordChipProps {
   onActivate?: () => void;
 }
 
+const chipClassName =
+  "inline-block whitespace-nowrap rounded-full border-[2.5px] border-ink px-3 py-1 text-sm font-extrabold text-ink shadow-[0_3px_0_var(--color-ink)]";
+
 export default function WordChip({
   label,
   emoji,
@@ -1672,19 +1691,35 @@ export default function WordChip({
   testId,
   onActivate,
 }: WordChipProps) {
+  // 배치가 끝난 칩은 누를 게 없다. button으로 두면 키보드로 넘길 때
+  // 아무 일도 안 하는 정거장이 열댓 개 생긴다.
+  if (!onActivate) {
+    return (
+      <span
+        data-testid={testId}
+        style={{ backgroundColor: color }}
+        className={chipClassName}
+      >
+        {emoji} {label}
+      </span>
+    );
+  }
+
   return (
     <button
       type="button"
       data-testid={testId}
       onClick={onActivate}
       style={{ backgroundColor: color }}
-      className="whitespace-nowrap rounded-full border-[2.5px] border-ink px-3 py-1 text-sm font-extrabold text-ink shadow-[0_3px_0_var(--color-ink)]"
+      className={chipClassName}
     >
       {emoji} {label}
     </button>
   );
 }
 ```
+
+> `span`에 `inline-block`을 넣은 이유: `button`은 기본이 `inline-block`이지만 `span`은 `inline`이라 패딩이 다르게 먹는다. 두 변형의 클래스가 동일해야 칩이 서랍에서 지도로 옮겨갈 때 크기가 안 튄다.
 
 - [ ] **Step 4: EmbeddingMap 본체 구현**
 
@@ -1693,7 +1728,7 @@ export default function WordChip({
 ```tsx
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { Dataset } from "@/lib/dataset-schema";
 import type { PlaygroundProps } from "../types";
@@ -1708,6 +1743,13 @@ export default function EmbeddingMap({
   const dataset = data as Dataset;
   const [placedIds, setPlacedIds] = useState<string[]>([]);
 
+  // 같은 틱에 place()가 두 번 불리면 두 호출이 같은 낡은 placedIds를 읽어
+  // 먼저 놓인 단어가 사라진다(이벤트는 "놓였다"고 보고하는데 화면엔 없다).
+  // 아이들이 신나서 연타하는 상황에서 실제로 나는 버그라 ref로 최신 상태를
+  // 따로 추적한다. setState의 updater 함수에 onEvent/onArtifact를 넣는 방법은
+  // 쓰지 않는다 — React가 updater를 여러 번 호출할 수 있다.
+  const placedIdsRef = useRef<string[]>([]);
+
   const colorOf = useMemo(() => {
     const map = new Map(dataset.categories.map((c) => [c.id, c.color]));
     return (categoryId: string) => map.get(categoryId) ?? "#FFFFFF";
@@ -1720,19 +1762,21 @@ export default function EmbeddingMap({
   const links = buildLinks(placedWords);
 
   function place(wordId: string) {
-    const next = [...placedIds, wordId];
+    const next = [...placedIdsRef.current, wordId];
+    placedIdsRef.current = next;
     setPlacedIds(next);
     onEvent({
       type: "placed",
       payload: { wordId, placedCount: next.length },
     });
 
-    if (next.length === dataset.words.length) {
-      onArtifact({
-        kind: "embedding-map",
-        payload: { datasetId: dataset.id, placedIds: next },
-      });
-    }
+    // 배치할 때마다 현재 상태를 올려보낸다. 100%일 때만 보내면,
+    // minPlaced(9)만 채우고 넘어간 아이는 "내 방"에 작품이 하나도 안 남는다.
+    // 임계값은 놀이터가 알 바가 아니므로 매번 보내고 러너가 마지막 값을 쓴다.
+    onArtifact({
+      kind: "embedding-map",
+      payload: { datasetId: dataset.id, placedIds: next },
+    });
   }
 
   return (
@@ -1812,7 +1856,7 @@ export default function EmbeddingMap({
 - [ ] **Step 5: 테스트 실행해서 통과 확인**
 
 Run: `npm run test playgrounds/embedding-map/EmbeddingMap`
-Expected: PASS — `5 passed`
+Expected: PASS — `6 passed`
 
 **연결선에 `vectorEffect="non-scaling-stroke"`가 반드시 필요하다.** SVG가 `preserveAspectRatio="none"`으로 뷰박스 100×100을 컨테이너 비율에 맞춰 찌그러뜨리는데, 이 변환은 좌표뿐 아니라 **선 두께에도 적용된다.** 지도가 4:3이므로 가로선과 세로선이 서로 다른 두께로 그려지고 대각선은 길이를 따라 두께가 변한다. "두께 = 가까움"이라는 설계가 방향에 따라 왜곡되는 것이다. `non-scaling-stroke`를 쓰면 두께가 화면 픽셀 단위로 고정되므로, `linkStyle`이 돌려주는 2~7이 그대로 픽셀 두께가 된다(나누지 않는다).
 
@@ -2047,10 +2091,14 @@ export default function EmbeddingMap({
 }: PlaygroundProps) {
   const dataset = data as Dataset;
   const [placedIds, setPlacedIds] = useState<string[]>([]);
-  const [drag, setDrag] = useState<DragState | null>(null);
 
-  // 이벤트 핸들러 안에서 최신 배치 목록을 읽기 위한 거울. 닫힘(closure) 문제를 피한다.
-  const placedRef = useRef<string[]>([]);
+  // 같은 틱에 place()가 두 번 불리면 두 호출이 같은 낡은 placedIds를 읽어
+  // 먼저 놓인 단어가 사라진다(이벤트는 "놓였다"고 보고하는데 화면엔 없다).
+  // 아이들이 신나서 연타하는 상황에서 실제로 나는 버그라 ref로 최신 상태를
+  // 따로 추적한다. setState의 updater 함수에 onEvent/onArtifact를 넣는 방법은
+  // 쓰지 않는다 — React가 updater를 여러 번 호출할 수 있다.
+  const placedIdsRef = useRef<string[]>([]);
+  const [drag, setDrag] = useState<DragState | null>(null);
   const mapRef = useRef<HTMLDivElement>(null);
 
   const wordById = useMemo(
@@ -2068,19 +2116,19 @@ export default function EmbeddingMap({
   const links = buildLinks(placedWords);
 
   function place(wordId: string) {
-    if (placedRef.current.includes(wordId)) return;
+    // 드래그와 클릭 경로가 겹칠 수 있으므로 중복 배치를 막는다.
+    // 막지 않으면 같은 id의 칩이 둘 생겨 React key가 충돌한다.
+    if (placedIdsRef.current.includes(wordId)) return;
 
-    const next = [...placedRef.current, wordId];
-    placedRef.current = next;
+    const next = [...placedIdsRef.current, wordId];
+    placedIdsRef.current = next;
     setPlacedIds(next);
     onEvent({ type: "placed", payload: { wordId, placedCount: next.length } });
 
-    if (next.length === dataset.words.length) {
-      onArtifact({
-        kind: "embedding-map",
-        payload: { datasetId: dataset.id, placedIds: next },
-      });
-    }
+    onArtifact({
+      kind: "embedding-map",
+      payload: { datasetId: dataset.id, placedIds: next },
+    });
   }
 
   const draggingId = drag?.wordId ?? null;
@@ -2219,7 +2267,7 @@ export default function EmbeddingMap({
 - [ ] **Step 10: 테스트 실행해서 통과 확인**
 
 Run: `npm run test playgrounds/embedding-map`
-Expected: PASS — `18 passed` (geometry 10건 + EmbeddingMap 8건)
+Expected: PASS — `19 passed` (geometry 10건 + EmbeddingMap 9건)
 
 - [ ] **Step 11: 커밋**
 
@@ -2764,6 +2812,7 @@ export default function LessonRunner({
     return (
       <div className="flex flex-col gap-3">
         <Playground
+          key={dataset.id}
           data={dataset}
           onEvent={handlePlaygroundEvent}
           onArtifact={(a) => {
@@ -2799,6 +2848,8 @@ export default function LessonRunner({
   return <RewardStep badge={step.badge} onDone={next} />;
 }
 ```
+
+> `key={dataset.id}`가 필요한 이유: 놀이터는 배치 목록을 자기 안에 들고 있는데, 데이터셋이 바뀌었는데 리마운트가 안 되면 이전 데이터셋의 단어 id가 남아 `words.find(...)`가 `undefined`를 돌려주고 렌더가 터진다. key를 주면 데이터셋이 바뀔 때 놀이터가 통째로 새로 마운트된다.
 
 > `artifactRef`는 지금 화면에 쓰이지 않지만 놀이터의 산출물을 받아두는 자리다. state가 아니라 ref인 이유는 값이 바뀌어도 다시 그릴 필요가 없어서다. 계획 2에서 이 값을 서버에 저장한다.
 
