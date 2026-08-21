@@ -1,4 +1,4 @@
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+@import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 @import "tailwindcss";
 
 @theme {
@@ -8,7 +8,7 @@
   --color-candy-red: #ff6b6b;
   --color-candy-teal: #4ecdc4;
   --color-candy-yellow: #ffd93d;
-  --color-muted: #8a8172;
+  --color-muted: #736b5a;
 
   --font-sans: "Pretendard Variable", system-ui, sans-serif;
 
