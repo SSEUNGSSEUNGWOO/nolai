@@ -9,6 +9,8 @@
 from __future__ import annotations
 
 import json
+import sys
+from collections import Counter
 from pathlib import Path
 
 import numpy as np
@@ -16,6 +18,11 @@ import torch
 import yaml
 from sentence_transformers import SentenceTransformer
 from sklearn.manifold import MDS
+
+# Windows 콘솔의 기본 코드페이지(cp949)는 ⚠나 일부 이모지를 못 담아 카테고리
+# 경고를 출력하다가 죽는다. 데이터는 항상 UTF-8로 다루므로 출력도 맞춘다.
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8")
 
 MODEL = "nlpai-lab/KURE-v1"
 HERE = Path(__file__).parent
@@ -46,6 +53,34 @@ def cosine_distance_matrix(vectors: np.ndarray) -> np.ndarray:
     unit = vectors / norms
     similarity = unit @ unit.T
     return np.clip(1.0 - similarity, 0.0, 2.0)
+
+
+def flag_category_outliers(
+    words: list[dict], coords: np.ndarray, k: int = 3
+) -> list[dict]:
+    """단어별 2D 최근접 이웃 k개를 보고, 이웃 다수와 카테고리가 다른 단어를 찾는다.
+
+    words[i]와 coords[i]는 같은 순서여야 한다. 다수 카테고리가 동점이면
+    (본인 카테고리가 그 동점에 포함되는 한) 걸지 않는다 — 애매한 경계는
+    사람이 보고 판단할 몫이지 스크립트가 우길 일이 아니다.
+    """
+    outliers = []
+
+    for i, target in enumerate(words):
+        deltas = coords - coords[i]
+        dists = np.linalg.norm(deltas, axis=1)
+        dists[i] = np.inf  # 자기 자신은 이웃에서 제외
+
+        neighbor_idx = np.argsort(dists)[:k]
+        neighbors = [words[j] for j in neighbor_idx]
+        counts = Counter(n["category"] for n in neighbors)
+        top_count = max(counts.values())
+        majority = {c for c, count in counts.items() if count == top_count}
+
+        if target["category"] not in majority:
+            outliers.append({"word": target, "neighbors": neighbors})
+
+    return outliers
 
 
 def embed(labels: list[str]) -> np.ndarray:
@@ -95,6 +130,22 @@ def main() -> None:
     )
     coords = normalize_coords(mds.fit_transform(distances), margin=0.08)
 
+    outliers = flag_category_outliers(words, coords, k=3)
+    if outliers:
+        print("\n" + "=" * 60)
+        print(f"⚠ 카테고리 확인 필요: {len(outliers)}개")
+        print("=" * 60)
+        for entry in outliers:
+            word = entry["word"]
+            neighbor_desc = ", ".join(
+                f"{n['label']}({n['category']})" for n in entry["neighbors"]
+            )
+            print(
+                f"  {word['label']}({word['id']}) — 표시된 카테고리: "
+                f"{word['category']} / 실제 최근접 이웃: {neighbor_desc}"
+            )
+        print("=" * 60 + "\n")
+
     dataset = {
         "id": source["id"],
         "model": MODEL,
@@ -119,6 +170,10 @@ def main() -> None:
         json.dumps(dataset, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
     print(f"wrote {out_path} ({len(words)} words)")
+
+    # 위 경고 블록이 길게 스크롤될 수 있으니, 마지막 줄에 다시 한 번 짧게 남긴다.
+    if outliers:
+        print(f"⚠ 카테고리 확인 필요: {len(outliers)}개")
 
 
 if __name__ == "__main__":
