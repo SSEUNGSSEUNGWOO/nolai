@@ -393,8 +393,49 @@ describe("lessonSchema", () => {
     };
     expect(() => lessonSchema.parse(bad)).toThrow();
   });
+
+  it("goal.minPlaced가 0이면 거부한다", () => {
+    const bad = {
+      ...validLesson,
+      steps: [{ type: "play", owl: ["가"], goal: { minPlaced: 0 } }],
+    };
+    expect(() => lessonSchema.parse(bad)).toThrow();
+  });
+
+  it("choices가 2개 미만이면 거부한다", () => {
+    const bad = {
+      ...validLesson,
+      steps: [
+        {
+          type: "challenge",
+          question: "q",
+          choices: ["하나뿐"],
+          answer: 0,
+          explain: "e",
+        },
+      ],
+    };
+    expect(() => lessonSchema.parse(bad)).toThrow();
+  });
+
+  it("스텝의 오타를 해당 필드만 짚어서 알려준다", () => {
+    const bad = {
+      ...validLesson,
+      steps: [{ type: "play", owl: ["가"], goal: { minPlace: 5 } }],
+    };
+
+    const result = lessonSchema.safeParse(bad);
+    expect(result.success).toBe(false);
+
+    const issues = JSON.stringify(result.error!.issues);
+    expect(issues).toMatch(/minPlace/);
+    // 다른 스텝 타입의 필드가 섞여 나오면 안 된다
+    expect(issues).not.toMatch(/concept|badge|question/);
+  });
 });
 ```
+
+> 마지막 테스트가 이 스키마 구조의 회귀 방지선이다. 누군가 `discriminatedUnion`을 `union`으로 되돌리면 이 테스트가 깨진다.
 
 - [ ] **Step 2: 테스트 실행해서 실패 확인**
 
@@ -408,42 +449,37 @@ Expected: FAIL — `Failed to resolve import "./lesson-schema"`
 ```ts
 import { z } from "zod";
 
-const hookStep = z.object({
+const hookStep = z.strictObject({
   type: z.literal("hook"),
   owl: z.string().min(1),
 });
 
-const playStep = z.object({
+const playStep = z.strictObject({
   type: z.literal("play"),
   owl: z.array(z.string().min(1)).min(1),
-  goal: z.object({ minPlaced: z.number().int().positive() }),
+  goal: z.strictObject({ minPlaced: z.number().int().positive() }),
 });
 
-const nameStep = z.object({
+const nameStep = z.strictObject({
   type: z.literal("name"),
   concept: z.string().min(1),
   body: z.string().min(1),
 });
 
-const challengeStep = z
-  .object({
-    type: z.literal("challenge"),
-    question: z.string().min(1),
-    choices: z.array(z.string().min(1)).min(2),
-    answer: z.number().int().nonnegative(),
-    explain: z.string().min(1),
-  })
-  .refine((s) => s.answer < s.choices.length, {
-    message: "answer가 choices 범위를 벗어났습니다",
-    path: ["answer"],
-  });
+const challengeStep = z.strictObject({
+  type: z.literal("challenge"),
+  question: z.string().min(1),
+  choices: z.array(z.string().min(1)).min(2),
+  answer: z.number().int().nonnegative(),
+  explain: z.string().min(1),
+});
 
-const rewardStep = z.object({
+const rewardStep = z.strictObject({
   type: z.literal("reward"),
   badge: z.string().min(1),
 });
 
-export const lessonStepSchema = z.union([
+export const lessonStepSchema = z.discriminatedUnion("type", [
   hookStep,
   playStep,
   nameStep,
@@ -451,26 +487,61 @@ export const lessonStepSchema = z.union([
   rewardStep,
 ]);
 
-export const lessonSchema = z.object({
-  id: z.string().min(1),
-  order: z.number().int().positive(),
-  lang: z.literal("ko"),
-  title: z.string().min(1),
-  playground: z.string().min(1),
-  dataset: z.string().min(1),
-  steps: z.array(lessonStepSchema).min(1),
-});
+export const lessonSchema = z
+  .strictObject({
+    id: z.string().min(1),
+    order: z.number().int().positive(),
+    lang: z.literal("ko"),
+    title: z.string().min(1),
+    playground: z.string().min(1),
+    dataset: z.string().min(1),
+    steps: z.array(lessonStepSchema).min(1),
+  })
+  .superRefine((lesson, ctx) => {
+    lesson.steps.forEach((step, index) => {
+      if (step.type !== "challenge") return;
+
+      if (step.answer >= step.choices.length) {
+        ctx.addIssue({
+          code: "custom",
+          message: "answer가 choices 범위를 벗어났습니다",
+          path: ["steps", index, "answer"],
+        });
+      }
+    });
+  });
 
 export type Lesson = z.infer<typeof lessonSchema>;
 export type LessonStep = z.infer<typeof lessonStepSchema>;
 ```
 
-> `z.discriminatedUnion` 대신 `z.union`을 쓴 이유: `challengeStep`에 `.refine()`이 붙어 `ZodEffects`가 되면 discriminatedUnion이 받지 못한다.
+**이 구조는 에러 메시지 품질 때문에 이렇게 돼 있다. `z.union`으로 되돌리지 말 것.**
+
+`z.union`은 스텝 하나가 실패할 때 **5개 브랜치 전부의 에러**를 보고한다. `goal: { minPlace: 5 }` 오타 하나에 `concept`·`body`·`question`·`choices`·`answer`·`explain`·`badge`가 전부 "expected X, received undefined"로 딸려 나오고, `owl: expected string, received array` 같은 엉뚱한 진단까지 섞인다. 레슨 JSON 손편집이 이 프로젝트에서 가장 자주 하는 작업인데 편집자가 그 벽에서 원인을 못 찾는다.
+
+`z.discriminatedUnion`은 `type`을 먼저 보고 해당 브랜치만 검사하므로 에러가 한 필드로 좁혀진다. 그러려면 `challengeStep`에 `.refine()`이 붙어 있으면 안 되므로, `answer < choices.length` 검사를 레슨 레벨 `superRefine`으로 올렸다.
+
+`z.object` 대신 `z.strictObject`인 이유는 모르는 키를 조용히 버리지 않게 하려는 것이다. 기본 `z.object`는 `goal: { minPlaced: 5, minPlace: 999 }` 같은 편집 잔재를 **아무 경고 없이 통과**시킨다. strict면 `Unrecognized key: "minPlace"`로 짚어준다.
+
+실제 개선 결과 (`goal: { minPlace: 5 }` 오타):
+
+```jsonc
+// 이전 — 만지지도 않은 필드까지 8개 넘게 쏟아짐
+// owl / concept / body / question / choices / answer / explain / badge ...
+
+// 지금 — 두 줄로 끝
+[
+  { "code": "invalid_type", "path": ["steps", 1, "goal", "minPlaced"],
+    "message": "Invalid input: expected number, received undefined" },
+  { "code": "unrecognized_keys", "keys": ["minPlace"], "path": ["steps", 1, "goal"],
+    "message": "Unrecognized key: \"minPlace\"" }
+]
+```
 
 - [ ] **Step 4: 테스트 실행해서 통과 확인**
 
 Run: `npm run test lib/lesson-schema`
-Expected: PASS — `4 passed`
+Expected: PASS — `7 passed`
 
 - [ ] **Step 5: 커밋**
 
@@ -544,13 +615,13 @@ Expected: FAIL — `Failed to resolve import "./dataset-schema"`
 ```ts
 import { z } from "zod";
 
-const category = z.object({
+const category = z.strictObject({
   id: z.string().min(1),
   label: z.string().min(1),
   color: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
 });
 
-const word = z.object({
+const word = z.strictObject({
   id: z.string().min(1),
   label: z.string().min(1),
   emoji: z.string().min(1),
@@ -560,7 +631,7 @@ const word = z.object({
 });
 
 export const datasetSchema = z
-  .object({
+  .strictObject({
     id: z.string().min(1),
     model: z.string().min(1),
     projection: z.literal("mds"),
