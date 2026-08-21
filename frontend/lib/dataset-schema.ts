@@ -25,7 +25,30 @@ export const datasetSchema = z
   })
   .superRefine((data, ctx) => {
     const known = new Set(data.categories.map((c) => c.id));
+
+    const seenCategoryIds = new Set<string>();
+    data.categories.forEach((c, i) => {
+      if (seenCategoryIds.has(c.id)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `category id가 중복됩니다: ${c.id}`,
+          path: ["categories", i, "id"],
+        });
+      }
+      seenCategoryIds.add(c.id);
+    });
+
+    const seenWordIds = new Set<string>();
     data.words.forEach((w, i) => {
+      if (seenWordIds.has(w.id)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `word id가 중복됩니다: ${w.id}`,
+          path: ["words", i, "id"],
+        });
+      }
+      seenWordIds.add(w.id);
+
       if (!known.has(w.category)) {
         ctx.addIssue({
           code: "custom",

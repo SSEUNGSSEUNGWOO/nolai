@@ -35,4 +35,23 @@ describe("datasetSchema", () => {
     };
     expect(() => datasetSchema.parse(bad)).toThrow(/category/);
   });
+
+  it("word id가 중복되면 거부한다", () => {
+    const bad = {
+      ...valid,
+      words: [valid.words[0], { ...valid.words[1], id: "dog" }],
+    };
+    expect(() => datasetSchema.parse(bad)).toThrow(/중복/);
+  });
+
+  it("category id가 중복되면 거부한다", () => {
+    const bad = {
+      ...valid,
+      categories: [
+        ...valid.categories,
+        { id: "animal", label: "동물2", color: "#000000" },
+      ],
+    };
+    expect(() => datasetSchema.parse(bad)).toThrow(/중복/);
+  });
 });
