@@ -1049,12 +1049,14 @@ git commit -m "feat: 임베딩 사전 계산 도구와 첫 데이터셋 추가"
       "type": "play",
       "owl": [
         "아무거나 끌어다 놔봐!",
-        "오! 자리를 찾아가네?",
-        "어? 강아지랑 고양이가 붙었네. 왜 그럴까?",
-        "자동차도 한번 놔볼래?",
-        "이제 세 덩어리가 보이지?"
+        "오! 네가 놓은 자리가 아니라 제자리로 가네?",
+        "하나 더 놔볼래? 뭐가 붙는지 보자.",
+        "어? 뭔가 보이기 시작하는데?",
+        "계속 놔봐. 자리가 정해져 있는 것 같지?",
+        "이제 무리가 생기는 게 보여?",
+        "몇 덩어리로 나뉘었는지 세어볼래?"
       ],
-      "goal": { "minPlaced": 6 }
+      "goal": { "minPlaced": 9 }
     },
     {
       "type": "name",
@@ -1066,7 +1068,7 @@ git commit -m "feat: 임베딩 사전 계산 도구와 첫 데이터셋 추가"
       "question": "'호랑이'는 어디에 놓일까?",
       "choices": ["강아지 근처", "자동차 근처", "딸기 근처"],
       "answer": 0,
-      "explain": "호랑이도 동물이니까 강아지·고양이 쪽으로 가!"
+      "explain": "호랑이도 동물이니까 다른 동물들 쪽으로 가!"
     },
     {
       "type": "reward",
@@ -1075,6 +1077,28 @@ git commit -m "feat: 임베딩 사전 계산 도구와 첫 데이터셋 추가"
   ]
 }
 ```
+
+**대본을 쓸 때 지킬 규칙 — 이 프로젝트에서 두 번 걸렸다.**
+
+`play` 스텝의 `owl` 배열은 **아이가 놓은 개수**로 인덱싱된다(`owl[placedCount]`). 어떤 단어를 놓았는지는 보지 않는다. 따라서 **모든 대사는 아이가 무엇을 어떤 순서로 놓든 참이어야 한다.**
+
+걸렸던 예:
+- `"강아지랑 고양이가 붙었네"` — 아이가 그 둘을 안 놓았을 수 있다
+- `"비슷한 것끼리 붙었네"` (3개 시점) — C(18,3) 중 25.7%는 세 카테고리에서 하나씩 뽑혀 아무것도 안 붙는다
+
+해법은 **단정 대신 질문**이다. "붙었네"가 아니라 "뭔가 보이기 시작하는데?"로 쓰면 어떤 상태에서도 어색하지 않다.
+
+**`minPlaced`는 체험이 실제로 일어나는 지점에 맞춘다.** 세 카테고리가 전부 2개 이상 놓여야 "덩어리"라고 부를 수 있는데:
+
+| minPlaced | 세 카테고리 모두 2개 이상 |
+|---|---|
+| 6 | 16.97% |
+| 8 | 60.39% |
+| **9** | **76.31%** |
+
+6이면 5번 중 4번은 어느 한 카테고리가 점 하나만 있는 상태로 다음 단계로 넘어간다. 그런데 바로 다음 `name` 스텝이 "비슷한 뜻일수록 가까이 붙는다"고 설명한다 — 아이가 못 본 걸 설명하는 꼴이다. 그래서 9로 잡았다.
+
+**`explain`은 실제 데이터와 맞아야 한다.** 원래 "강아지·고양이 쪽으로 가!"였는데, 호랑이의 이웃 순위가 병아리(0.1955) 코끼리(0.2172) 토끼(0.2391) 물고기(0.2439) 강아지(0.2609) 고양이(0.3576)라 하필 가장 먼 동물 둘을 지목한 셈이었다. 특정 단어를 지목하지 않는 표현으로 바꿨다.
 
 - [ ] **Step 2: 실패하는 테스트 작성**
 
@@ -1754,6 +1778,8 @@ export default function EmbeddingMap({
 
 Run: `npm run test playgrounds/embedding-map/EmbeddingMap`
 Expected: PASS — `5 passed`
+
+**배치 연출은 이동 거리가 짧아도 눈에 띄어야 한다.** `initial={{ scale: 1.3, opacity: 0.7 }}`가 그 역할을 한다. 부엉이가 첫 배치 직후 "네가 놓은 자리가 아니라 제자리로 가네?"라고 말하는데, 아이가 우연히 진짜 좌표 근처에 놓으면 이동이 거의 없다 — 지도 중앙에서 물고기까지는 0.126밖에 안 된다. 이동이 안 보여도 칩이 크게 나타났다 줄어드는 연출 덕에 "뭔가 일어났다"는 신호는 간다. 이 값을 줄이지 말 것.
 
 - [ ] **Step 6: 커밋**
 
@@ -2592,7 +2618,7 @@ describe("LessonRunner", () => {
     renderRunner();
     fireEvent.click(screen.getByRole("button", { name: "궁금해!" }));
 
-    const minPlaced = 6;
+    const minPlaced = 9;
     dataset.words.slice(0, minPlaced).forEach((word) => {
       fireEvent.click(screen.getByTestId(`drawer-word-${word.id}`));
     });
@@ -2605,7 +2631,7 @@ describe("LessonRunner", () => {
     const { onComplete } = renderRunner();
     fireEvent.click(screen.getByRole("button", { name: "궁금해!" }));
 
-    dataset.words.slice(0, 6).forEach((word) => {
+    dataset.words.slice(0, 9).forEach((word) => {
       fireEvent.click(screen.getByTestId(`drawer-word-${word.id}`));
     });
     fireEvent.click(screen.getByRole("button", { name: "다 했어요" }));
@@ -3089,7 +3115,7 @@ test("레슨 1을 처음부터 끝까지 완주한다", async ({ page }) => {
   await expect(page.getByTestId("word-drawer")).toBeVisible();
 
   // 서랍에 남아 있는 첫 칩을 6번 누른다
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 9; i++) {
     await page.locator('[data-testid^="drawer-word-"]').first().click();
   }
 
@@ -3110,7 +3136,7 @@ test("진도가 localStorage에 남는다", async ({ page }) => {
   await page.goto("/lesson/embedding-map");
   await page.getByRole("button", { name: "궁금해!" }).click();
 
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 9; i++) {
     await page.locator('[data-testid^="drawer-word-"]').first().click();
   }
   await page.getByRole("button", { name: "다 했어요" }).click();
