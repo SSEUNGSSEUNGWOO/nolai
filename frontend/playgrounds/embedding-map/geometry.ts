@@ -44,6 +44,18 @@ export function linkStyle(d: number): { width: number; opacity: number } | null 
   };
 }
 
+export function isInsideRect(
+  point: Point,
+  rect: { left: number; top: number; width: number; height: number },
+): boolean {
+  return (
+    point.x >= rect.left &&
+    point.x <= rect.left + rect.width &&
+    point.y >= rect.top &&
+    point.y <= rect.top + rect.height
+  );
+}
+
 export function buildLinks(words: PositionedWord[]): Link[] {
   const links: Link[] = [];
 

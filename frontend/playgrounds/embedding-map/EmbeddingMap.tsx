@@ -1,11 +1,17 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { Dataset } from "@/lib/dataset-schema";
 import type { PlaygroundProps } from "../types";
 import WordChip from "./WordChip";
-import { buildLinks } from "./geometry";
+import { buildLinks, isInsideRect } from "./geometry";
+
+interface DragState {
+  wordId: string;
+  x: number;
+  y: number;
+}
 
 export default function EmbeddingMap({
   data,
@@ -18,6 +24,13 @@ export default function EmbeddingMap({
   // (state만 쓰면 같은 배치 안에서 연속으로 place()가 호출될 때 클로저가 오래된
   // placedIds를 읽어 먼저 놓인 단어가 사라진다.)
   const placedIdsRef = useRef<string[]>([]);
+  const [drag, setDrag] = useState<DragState | null>(null);
+  const mapRef = useRef<HTMLDivElement>(null);
+
+  const wordById = useMemo(
+    () => new Map(dataset.words.map((w) => [w.id, w])),
+    [dataset.words],
+  );
 
   const colorOf = useMemo(() => {
     const map = new Map(dataset.categories.map((c) => [c.id, c.color]));
@@ -31,6 +44,8 @@ export default function EmbeddingMap({
   const links = buildLinks(placedWords);
 
   function place(wordId: string) {
+    if (placedIdsRef.current.includes(wordId)) return;
+
     const next = [...placedIdsRef.current, wordId];
     placedIdsRef.current = next;
     setPlacedIds(next);
@@ -45,9 +60,42 @@ export default function EmbeddingMap({
     });
   }
 
+  const draggingId = drag?.wordId ?? null;
+
+  useEffect(() => {
+    if (!draggingId) return;
+    const wordId = draggingId;
+
+    function move(event: PointerEvent) {
+      setDrag((current) =>
+        current ? { ...current, x: event.clientX, y: event.clientY } : current,
+      );
+    }
+
+    function up(event: PointerEvent) {
+      const rect = mapRef.current?.getBoundingClientRect();
+      setDrag(null);
+
+      if (rect && isInsideRect({ x: event.clientX, y: event.clientY }, rect)) {
+        place(wordId);
+      }
+    }
+
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+
+    return () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+    };
+    // place는 ref를 통해 최신 상태를 읽으므로 의존성에 넣지 않는다
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draggingId]);
+
   return (
     <div className="flex flex-col gap-3">
       <div
+        ref={mapRef}
         data-testid="map-area"
         className="relative aspect-[4/3] w-full rounded-pop border-[3px] border-ink bg-paper shadow-[0_4px_0_var(--color-ink)]"
       >
@@ -111,9 +159,27 @@ export default function EmbeddingMap({
             emoji={word.emoji}
             color={colorOf(word.category)}
             onActivate={() => place(word.id)}
+            onDragStart={(event) =>
+              setDrag({ wordId: word.id, x: event.clientX, y: event.clientY })
+            }
           />
         ))}
       </div>
+
+      {drag && wordById.get(drag.wordId) && (
+        <div
+          data-testid="drag-ghost"
+          className="pointer-events-none fixed z-50 -translate-x-1/2 -translate-y-1/2 opacity-80"
+          style={{ left: drag.x, top: drag.y }}
+        >
+          <WordChip
+            testId={`ghost-${drag.wordId}`}
+            label={wordById.get(drag.wordId)!.label}
+            emoji={wordById.get(drag.wordId)!.emoji}
+            color={colorOf(wordById.get(drag.wordId)!.category)}
+          />
+        </div>
+      )}
     </div>
   );
 }

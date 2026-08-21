@@ -5,6 +5,7 @@ import {
   linkStyle,
   buildLinks,
   LINK_THRESHOLD,
+  isInsideRect,
 } from "./geometry";
 
 const rect = { left: 100, top: 50, width: 400, height: 200 };
@@ -53,5 +54,21 @@ describe("buildLinks", () => {
 
   it("점이 하나뿐이면 연결이 없다", () => {
     expect(buildLinks([{ id: "a", x: 0.5, y: 0.5 }])).toEqual([]);
+  });
+});
+
+describe("isInsideRect", () => {
+  it("영역 안의 점을 참으로 본다", () => {
+    expect(isInsideRect({ x: 200, y: 100 }, rect)).toBe(true);
+  });
+
+  it("영역 밖의 점을 거짓으로 본다", () => {
+    expect(isInsideRect({ x: 50, y: 100 }, rect)).toBe(false);
+    expect(isInsideRect({ x: 200, y: 900 }, rect)).toBe(false);
+  });
+
+  it("경계 위의 점을 안으로 본다", () => {
+    expect(isInsideRect({ x: 100, y: 50 }, rect)).toBe(true);
+    expect(isInsideRect({ x: 500, y: 250 }, rect)).toBe(true);
   });
 });

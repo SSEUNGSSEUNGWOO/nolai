@@ -95,4 +95,39 @@ describe("EmbeddingMap", () => {
     // 지도에 놓인 칩은 죽은 정거장이 되면 안 된다
     expect(screen.getByTestId("chip-dog").tagName).toBe("SPAN");
   });
+
+  it("드래그해서 지도 안에 놓으면 배치된다", () => {
+    setup();
+    const chip = screen.getByTestId("drawer-word-dog");
+
+    fireEvent.pointerDown(chip, { clientX: 10, clientY: 380 });
+    fireEvent.pointerMove(window, { clientX: 200, clientY: 200 });
+    fireEvent.pointerUp(window, { clientX: 200, clientY: 200 });
+
+    expect(screen.getByTestId("placed-word-dog")).toBeInTheDocument();
+  });
+
+  it("지도 밖에서 손을 떼면 배치되지 않는다", () => {
+    setup();
+    const chip = screen.getByTestId("drawer-word-dog");
+
+    fireEvent.pointerDown(chip, { clientX: 10, clientY: 380 });
+    fireEvent.pointerMove(window, { clientX: 900, clientY: 900 });
+    fireEvent.pointerUp(window, { clientX: 900, clientY: 900 });
+
+    expect(screen.queryByTestId("placed-word-dog")).not.toBeInTheDocument();
+    expect(screen.getByTestId("drawer-word-dog")).toBeInTheDocument();
+  });
+
+  it("드래그하는 동안 손가락을 따라다니는 칩이 보인다", () => {
+    setup();
+
+    fireEvent.pointerDown(screen.getByTestId("drawer-word-dog"), {
+      clientX: 10,
+      clientY: 380,
+    });
+    fireEvent.pointerMove(window, { clientX: 120, clientY: 150 });
+
+    expect(screen.getByTestId("drag-ghost")).toBeInTheDocument();
+  });
 });

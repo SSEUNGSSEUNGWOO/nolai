@@ -6,3 +6,13 @@ import { cleanup } from "@testing-library/react";
 afterEach(() => {
   cleanup();
 });
+
+// jsdom은 PointerEvent를 구현하지 않는다. MouseEvent로 대체한다.
+if (typeof window !== "undefined" && !window.PointerEvent) {
+  class PointerEventPolyfill extends MouseEvent {
+    constructor(type: string, params: MouseEventInit = {}) {
+      super(type, params);
+    }
+  }
+  window.PointerEvent = PointerEventPolyfill as unknown as typeof PointerEvent;
+}
