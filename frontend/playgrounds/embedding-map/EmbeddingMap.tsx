@@ -39,12 +39,10 @@ export default function EmbeddingMap({
       payload: { wordId, placedCount: next.length },
     });
 
-    if (next.length === dataset.words.length) {
-      onArtifact({
-        kind: "embedding-map",
-        payload: { datasetId: dataset.id, placedIds: next },
-      });
-    }
+    onArtifact({
+      kind: "embedding-map",
+      payload: { datasetId: dataset.id, placedIds: next },
+    });
   }
 
   return (

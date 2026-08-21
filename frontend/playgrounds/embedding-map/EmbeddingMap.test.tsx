@@ -68,15 +68,31 @@ describe("EmbeddingMap", () => {
     expect(screen.getAllByTestId(/^link-/)).toHaveLength(1);
   });
 
-  it("모든 단어를 놓으면 작품을 올려보낸다", () => {
+  it("놓을 때마다 현재 지도 상태를 작품으로 올려보낸다", () => {
     const { onArtifact } = setup();
-    fireEvent.click(screen.getByTestId("drawer-word-dog"));
-    fireEvent.click(screen.getByTestId("drawer-word-cat"));
-    fireEvent.click(screen.getByTestId("drawer-word-car"));
 
-    expect(onArtifact).toHaveBeenCalledWith({
+    fireEvent.click(screen.getByTestId("drawer-word-dog"));
+    expect(onArtifact).toHaveBeenLastCalledWith({
       kind: "embedding-map",
-      payload: { datasetId: "test", placedIds: ["dog", "cat", "car"] },
+      payload: { datasetId: "test", placedIds: ["dog"] },
     });
+
+    fireEvent.click(screen.getByTestId("drawer-word-cat"));
+    expect(onArtifact).toHaveBeenLastCalledWith({
+      kind: "embedding-map",
+      payload: { datasetId: "test", placedIds: ["dog", "cat"] },
+    });
+
+    expect(onArtifact).toHaveBeenCalledTimes(2);
+  });
+
+  it("배치된 칩은 초점을 받지 않는다", () => {
+    setup();
+    fireEvent.click(screen.getByTestId("drawer-word-dog"));
+
+    // 서랍의 칩은 누를 수 있어야 하고
+    expect(screen.getByTestId("drawer-word-cat").tagName).toBe("BUTTON");
+    // 지도에 놓인 칩은 죽은 정거장이 되면 안 된다
+    expect(screen.getByTestId("chip-dog").tagName).toBe("SPAN");
   });
 });

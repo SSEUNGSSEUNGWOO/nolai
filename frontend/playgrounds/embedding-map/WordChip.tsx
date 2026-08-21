@@ -8,6 +8,9 @@ interface WordChipProps {
   onActivate?: () => void;
 }
 
+const chipClassName =
+  "inline-block whitespace-nowrap rounded-full border-[2.5px] border-ink px-3 py-1 text-sm font-extrabold text-ink shadow-[0_3px_0_var(--color-ink)]";
+
 export default function WordChip({
   label,
   emoji,
@@ -15,13 +18,23 @@ export default function WordChip({
   testId,
   onActivate,
 }: WordChipProps) {
+  // 배치가 끝난 칩은 누를 게 없다. button으로 두면 키보드로 넘길 때
+  // 아무 일도 안 하는 정거장이 열댓 개 생긴다.
+  if (!onActivate) {
+    return (
+      <span data-testid={testId} style={{ backgroundColor: color }} className={chipClassName}>
+        {emoji} {label}
+      </span>
+    );
+  }
+
   return (
     <button
       type="button"
       data-testid={testId}
       onClick={onActivate}
       style={{ backgroundColor: color }}
-      className="whitespace-nowrap rounded-full border-[2.5px] border-ink px-3 py-1 text-sm font-extrabold text-ink shadow-[0_3px_0_var(--color-ink)]"
+      className={chipClassName}
     >
       {emoji} {label}
     </button>
