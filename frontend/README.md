@@ -27,7 +27,7 @@ npm run build
 ## 콘텐츠 고치기
 
 - **문구·난이도**: `lessons/*.json`만 고친다. 코드를 열지 않는다
-- **새 개념 추가**: `playgrounds/`에 컴포넌트를 만들고 `playgrounds/registry.ts`에 등록한 뒤 레슨 JSON을 추가한다
+- **새 개념 추가**: 기존 좌표 형태의 `Dataset`을 그대로 쓰는 놀이터라면 `playgrounds/`에 컴포넌트를 만들고 `playgrounds/registry.ts`에 등록한 뒤 레슨 JSON을 추가하면 된다. 짝맞추기·순서맞추기처럼 구조가 다른 놀이터는 `lib/content.ts`의 `getDataset`(하드코딩된 `datasetSchema`)과 `assertPlayable`, `LessonRunner`의 `dataset: Dataset` prop 타입도 함께 고쳐야 한다
 - **단어 목록**: `../tools/embed/words.yaml`을 고치고 재생성한다. **좌표를 손으로 고치지 않는다**
 
 레슨 JSON의 오타, 등록되지 않은 놀이터 이름, 한글 이름 없는 배지, 데이터셋 단어 수보다 큰 `minPlaced`는 전부 **빌드가 막는다.** 아이에게 도달하지 않는다.
