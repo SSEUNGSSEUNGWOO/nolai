@@ -1,0 +1,61 @@
+{
+  "kind": "bits",
+  "id": "bits-basic",
+  "bitCount": 8,
+  "table": [
+    {
+      "char": "A",
+      "code": 65
+    },
+    {
+      "char": "B",
+      "code": 66
+    },
+    {
+      "char": "C",
+      "code": 67
+    },
+    {
+      "char": "a",
+      "code": 97
+    },
+    {
+      "char": "b",
+      "code": 98
+    },
+    {
+      "char": "0",
+      "code": 48
+    },
+    {
+      "char": "1",
+      "code": 49
+    },
+    {
+      "char": "!",
+      "code": 33
+    },
+    {
+      "char": "?",
+      "code": 63
+    },
+    {
+      "char": "␣",
+      "code": 32
+    }
+  ],
+  "wide": [
+    {
+      "char": "놀",
+      "code": 45440
+    },
+    {
+      "char": "가",
+      "code": 44032
+    },
+    {
+      "char": "한",
+      "code": 54620
+    }
+  ]
+}

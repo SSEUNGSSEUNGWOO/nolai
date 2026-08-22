@@ -33,6 +33,7 @@ export const badgeNames: Record<string, string> = {
   "meter-master": "저울 박사",
   "story-weaver": "이야기 짓는 아이",
   "feeling-judge": "기분 판사",
+  "bit-master": "0과 1 마법사",
 };
 
 /** 계정과 내 방 화면의 문구. */

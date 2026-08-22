@@ -288,6 +288,37 @@ const sentimentDataset = z.strictObject({
     .min(2),
 });
 
+/**
+ * 레슨 16 -- 0과 1로 숫자와 글자 만들기.
+ *
+ * 모델이 필요 없는 유일한 레슨이다. 켜짐·꺼짐을 자릿값으로 더하는 계산은
+ * 화면에서 그 자리에 한다. 표에 담는 것은 글자와 그 번호뿐이고, 그 번호는
+ * 유니코드가 정한 값이라 우리가 지어낸 것이 아니다.
+ */
+const bitsDataset = z.strictObject({
+  kind: z.literal("bits"),
+  id: z.string().min(1),
+  /** 전구 개수. 8개면 0~255를 만들 수 있다. */
+  bitCount: z.number().int().min(2).max(16),
+  table: z
+    .array(
+      z.strictObject({
+        char: z.string().min(1),
+        code: z.number().int().nonnegative(),
+      }),
+    )
+    .min(1),
+  /** 전구가 모자라는 글자들. 한글은 8개로 안 된다. */
+  wide: z
+    .array(
+      z.strictObject({
+        char: z.string().min(1),
+        code: z.number().int().nonnegative(),
+      }),
+    )
+    .min(1),
+});
+
 function reportDuplicateIds(
   items: { id: string }[],
   path: string,
@@ -318,6 +349,7 @@ export const datasetSchema = z
     similarityDataset,
     nextWordDataset,
     sentimentDataset,
+    bitsDataset,
   ])
   .superRefine((data, ctx) => {
     if (data.kind === "words") {
@@ -331,6 +363,34 @@ export const datasetSchema = z
             code: "custom",
             message: `알 수 없는 category: ${w.category}`,
             path: ["words", i, "category"],
+          });
+        }
+      });
+      return;
+    }
+
+    if (data.kind === "bits") {
+      const limit = 2 ** data.bitCount - 1;
+
+      data.table.forEach((entry, i) => {
+        // 표에 있는 글자는 전구로 만들 수 있어야 한다. 못 만들면 아이가
+        // 화면에서 그 글자에 닿을 방법이 없다.
+        if (entry.code > limit) {
+          ctx.addIssue({
+            code: "custom",
+            message: `${entry.char}(${entry.code})는 전구 ${data.bitCount}개로 못 만듭니다`,
+            path: ["table", i, "code"],
+          });
+        }
+      });
+
+      data.wide.forEach((entry, i) => {
+        // wide는 반대로 못 만드는 것만 담아야 한다. 만들 수 있으면 요점이 흐려진다.
+        if (entry.code <= limit) {
+          ctx.addIssue({
+            code: "custom",
+            message: `${entry.char}(${entry.code})는 전구 ${data.bitCount}개로 만들 수 있습니다`,
+            path: ["wide", i, "code"],
           });
         }
       });
@@ -573,6 +633,7 @@ export type AnalogyDataset = Extract<Dataset, { kind: "analogy" }>;
 export type SimilarityDataset = Extract<Dataset, { kind: "similarity" }>;
 export type NextWordDataset = Extract<Dataset, { kind: "nextword" }>;
 export type SentimentDataset = Extract<Dataset, { kind: "sentiment" }>;
+export type BitsDataset = Extract<Dataset, { kind: "bits" }>;
 export type DatasetWord = z.infer<typeof word>;
 export type DatasetCategory = z.infer<typeof category>;
 export type DatasetPassage = z.infer<typeof passage>;

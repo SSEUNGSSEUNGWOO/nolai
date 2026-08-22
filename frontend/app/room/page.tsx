@@ -124,6 +124,21 @@ function toView(artifact: RoomArtifact, lessonTitle: string): ArtifactView | nul
       };
     }
 
+    if ("made" in payload) {
+      const images = payload.made.map((n) => ({
+        id: String(n),
+        label: String(n),
+        emoji: "💡",
+      }));
+
+      return {
+        id: artifact.id,
+        lessonTitle,
+        createdAt: artifact.createdAt,
+        detail: { kind: "pixels", images },
+      };
+    }
+
     if ("judged" in payload) {
       const dataset = getDataset(payload.datasetId);
       if (dataset.kind !== "sentiment") return null;

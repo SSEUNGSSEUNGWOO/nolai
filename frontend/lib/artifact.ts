@@ -18,6 +18,12 @@ const wordsArtifact = z.strictObject({
   placedIds: z.array(z.string().min(1)).max(200),
 });
 
+/** 레슨 16 -- 어떤 숫자를 만들어봤는지. */
+const bitsArtifact = z.strictObject({
+  datasetId: z.string().min(1),
+  made: z.array(z.number().int().nonnegative()).max(60),
+});
+
 /** 레슨 15 -- 어떤 문장에서 AI와 대결했는지. */
 const duelArtifact = z.strictObject({
   datasetId: z.string().min(1),
@@ -101,6 +107,7 @@ export type AnalogyArtifact = z.infer<typeof analogyArtifact>;
 export type SimilarityArtifact = z.infer<typeof similarityArtifact>;
 export type SentenceArtifact = z.infer<typeof sentenceArtifact>;
 export type DuelArtifact = z.infer<typeof duelArtifact>;
+export type BitsArtifact = z.infer<typeof bitsArtifact>;
 export type PassagesArtifact = z.infer<typeof passagesArtifact>;
 export type ArtifactPayload =
   | WordsArtifact
@@ -114,6 +121,7 @@ export type ArtifactPayload =
   | SimilarityArtifact
   | SentenceArtifact
   | DuelArtifact
+  | BitsArtifact
   | PassagesArtifact;
 
 /**
@@ -171,6 +179,18 @@ export function parseArtifact(lesson: Lesson, raw: unknown): ArtifactPayload | n
     }
 
     return parsed.data;
+  }
+
+  if (dataset.kind === "bits") {
+    const bits = bitsArtifact.safeParse(raw);
+    if (!bits.success) return null;
+    if (bits.data.datasetId !== dataset.id) return null;
+
+    const limit = 2 ** dataset.bitCount - 1;
+    if (!bits.data.made.every((n) => n <= limit)) return null;
+    if (new Set(bits.data.made).size !== bits.data.made.length) return null;
+
+    return bits.data;
   }
 
   if (dataset.kind === "sentiment") {

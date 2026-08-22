@@ -10,6 +10,7 @@ import AnalogyLab from "./analogy-lab/AnalogyLab";
 import CompareMeter from "./compare-meter/CompareMeter";
 import WordWeaver from "./word-weaver/WordWeaver";
 import FeelingDuel from "./feeling-duel/FeelingDuel";
+import BitLights from "./bit-lights/BitLights";
 import type { PlaygroundComponent } from "./types";
 
 export const registry: Record<string, PlaygroundComponent> = {
@@ -25,6 +26,7 @@ export const registry: Record<string, PlaygroundComponent> = {
   CompareMeter,
   WordWeaver,
   FeelingDuel,
+  BitLights,
 };
 
 export function getPlayground(name: string): PlaygroundComponent {

@@ -162,6 +162,7 @@ describe("parseArtifact — 모든 레슨을 덮는다", () => {
     "analogy-lab": { datasetId: "analogy-basic", tried: ["gender|king"] },
     "compare-meter": { datasetId: "words-compare", compared: ["big|small"] },
     "feeling-duel": { datasetId: "feeling-duel", judged: ["f01"] },
+    "bit-lights": { datasetId: "bits-basic", made: [65] },
     "word-weaver": {
       datasetId: "story-next",
       sentences: [["나는", "학교에", "갔어요"]],
