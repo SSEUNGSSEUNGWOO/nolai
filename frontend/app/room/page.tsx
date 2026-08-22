@@ -25,7 +25,7 @@ export default async function RoomPage() {
   const done = new Set(room.completedLessons);
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col gap-6 px-5 py-8">
+    <main className="mx-auto flex min-h-screen max-w-md flex-col gap-6 px-5 py-8 lg:max-w-4xl">
       <header className="flex items-center justify-between text-sm font-extrabold">
         <Link href="/">← {ui.landingTitle}</Link>
         <LogoutButton />
@@ -59,7 +59,7 @@ export default async function RoomPage() {
         {views.length === 0 ? (
           <p className="text-sm text-muted">{account.roomNoArtifacts}</p>
         ) : (
-          <ul data-testid="artifact-shelf" className="flex flex-col gap-3">
+          <ul data-testid="artifact-shelf" className="grid gap-3 sm:grid-cols-2">
             {views.map((view) => (
               <ArtifactCard key={view.id} view={view} />
             ))}

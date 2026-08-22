@@ -120,7 +120,9 @@ export default function EmbeddingMap({
   }, [draggingId, draggingPointerId]);
 
   return (
-    <div className="flex flex-col gap-3">
+    // 넓은 화면에서는 지도 옆에 서랍을 세운다. 지도가 커지면 칩이 덜 겹치고,
+    // 서랍이 아래로 길게 늘어지지 않아 부엉이 말풍선이 화면 안에 남는다.
+    <div className="flex flex-col gap-3 lg:grid lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start lg:gap-5">
       <div
         ref={mapRef}
         data-testid="map-area"

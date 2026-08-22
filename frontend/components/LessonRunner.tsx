@@ -91,12 +91,16 @@ export default function LessonRunner({
             artifactRef.current = a;
           }}
         />
-        <OwlBubble text={line} />
-        {canAdvance && (
-          <button type="button" className={popButton} onClick={next}>
-            {ui.playDone}
-          </button>
-        )}
+        {/* 넓은 화면에서 이 둘까지 늘어나면 버튼 하나가 화면을 가로지른다.
+            지도 폭에 맞춰 왼쪽에 세운다. */}
+        <div className="flex flex-col gap-3 lg:max-w-3xl">
+          <OwlBubble text={line} />
+          {canAdvance && (
+            <button type="button" className={popButton} onClick={next}>
+              {ui.playDone}
+            </button>
+          )}
+        </div>
       </div>
     );
   }

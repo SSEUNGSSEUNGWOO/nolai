@@ -54,7 +54,9 @@ export default function NearestSearch({
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    // 넓은 화면에서는 지도를 왼쪽에 두고 순위와 질문을 오른쪽에 모은다.
+    // 질문 20장이 세로로 깔리지 않으므로 서랍 안 스크롤도 필요 없어진다.
+    <div className="flex flex-col gap-3 lg:grid lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:items-start lg:gap-5">
       <div
         data-testid="search-map"
         className="relative aspect-square w-full rounded-pop border-[3px] border-ink bg-paper shadow-[0_4px_0_var(--color-ink)]"
@@ -145,51 +147,54 @@ export default function NearestSearch({
         </div>
       </div>
 
-      {current && (
-        <ol data-testid="match-list" className="flex flex-col gap-2">
-          {topIndexes(current.sims, TOP_K).map((index, rank) => (
-            <li
-              key={dataset.passages[index].id}
-              data-testid={`match-${rank + 1}`}
-              className="flex items-center gap-2 rounded-pop border-[2.5px] border-ink bg-paper px-3 py-2 text-sm font-bold text-ink"
-            >
-              <span
-                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-ink text-xs font-extrabold"
-                style={{ backgroundColor: RANK_COLORS[rank] }}
+      {/* 넓은 화면에서는 이 묶음이 지도 오른쪽에 선다. */}
+      <div className="flex flex-col gap-3">
+        {current && (
+          <ol data-testid="match-list" className="flex flex-col gap-2">
+            {topIndexes(current.sims, TOP_K).map((index, rank) => (
+              <li
+                key={dataset.passages[index].id}
+                data-testid={`match-${rank + 1}`}
+                className="flex items-center gap-2 rounded-pop border-[2.5px] border-ink bg-paper px-3 py-2 text-sm font-bold text-ink"
               >
-                {rank + 1}
-              </span>
-              {dataset.passages[index].text}
-            </li>
-          ))}
-        </ol>
-      )}
+                <span
+                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-ink text-xs font-extrabold"
+                  style={{ backgroundColor: RANK_COLORS[rank] }}
+                >
+                  {rank + 1}
+                </span>
+                {dataset.passages[index].text}
+              </li>
+            ))}
+          </ol>
+        )}
 
-      {/* 질문이 20장이고 문장이라 길다. 그대로 늘어놓으면 놀이터 아래에 오는
-          노리 말풍선과 "다 했어요" 버튼이 화면 밖으로 밀려 아이가 안내도 못 보고
-          다음으로 넘어가지도 못한다. 서랍 안에서만 스크롤되게 높이를 묶는다. */}
-      <div
-        data-testid="question-drawer"
-        className="flex max-h-[38vh] flex-wrap gap-2 overflow-y-auto rounded-pop border-[2.5px] border-ink bg-cream p-2"
-      >
-        {dataset.questions.map((question) => (
-          <button
-            key={question.id}
-            type="button"
-            data-testid={`question-${question.id}`}
-            data-asked={askedIds.includes(question.id) ? "true" : undefined}
-            onClick={() => ask(question.id)}
-            className="rounded-full border-[2.5px] border-ink px-3 py-1 text-sm font-extrabold text-ink shadow-[0_3px_0_var(--color-ink)]"
-            style={{
-              backgroundColor:
-                question.id === currentId
-                  ? "var(--color-candy-yellow)"
-                  : "var(--color-paper)",
-            }}
-          >
-            {question.text}
-          </button>
-        ))}
+        {/* 질문이 20장이고 문장이라 길다. 그대로 늘어놓으면 놀이터 아래에 오는
+            노리 말풍선과 "다 했어요" 버튼이 화면 밖으로 밀려 아이가 안내도 못 보고
+            다음으로 넘어가지도 못한다. 서랍 안에서만 스크롤되게 높이를 묶는다. */}
+        <div
+          data-testid="question-drawer"
+          className="flex max-h-[38vh] flex-wrap gap-2 overflow-y-auto rounded-pop border-[2.5px] border-ink bg-cream p-2 lg:max-h-[26rem]"
+        >
+          {dataset.questions.map((question) => (
+            <button
+              key={question.id}
+              type="button"
+              data-testid={`question-${question.id}`}
+              data-asked={askedIds.includes(question.id) ? "true" : undefined}
+              onClick={() => ask(question.id)}
+              className="rounded-full border-[2.5px] border-ink px-3 py-1 text-sm font-extrabold text-ink shadow-[0_3px_0_var(--color-ink)]"
+              style={{
+                backgroundColor:
+                  question.id === currentId
+                    ? "var(--color-candy-yellow)"
+                    : "var(--color-paper)",
+              }}
+            >
+              {question.text}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

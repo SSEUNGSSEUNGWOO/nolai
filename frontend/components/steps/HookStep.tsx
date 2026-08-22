@@ -12,7 +12,7 @@ export default function HookStep({
   onDone: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center gap-4 py-8">
+    <div className="mx-auto w-full max-w-md flex flex-col items-center gap-4 py-8">
       <span className="text-5xl" aria-hidden>
         🦉
       </span>

@@ -22,7 +22,7 @@ export default function ChallengeStep({
   const isCorrect = picked === answer;
 
   return (
-    <div className="flex flex-col gap-3 py-6">
+    <div className="mx-auto w-full max-w-md flex flex-col gap-3 py-6">
       <OwlBubble text={question} />
 
       {choices.map((choice, index) => (

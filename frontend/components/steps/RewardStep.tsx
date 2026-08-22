@@ -17,7 +17,7 @@ export default function RewardStep({
   useEffect(() => playReward(), []);
 
   return (
-    <div className="flex flex-col items-center gap-3 py-10">
+    <div className="mx-auto w-full max-w-md flex flex-col items-center gap-3 py-10">
       <motion.span
         className="text-6xl"
         aria-hidden
