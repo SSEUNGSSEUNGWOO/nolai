@@ -161,6 +161,10 @@ describe("parseArtifact — 모든 레슨을 덮는다", () => {
     "self-cluster": { datasetId: "words-cluster", triedGroupings: [3] },
     "analogy-lab": { datasetId: "analogy-basic", tried: ["gender|king"] },
     "compare-meter": { datasetId: "words-compare", compared: ["big|small"] },
+    "word-weaver": {
+      datasetId: "story-next",
+      sentences: [["나는", "학교에", "갔어요"]],
+    },
     "translate-map": {
       datasetId: "words-translate",
       placedIds: ["dog_ko", "dog_en"],

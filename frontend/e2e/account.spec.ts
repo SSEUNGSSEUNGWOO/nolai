@@ -61,7 +61,13 @@ async function finishLesson2(page: Page) {
     .getByRole("button", { name: "먹을 게 어디 있는지 친구한테 어떻게 알려줘?" })
     .click();
   await page.getByRole("button", { name: "다음으로" }).click();
-  await page.getByRole("button", { name: "좋아!" }).click();
+  // 진도 저장 응답을 기다린다. keepalive는 요청이 도착하는 것만 보장하지
+  // 서버가 DB에 쓰기를 마친 것까지 보장하지 않는다. 안 기다리면 바로 뒤에
+  // 오는 /room 검사가 간헐적으로 배지를 못 본다.
+  await Promise.all([
+    page.waitForResponse((r) => r.url().includes("/api/progress")).catch(() => null),
+    page.getByRole("button", { name: "좋아!" }).click(),
+  ]);
   await expect(page.getByText("레슨을 끝냈어!")).toBeVisible();
 }
 

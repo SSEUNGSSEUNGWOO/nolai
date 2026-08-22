@@ -16,6 +16,7 @@ import translateMapLesson from "@/lessons/translate-map.json";
 import selfClusterLesson from "@/lessons/self-cluster.json";
 import analogyLabLesson from "@/lessons/analogy-lab.json";
 import compareMeterLesson from "@/lessons/compare-meter.json";
+import wordWeaverLesson from "@/lessons/word-weaver.json";
 import wordsAnimalsVehicles from "@/datasets/words-animals-vehicles.json";
 import animalFacts from "@/datasets/animal-facts.json";
 import wordsTeach from "@/datasets/words-teach.json";
@@ -28,6 +29,7 @@ import wordsTranslate from "@/datasets/words-translate.json";
 import wordsCluster from "@/datasets/words-cluster.json";
 import analogyBasic from "@/datasets/analogy-basic.json";
 import wordsCompare from "@/datasets/words-compare.json";
+import storyNext from "@/datasets/story-next.json";
 
 const rawLessons: Record<string, unknown> = {
   "embedding-map": embeddingMapLesson,
@@ -43,6 +45,7 @@ const rawLessons: Record<string, unknown> = {
   "self-cluster": selfClusterLesson,
   "analogy-lab": analogyLabLesson,
   "compare-meter": compareMeterLesson,
+  "word-weaver": wordWeaverLesson,
 };
 
 const rawDatasets: Record<string, unknown> = {
@@ -58,6 +61,7 @@ const rawDatasets: Record<string, unknown> = {
   "words-cluster": wordsCluster,
   "analogy-basic": analogyBasic,
   "words-compare": wordsCompare,
+  "story-next": storyNext,
 };
 
 /** 목표 종류마다 셀 수 있는 것을 담고 있는 데이터셋 종류가 정해져 있다. */
@@ -72,6 +76,7 @@ const goalDatasetKind = {
   grouped: "clusters",
   calculated: "analogy",
   compared: "similarity",
+  wrote: "nextword",
 } as const;
 
 export function getDataset(id: string): Dataset {
@@ -119,7 +124,9 @@ export function assertPlayable(lesson: Lesson, dataset: Dataset): void {
                   ? Object.keys(dataset.groupings).length
                   : dataset.kind === "analogy"
                     ? Object.keys(dataset.answers).length
-                    : Object.keys(dataset.sims).length;
+                    : dataset.kind === "similarity"
+                      ? Object.keys(dataset.sims).length
+                      : dataset.starts.length;
 
     if (step.goal.min > available) {
       throw new Error(

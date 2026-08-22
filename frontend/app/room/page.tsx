@@ -124,6 +124,21 @@ function toView(artifact: RoomArtifact, lessonTitle: string): ArtifactView | nul
       };
     }
 
+    if ("sentences" in payload) {
+      const images = payload.sentences.map((words, index) => ({
+        id: String(index),
+        label: words.join(" "),
+        emoji: "📝",
+      }));
+
+      return {
+        id: artifact.id,
+        lessonTitle,
+        createdAt: artifact.createdAt,
+        detail: { kind: "pixels", images },
+      };
+    }
+
     if ("compared" in payload) {
       const dataset = getDataset(payload.datasetId);
       if (dataset.kind !== "similarity") return null;

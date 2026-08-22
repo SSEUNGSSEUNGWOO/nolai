@@ -8,6 +8,7 @@ import TokenSplit from "./token-split/TokenSplit";
 import SelfCluster from "./self-cluster/SelfCluster";
 import AnalogyLab from "./analogy-lab/AnalogyLab";
 import CompareMeter from "./compare-meter/CompareMeter";
+import WordWeaver from "./word-weaver/WordWeaver";
 import type { PlaygroundComponent } from "./types";
 
 export const registry: Record<string, PlaygroundComponent> = {
@@ -21,6 +22,7 @@ export const registry: Record<string, PlaygroundComponent> = {
   SelfCluster,
   AnalogyLab,
   CompareMeter,
+  WordWeaver,
 };
 
 export function getPlayground(name: string): PlaygroundComponent {

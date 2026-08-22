@@ -18,6 +18,12 @@ const wordsArtifact = z.strictObject({
   placedIds: z.array(z.string().min(1)).max(200),
 });
 
+/** 레슨 14 -- 어떤 문장을 만들어봤는지. */
+const sentenceArtifact = z.strictObject({
+  datasetId: z.string().min(1),
+  sentences: z.array(z.array(z.string().min(1)).min(1)).max(20),
+});
+
 /** 레슨 13 -- 어떤 두 단어를 재봤는지. */
 const similarityArtifact = z.strictObject({
   datasetId: z.string().min(1),
@@ -87,6 +93,7 @@ export type TokensArtifact = z.infer<typeof tokensArtifact>;
 export type ClustersArtifact = z.infer<typeof clustersArtifact>;
 export type AnalogyArtifact = z.infer<typeof analogyArtifact>;
 export type SimilarityArtifact = z.infer<typeof similarityArtifact>;
+export type SentenceArtifact = z.infer<typeof sentenceArtifact>;
 export type PassagesArtifact = z.infer<typeof passagesArtifact>;
 export type ArtifactPayload =
   | WordsArtifact
@@ -98,6 +105,7 @@ export type ArtifactPayload =
   | ClustersArtifact
   | AnalogyArtifact
   | SimilarityArtifact
+  | SentenceArtifact
   | PassagesArtifact;
 
 /**
@@ -155,6 +163,25 @@ export function parseArtifact(lesson: Lesson, raw: unknown): ArtifactPayload | n
     }
 
     return parsed.data;
+  }
+
+  if (dataset.kind === "nextword") {
+    const made = sentenceArtifact.safeParse(raw);
+    if (!made.success) return null;
+    if (made.data.datasetId !== dataset.id) return null;
+
+    // 아이가 실제로 고를 수 있었던 말인지 확인한다. 임의의 글자를 넣어
+    // 내 방에 자기 문장을 쓰는 통로가 되면 안 된다.
+    const known = new Set([
+      ...dataset.starts,
+      ...Object.values(dataset.next).flatMap((o) => o.map((one) => one.word)),
+    ]);
+    const ok = made.data.sentences.every((words) =>
+      words.every((word) => known.has(word)),
+    );
+    if (!ok) return null;
+
+    return made.data;
   }
 
   if (dataset.kind === "similarity") {

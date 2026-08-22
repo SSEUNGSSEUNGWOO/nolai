@@ -234,6 +234,33 @@ const similarityDataset = z.strictObject({
   sims: z.record(z.string(), z.number().min(-1).max(1)),
 });
 
+/**
+ * 레슨 14 -- 앞말 다음에 무엇이 왔는지.
+ *
+ * 임베딩을 쓰지 않는 유일한 언어 데이터셋이다. 이 레슨이 보여주려는 것은
+ * "본 것을 세어서 다음을 고른다"이고, 확률은 지어낸 값이 아니라 담아둔
+ * 문장들의 진짜 빈도다.
+ */
+const nextWordDataset = z.strictObject({
+  kind: z.literal("nextword"),
+  id: z.string().min(1),
+  /** 몇 문장에서 세었는지. 아이에게 그대로 말해준다. */
+  sentenceCount: z.number().int().positive(),
+  starts: z.array(z.string().min(1)).min(1),
+  next: z.record(
+    z.string(),
+    z
+      .array(
+        z.strictObject({
+          word: z.string().min(1),
+          count: z.number().int().positive(),
+          p: z.number().min(0).max(1),
+        }),
+      )
+      .min(1),
+  ),
+});
+
 function reportDuplicateIds(
   items: { id: string }[],
   path: string,
@@ -262,6 +289,7 @@ export const datasetSchema = z
     clustersDataset,
     analogyDataset,
     similarityDataset,
+    nextWordDataset,
   ])
   .superRefine((data, ctx) => {
     if (data.kind === "words") {
@@ -275,6 +303,32 @@ export const datasetSchema = z
             code: "custom",
             message: `알 수 없는 category: ${w.category}`,
             path: ["words", i, "category"],
+          });
+        }
+      });
+      return;
+    }
+
+    if (data.kind === "nextword") {
+      data.starts.forEach((start, i) => {
+        // 시작할 수 있다는데 이어갈 말이 없으면 아이가 첫 걸음에서 막힌다.
+        if (!data.next[start]) {
+          ctx.addIssue({
+            code: "custom",
+            message: `시작말 "${start}" 다음에 올 말이 없습니다`,
+            path: ["starts", i],
+          });
+        }
+      });
+
+      Object.entries(data.next).forEach(([head, options]) => {
+        const total = options.reduce((sum, one) => sum + one.p, 0);
+        // 확률을 손으로 고치면 합이 1에서 벗어난다. 그때 화면의 막대가 거짓이 된다.
+        if (Math.abs(total - 1) > 0.01) {
+          ctx.addIssue({
+            code: "custom",
+            message: `"${head}" 다음 확률의 합이 ${total.toFixed(3)}입니다`,
+            path: ["next", head],
           });
         }
       });
@@ -466,6 +520,7 @@ export type TokensDataset = Extract<Dataset, { kind: "tokens" }>;
 export type ClustersDataset = Extract<Dataset, { kind: "clusters" }>;
 export type AnalogyDataset = Extract<Dataset, { kind: "analogy" }>;
 export type SimilarityDataset = Extract<Dataset, { kind: "similarity" }>;
+export type NextWordDataset = Extract<Dataset, { kind: "nextword" }>;
 export type DatasetWord = z.infer<typeof word>;
 export type DatasetCategory = z.infer<typeof category>;
 export type DatasetPassage = z.infer<typeof passage>;
