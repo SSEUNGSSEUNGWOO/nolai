@@ -18,6 +18,12 @@ const wordsArtifact = z.strictObject({
   placedIds: z.array(z.string().min(1)).max(200),
 });
 
+/** 레슨 9 -- 어떤 글을 조각내봤는지. */
+const tokensArtifact = z.strictObject({
+  datasetId: z.string().min(1),
+  itemIds: z.array(z.string().min(1)).max(50),
+});
+
 /** 레슨 8 -- 어떤 소리를 들어봤는지. */
 const soundsArtifact = z.strictObject({
   datasetId: z.string().min(1),
@@ -59,6 +65,7 @@ export type TeachArtifact = z.infer<typeof teachArtifact>;
 export type LikesArtifact = z.infer<typeof likesArtifact>;
 export type PixelsArtifact = z.infer<typeof pixelsArtifact>;
 export type SoundsArtifact = z.infer<typeof soundsArtifact>;
+export type TokensArtifact = z.infer<typeof tokensArtifact>;
 export type PassagesArtifact = z.infer<typeof passagesArtifact>;
 export type ArtifactPayload =
   | WordsArtifact
@@ -66,6 +73,7 @@ export type ArtifactPayload =
   | LikesArtifact
   | PixelsArtifact
   | SoundsArtifact
+  | TokensArtifact
   | PassagesArtifact;
 
 /**
@@ -123,6 +131,20 @@ export function parseArtifact(lesson: Lesson, raw: unknown): ArtifactPayload | n
     }
 
     return parsed.data;
+  }
+
+  if (dataset.kind === "tokens") {
+    const tokens = tokensArtifact.safeParse(raw);
+    if (!tokens.success) return null;
+    if (tokens.data.datasetId !== dataset.id) return null;
+
+    const known = new Set(dataset.items.map((item) => item.id));
+    if (!tokens.data.itemIds.every((id) => known.has(id))) return null;
+    if (new Set(tokens.data.itemIds).size !== tokens.data.itemIds.length) {
+      return null;
+    }
+
+    return tokens.data;
   }
 
   if (dataset.kind === "sounds") {

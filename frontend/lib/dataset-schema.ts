@@ -114,6 +114,37 @@ const soundsDataset = z.strictObject({
     .min(1),
 });
 
+/**
+ * 레슨 9 -- AI가 글을 읽는 조각(토큰).
+ *
+ * 조각과 번호는 레슨 1~5가 쓰는 것과 **같은 모델의 토크나이저**에서 나온다.
+ * 다른 모델을 쓰면 "이 조각이 곧 AI가 보는 글"이라는 말이 이 서비스 안에서
+ * 거짓이 된다.
+ */
+const tokensDataset = z.strictObject({
+  kind: z.literal("tokens"),
+  id: z.string().min(1),
+  model: z.string().min(1),
+  items: z
+    .array(
+      z.strictObject({
+        id: z.string().min(1),
+        text: z.string().min(1),
+        pieces: z
+          .array(
+            z.strictObject({
+              text: z.string(),
+              /** 앞에 띄어쓰기가 있었는지. 화면에서 따로 알려준다. */
+              spaced: z.boolean(),
+              number: z.number().int().nonnegative(),
+            }),
+          )
+          .min(1),
+      }),
+    )
+    .min(1),
+});
+
 function reportDuplicateIds(
   items: { id: string }[],
   path: string,
@@ -138,6 +169,7 @@ export const datasetSchema = z
     passagesDataset,
     pixelsDataset,
     soundsDataset,
+    tokensDataset,
   ])
   .superRefine((data, ctx) => {
     if (data.kind === "words") {
@@ -151,6 +183,28 @@ export const datasetSchema = z
             code: "custom",
             message: `알 수 없는 category: ${w.category}`,
             path: ["words", i, "category"],
+          });
+        }
+      });
+      return;
+    }
+
+    if (data.kind === "tokens") {
+      reportDuplicateIds(data.items, "items", ctx);
+
+      data.items.forEach((item, i) => {
+        // 조각을 도로 붙이면 원래 글이 나와야 한다. 안 그러면 아이에게
+        // 보여주는 조각이 그 글의 조각이 아니다.
+        const joined = item.pieces
+          .map((piece) => (piece.spaced ? " " : "") + piece.text)
+          .join("")
+          .trim();
+
+        if (joined !== item.text) {
+          ctx.addIssue({
+            code: "custom",
+            message: `조각을 붙이면 "${joined}"이 되는데 원래 글은 "${item.text}"입니다`,
+            path: ["items", i, "pieces"],
           });
         }
       });
@@ -238,6 +292,7 @@ export type WordsDataset = Extract<Dataset, { kind: "words" }>;
 export type PassagesDataset = Extract<Dataset, { kind: "passages" }>;
 export type PixelsDataset = Extract<Dataset, { kind: "pixels" }>;
 export type SoundsDataset = Extract<Dataset, { kind: "sounds" }>;
+export type TokensDataset = Extract<Dataset, { kind: "tokens" }>;
 export type DatasetWord = z.infer<typeof word>;
 export type DatasetCategory = z.infer<typeof category>;
 export type DatasetPassage = z.infer<typeof passage>;

@@ -1,0 +1,334 @@
+{
+  "kind": "tokens",
+  "id": "text-pieces",
+  "model": "nlpai-lab/KURE-v1",
+  "items": [
+    {
+      "id": "t01",
+      "text": "안녕하세요",
+      "pieces": [
+        {
+          "text": "안녕하세요",
+          "spaced": true,
+          "number": 107687
+        }
+      ]
+    },
+    {
+      "id": "t02",
+      "text": "인공지능",
+      "pieces": [
+        {
+          "text": "인공지능",
+          "spaced": true,
+          "number": 212233
+        }
+      ]
+    },
+    {
+      "id": "t03",
+      "text": "컴퓨터",
+      "pieces": [
+        {
+          "text": "컴퓨터",
+          "spaced": true,
+          "number": 82362
+        }
+      ]
+    },
+    {
+      "id": "t04",
+      "text": "김밥",
+      "pieces": [
+        {
+          "text": "김",
+          "spaced": true,
+          "number": 8237
+        },
+        {
+          "text": "밥",
+          "spaced": false,
+          "number": 79144
+        }
+      ]
+    },
+    {
+      "id": "t05",
+      "text": "무지개",
+      "pieces": [
+        {
+          "text": "무",
+          "spaced": true,
+          "number": 8143
+        },
+        {
+          "text": "지",
+          "spaced": false,
+          "number": 1190
+        },
+        {
+          "text": "개",
+          "spaced": false,
+          "number": 6027
+        }
+      ]
+    },
+    {
+      "id": "t06",
+      "text": "학교에 갔다",
+      "pieces": [
+        {
+          "text": "학교",
+          "spaced": true,
+          "number": 52338
+        },
+        {
+          "text": "에",
+          "spaced": false,
+          "number": 480
+        },
+        {
+          "text": "",
+          "spaced": true,
+          "number": 6
+        },
+        {
+          "text": "갔다",
+          "spaced": false,
+          "number": 120827
+        }
+      ]
+    },
+    {
+      "id": "t07",
+      "text": "나는 피자를 좋아해",
+      "pieces": [
+        {
+          "text": "나는",
+          "spaced": true,
+          "number": 37231
+        },
+        {
+          "text": "피",
+          "spaced": true,
+          "number": 21486
+        },
+        {
+          "text": "자를",
+          "spaced": false,
+          "number": 66492
+        },
+        {
+          "text": "좋아",
+          "spaced": true,
+          "number": 67738
+        },
+        {
+          "text": "해",
+          "spaced": false,
+          "number": 1963
+        }
+      ]
+    },
+    {
+      "id": "t08",
+      "text": "강아지가 공을 물었다",
+      "pieces": [
+        {
+          "text": "강",
+          "spaced": true,
+          "number": 13564
+        },
+        {
+          "text": "아",
+          "spaced": false,
+          "number": 3222
+        },
+        {
+          "text": "지가",
+          "spaced": false,
+          "number": 113072
+        },
+        {
+          "text": "공",
+          "spaced": true,
+          "number": 9045
+        },
+        {
+          "text": "을",
+          "spaced": false,
+          "number": 413
+        },
+        {
+          "text": "물",
+          "spaced": true,
+          "number": 22114
+        },
+        {
+          "text": "었다",
+          "spaced": false,
+          "number": 23548
+        }
+      ]
+    },
+    {
+      "id": "t09",
+      "text": "떡볶이를 먹었어",
+      "pieces": [
+        {
+          "text": "",
+          "spaced": true,
+          "number": 6
+        },
+        {
+          "text": "떡",
+          "spaced": false,
+          "number": 175388
+        },
+        {
+          "text": "볶",
+          "spaced": false,
+          "number": 249888
+        },
+        {
+          "text": "이",
+          "spaced": false,
+          "number": 469
+        },
+        {
+          "text": "를",
+          "spaced": false,
+          "number": 688
+        },
+        {
+          "text": "먹",
+          "spaced": true,
+          "number": 47842
+        },
+        {
+          "text": "었",
+          "spaced": false,
+          "number": 47642
+        },
+        {
+          "text": "어",
+          "spaced": false,
+          "number": 2211
+        }
+      ]
+    },
+    {
+      "id": "t10",
+      "text": "우리집 고양이는 잠꾸러기야",
+      "pieces": [
+        {
+          "text": "우리",
+          "spaced": true,
+          "number": 17430
+        },
+        {
+          "text": "집",
+          "spaced": false,
+          "number": 16855
+        },
+        {
+          "text": "고양이",
+          "spaced": true,
+          "number": 188944
+        },
+        {
+          "text": "는",
+          "spaced": false,
+          "number": 769
+        },
+        {
+          "text": "잠",
+          "spaced": true,
+          "number": 62457
+        },
+        {
+          "text": "꾸",
+          "spaced": false,
+          "number": 110395
+        },
+        {
+          "text": "러",
+          "spaced": false,
+          "number": 7591
+        },
+        {
+          "text": "기",
+          "spaced": false,
+          "number": 1503
+        },
+        {
+          "text": "야",
+          "spaced": false,
+          "number": 6838
+        }
+      ]
+    },
+    {
+      "id": "t11",
+      "text": "고래는 바다에 산다",
+      "pieces": [
+        {
+          "text": "고",
+          "spaced": true,
+          "number": 6086
+        },
+        {
+          "text": "래",
+          "spaced": false,
+          "number": 15960
+        },
+        {
+          "text": "는",
+          "spaced": false,
+          "number": 769
+        },
+        {
+          "text": "바다",
+          "spaced": true,
+          "number": 135819
+        },
+        {
+          "text": "에",
+          "spaced": false,
+          "number": 480
+        },
+        {
+          "text": "산",
+          "spaced": true,
+          "number": 25393
+        },
+        {
+          "text": "다",
+          "spaced": false,
+          "number": 1875
+        }
+      ]
+    },
+    {
+      "id": "t12",
+      "text": "떡국",
+      "pieces": [
+        {
+          "text": "",
+          "spaced": true,
+          "number": 6
+        },
+        {
+          "text": "떡",
+          "spaced": false,
+          "number": 175388
+        },
+        {
+          "text": "국",
+          "spaced": false,
+          "number": 8925
+        }
+      ]
+    }
+  ]
+}
