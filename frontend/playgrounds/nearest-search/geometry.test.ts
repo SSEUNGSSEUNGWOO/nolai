@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   MAX_RADIUS,
   MIN_RADIUS,
+  nearnessOf,
   pointAt,
   radiusOf,
   topIndexes,
@@ -73,5 +74,25 @@ describe("topIndexes", () => {
 
   it("동점이면 원래 순서를 지킨다", () => {
     expect(topIndexes([0.5, 0.5, 0.5], 3)).toEqual([0, 1, 2]);
+  });
+});
+
+describe("nearnessOf", () => {
+  it("가장 가까우면 1, 가장 멀면 0이다", () => {
+    expect(nearnessOf(0.75, range)).toBeCloseTo(1);
+    expect(nearnessOf(0.25, range)).toBeCloseTo(0);
+  });
+
+  it("반지름과 같은 자를 쓴다", () => {
+    // 다른 자를 쓰면 화면에서 가까운 점의 막대가 짧게 나온다
+    for (const sim of [0.3, 0.5, 0.7]) {
+      const expected = MAX_RADIUS - nearnessOf(sim, range) * (MAX_RADIUS - MIN_RADIUS);
+      expect(radiusOf(sim, range)).toBeCloseTo(expected);
+    }
+  });
+
+  it("기준 밖의 값을 0~1 안에 가둔다", () => {
+    expect(nearnessOf(2, range)).toBe(1);
+    expect(nearnessOf(-2, range)).toBe(0);
   });
 });

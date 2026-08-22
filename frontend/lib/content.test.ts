@@ -148,11 +148,36 @@ describe("content 로더 — 레슨 3", () => {
     ).not.toThrow();
   });
 
-  it("세 레슨이 order 순으로 나온다", () => {
+});
+
+describe("content 로더 — 레슨 4", () => {
+  it("answer-gaps 레슨을 검증해서 읽는다", () => {
+    const lesson = getLesson("answer-gaps");
+    expect(lesson.title).toBe("없는 건 못 찾아");
+    // 놀이터를 새로 만들지 않고 레슨 2의 것을 그대로 쓴다
+    expect(lesson.playground).toBe("NearestSearch");
+  });
+
+  it("레슨 4는 레슨 2와 같은 문장 모음을 쓴다", () => {
+    // 문장이 다르면 "답이 없어서 틀린 것"인지 "문장이 달라서 틀린 것"인지
+    // 구별할 수 없다
+    const two = getDataset(getLesson("nearest-search").dataset);
+    const four = getDataset(getLesson("answer-gaps").dataset);
+    if (two.kind !== "passages" || four.kind !== "passages") {
+      throw new Error("둘 다 passages여야 합니다");
+    }
+
+    expect(four.passages.map((p) => p.text)).toEqual(
+      two.passages.map((p) => p.text),
+    );
+  });
+
+  it("네 레슨이 order 순으로 나온다", () => {
     expect(listLessons().map((l) => l.id)).toEqual([
       "embedding-map",
       "nearest-search",
       "teach-sorter",
+      "answer-gaps",
     ]);
   });
 });

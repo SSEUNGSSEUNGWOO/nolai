@@ -4,7 +4,13 @@ import { useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { PassagesDataset } from "@/lib/dataset-schema";
 import type { PlaygroundProps } from "../types";
-import { MAX_RADIUS, pointAt, radiusOf, topIndexes } from "./geometry";
+import {
+  MAX_RADIUS,
+  nearnessOf,
+  pointAt,
+  radiusOf,
+  topIndexes,
+} from "./geometry";
 
 const TOP_K = 3;
 
@@ -163,7 +169,30 @@ export default function NearestSearch({
                 >
                   {rank + 1}
                 </span>
+              <span className="flex min-w-0 flex-1 flex-col gap-1">
                 {dataset.passages[index].text}
+                {/* 얼마나 닮았는지를 눈에 보이게 한다. 답이 문장 모음에 없으면
+                    셋 다 짧고 길이도 비슷하다 -- 컴퓨터도 확신이 없다는 뜻이다. */}
+                <span
+                  data-testid={`match-bar-${rank + 1}`}
+                  data-nearness={nearnessOf(
+                    current.sims[index],
+                    dataset.simRange,
+                  ).toFixed(2)}
+                  className="h-1.5 w-full overflow-hidden rounded-full border border-ink bg-cream"
+                >
+                  <span
+                    className="block h-full"
+                    style={{
+                      width: `${Math.max(
+                        4,
+                        nearnessOf(current.sims[index], dataset.simRange) * 100,
+                      )}%`,
+                      backgroundColor: RANK_COLORS[rank],
+                    }}
+                  />
+                </span>
+              </span>
               </li>
             ))}
           </ol>

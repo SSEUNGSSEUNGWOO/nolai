@@ -22,12 +22,21 @@ export interface SimRange {
  * 어떤 질문에서든 1등이 중심에 딱 붙어 보여, 실제로는 답이 애매한 질문까지
  * 확신에 차 보인다.
  */
-export function radiusOf(sim: number, range: SimRange): number {
+/**
+ * 유사도를 0(가장 멂)~1(가장 가까움)로 편다.
+ *
+ * 반지름과 "닮은 정도" 막대가 같은 자를 써야 한다. 다른 자를 쓰면 화면에서
+ * 가까운 점의 막대가 짧게 나오는 일이 생긴다.
+ */
+export function nearnessOf(sim: number, range: SimRange): number {
   const span = range.max - range.min;
-  const nearness = span <= 0 ? 0.5 : (sim - range.min) / span;
-  const clamped = Math.min(1, Math.max(0, nearness));
+  const raw = span <= 0 ? 0.5 : (sim - range.min) / span;
 
-  return MAX_RADIUS - clamped * (MAX_RADIUS - MIN_RADIUS);
+  return Math.min(1, Math.max(0, raw));
+}
+
+export function radiusOf(sim: number, range: SimRange): number {
+  return MAX_RADIUS - nearnessOf(sim, range) * (MAX_RADIUS - MIN_RADIUS);
 }
 
 /** 방향(0~1 회전수)과 거리를 화면 비율 좌표(0~1)로 바꾼다. */

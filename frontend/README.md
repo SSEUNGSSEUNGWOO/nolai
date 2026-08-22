@@ -46,7 +46,7 @@ Route Handler가 한다. `service_role` 키는 `lib/supabase.ts`에서만 읽으
 
 - **문구·난이도**: `lessons/*.json`만 고친다. 코드를 열지 않는다
 - **새 개념 추가**: 데이터셋이 기존 두 종류(`words` 좌표형, `passages` 유사도형) 중 하나로 표현되면 `playgrounds/`에 컴포넌트를 만들고 `playgrounds/registry.ts`에 등록한 뒤 레슨 JSON을 추가하면 된다. 구조가 다른 데이터가 필요하면 `lib/dataset-schema.ts`의 `datasetSchema` union에 갈래를 하나 더 붙이고, 그 갈래에 맞는 `goal.kind`를 `lib/lesson-schema.ts`에 추가한 뒤 `lib/content.ts`의 `goalDatasetKind`와 `assertPlayable`을 함께 고친다
-- **단어·문장 목록**: `../tools/embed/words.yaml`(레슨 1), `passages.yaml`(레슨 2), `teach.yaml`(레슨 3)을 고치고 재생성한다. 좌표형은 `uv run python build_dataset.py <파일>`, 문장형은 `build_passages.py`다. **좌표·각도·유사도를 손으로 고치지 않는다**
+- **단어·문장 목록**: `../tools/embed/words.yaml`(레슨 1), `passages.yaml`(레슨 2), `teach.yaml`(레슨 3), `gaps.yaml`(레슨 4)을 고치고 재생성한다. 좌표형은 `uv run python build_dataset.py <파일>`, 문장형은 `build_passages.py`다. **좌표·각도·유사도를 손으로 고치지 않는다**
 
 레슨 JSON의 오타, 등록되지 않은 놀이터 이름, 한글 이름 없는 배지, 데이터셋 항목 수보다 큰 `goal.min`, 데이터셋 종류와 어긋난 `goal.kind`, `passages` 수와 길이가 다른 `sims`는 전부 **빌드가 막는다.** 아이에게 도달하지 않는다.
 
