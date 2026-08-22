@@ -1,3 +1,6 @@
 
 # 에이전트가 브라우저를 몰 때 남기는 임시 산출물
 .playwright-mcp/
+
+# probe.py가 만드는 결과 파일
+tools/embed/probe-result.txt

@@ -1,0 +1,149 @@
+# 레슨 후보. 만들기 전에 probe.py로 먼저 잰다. 통과한 것만 만든다.
+#
+# 1차에서 배운 것 (2026-08-22):
+#
+# 1. **임베딩은 감정의 극성을 모른다.** '신남'의 가장 가까운 이웃이 '화남'이었다.
+#    기쁨/슬픔/화남 3갈래가 0.58. 감정을 갈래로 나누는 레슨은 이 방식으로 안 된다.
+#
+# 2. **하위 분류는 거의 안 잡힌다.** 현악/관악/타악이 0.33. 모델에게는 전부
+#    "악기"다. 갈래는 아이도 한눈에 아는 큰 덩어리여야 한다.
+#
+# 3. **접미사가 의미를 이긴다.** 요리사↔수의사, 제빵사↔약사가 이웃이었다.
+#    같은 갈래에 -사/-관/-원 같은 꼬리를 섞지 말고, 갈래끼리 꼬리가 겹치지 않게
+#    단어를 고른다.
+#
+# 4. 갈래는 둘일 때 가장 잘 갈린다. 셋도 되지만 넷은 2D에서 한 쌍이 붙는다
+#    (레슨 5에서 이미 겪었다).
+
+candidates:
+  # 1차 미달을 고쳐 다시
+  - id: jobs-v2
+    type: cluster
+    words:
+      - { label: 소방관, category: help }
+      - { label: 경찰관, category: help }
+      - { label: 구조대원, category: help }
+      - { label: 의사,   category: help }
+      - { label: 화가,   category: art }
+      - { label: 가수,   category: art }
+      - { label: 배우,   category: art }
+      - { label: 무용수, category: art }
+
+  - id: space-ocean-v2
+    type: classify
+    words:
+      - { label: 로켓,   category: space }
+      - { label: 우주복, category: space }
+      - { label: 달,     category: space }
+      - { label: 인공위성, category: space }
+      - { label: 유성,   category: space }
+      - { label: 산호,   category: ocean }
+      - { label: 해파리, category: ocean }
+      - { label: 파도,   category: ocean }
+      - { label: 모래사장, category: ocean }
+      - { label: 조개껍데기, category: ocean }
+
+  - id: feelings-v2
+    type: cluster
+    words:
+      - { label: 기쁨,   category: good }
+      - { label: 행복,   category: good }
+      - { label: 설렘,   category: good }
+      - { label: 뿌듯함, category: good }
+      - { label: 슬픔,   category: bad }
+      - { label: 무서움, category: bad }
+      - { label: 걱정,   category: bad }
+      - { label: 부끄러움, category: bad }
+
+  # 새 후보
+  - id: clothes-furniture
+    type: classify
+    words:
+      - { label: 티셔츠, category: wear }
+      - { label: 바지,   category: wear }
+      - { label: 모자,   category: wear }
+      - { label: 양말,   category: wear }
+      - { label: 신발,   category: wear }
+      - { label: 책상,   category: furniture }
+      - { label: 의자,   category: furniture }
+      - { label: 침대,   category: furniture }
+      - { label: 옷장,   category: furniture }
+      - { label: 소파,   category: furniture }
+
+  - id: insects-birds
+    type: cluster
+    words:
+      - { label: 개미,     category: insect }
+      - { label: 나비,     category: insect }
+      - { label: 잠자리,   category: insect }
+      - { label: 무당벌레, category: insect }
+      - { label: 메뚜기,   category: insect }
+      - { label: 참새,     category: bird }
+      - { label: 까치,     category: bird }
+      - { label: 독수리,   category: bird }
+      - { label: 부엉이,   category: bird }
+      - { label: 비둘기,   category: bird }
+
+  - id: korean-western-food
+    type: recommend
+    words:
+      - { label: 김치찌개, category: korean }
+      - { label: 비빔밥,   category: korean }
+      - { label: 불고기,   category: korean }
+      - { label: 된장국,   category: korean }
+      - { label: 잡채,     category: korean }
+      - { label: 스파게티, category: western }
+      - { label: 스테이크, category: western }
+      - { label: 샐러드,   category: western }
+      - { label: 샌드위치, category: western }
+      - { label: 수프,     category: western }
+
+  - id: school-supplies-toys
+    type: classify
+    words:
+      - { label: 연필,   category: study }
+      - { label: 지우개, category: study }
+      - { label: 공책,   category: study }
+      - { label: 자,     category: study }
+      - { label: 크레파스, category: study }
+      - { label: 인형,   category: toy }
+      - { label: 공,     category: toy }
+      - { label: 팽이,   category: toy }
+      - { label: 딱지,   category: toy }
+      - { label: 보드게임, category: toy }
+
+  - id: body-nature
+    type: cluster
+    words:
+      - { label: 머리, category: body }
+      - { label: 다리, category: body }
+      - { label: 손가락, category: body }
+      - { label: 어깨, category: body }
+      - { label: 무릎, category: body }
+      - { label: 나무, category: nature }
+      - { label: 바위, category: nature }
+      - { label: 강,   category: nature }
+      - { label: 산,   category: nature }
+      - { label: 숲,   category: nature }
+
+# 2차에서 배운 것 (2026-08-22):
+#
+# 5. **상위 개념이 같으면 안 갈린다.** 곤충/새 0.40, 학용품/장난감 0.50,
+#    한식/양식 0.67. 각각 둘 다 "동물", "아이 물건", "음식"이다. 통과한 것들은
+#    전부 상위 개념이 다른 쌍이었다(직업/예술, 우주/바다, 옷/가구, 몸/자연).
+#
+# 6. **감정은 이 방식으로 안 된다.** 3갈래 0.58, 좋은/나쁜 2갈래로 줄여도 0.75.
+#    '설렘'의 이웃이 '슬픔'이다. 임베딩은 감정의 극성을 담지 않는다.
+#
+# 7. **probe를 통과해도 만들 이유가 되지는 않는다.** 아래 여섯은 다 통과했지만
+#    레슨 1·3·5와 개념이 같아서 보류했다. 아이가 단어만 바꿔 같은 놀이를 두 번
+#    하면 새로 배우는 것이 없다. probe는 "데이터가 되는가"만 잰다.
+#      날씨/계절 0.83, 직업 0.88, 몸/자연 0.90 (레슨 1과 같음)
+#      우주/바다 0.88, 옷/가구 0.88 (레슨 3과 같음)
+#      교통/장소 0.90 (레슨 5와 같음)
+#
+# 8. 개념이 새로운 것을 따로 재봤다(probe로는 못 재는 종류라 손으로).
+#      번역        학교↔school 0.908, 강아지↔dog 0.830 (vs cat 0.482) → 됨
+#      스스로 무리  KMeans가 동물·탈것·음식을 정확히 나눔 → 됨
+#      오타        강아지↔강아쥐 0.757 < 강아지↔고양이 0.790 → 안 됨
+#      문맥        배(타는)↔배(먹는) 0.672 > 배(타는)↔여객선 0.636 → 안 됨
