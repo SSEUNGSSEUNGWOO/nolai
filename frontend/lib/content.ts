@@ -8,11 +8,14 @@ import nearestSearchLesson from "@/lessons/nearest-search.json";
 import teachSorterLesson from "@/lessons/teach-sorter.json";
 import answerGapsLesson from "@/lessons/answer-gaps.json";
 import likeRecommenderLesson from "@/lessons/like-recommender.json";
+import pixelZoomLesson from "@/lessons/pixel-zoom.json";
+import pixelCoarseLesson from "@/lessons/pixel-coarse.json";
 import wordsAnimalsVehicles from "@/datasets/words-animals-vehicles.json";
 import animalFacts from "@/datasets/animal-facts.json";
 import wordsTeach from "@/datasets/words-teach.json";
 import animalFactsGaps from "@/datasets/animal-facts-gaps.json";
 import likesKid from "@/datasets/likes-kid.json";
+import pixelArt from "@/datasets/pixel-art.json";
 
 const rawLessons: Record<string, unknown> = {
   "embedding-map": embeddingMapLesson,
@@ -20,6 +23,8 @@ const rawLessons: Record<string, unknown> = {
   "teach-sorter": teachSorterLesson,
   "answer-gaps": answerGapsLesson,
   "like-recommender": likeRecommenderLesson,
+  "pixel-zoom": pixelZoomLesson,
+  "pixel-coarse": pixelCoarseLesson,
 };
 
 const rawDatasets: Record<string, unknown> = {
@@ -28,6 +33,7 @@ const rawDatasets: Record<string, unknown> = {
   "words-teach": wordsTeach,
   "animal-facts-gaps": animalFactsGaps,
   "likes-kid": likesKid,
+  "pixel-art": pixelArt,
 };
 
 /** 목표 종류마다 셀 수 있는 것을 담고 있는 데이터셋 종류가 정해져 있다. */
@@ -36,6 +42,7 @@ const goalDatasetKind = {
   searched: "passages",
   taught: "words",
   liked: "words",
+  looked: "pixels",
 } as const;
 
 export function getDataset(id: string): Dataset {
@@ -66,10 +73,14 @@ export function assertPlayable(lesson: Lesson, dataset: Dataset): void {
       );
     }
 
+    // 데이터셋 종류마다 아이가 셀 수 있는 것이 다르다. 새 종류를 더하면
+    // 여기도 함께 늘려야 한다 -- 안 그러면 타입 검사가 먼저 막는다.
     const available =
       dataset.kind === "words"
         ? dataset.words.length
-        : dataset.questions.length;
+        : dataset.kind === "passages"
+          ? dataset.questions.length
+          : dataset.images.length;
 
     if (step.goal.min > available) {
       throw new Error(

@@ -18,6 +18,12 @@ const wordsArtifact = z.strictObject({
   placedIds: z.array(z.string().min(1)).max(200),
 });
 
+/** 레슨 6·9 -- 어떤 그림을 들여다봤는지. */
+const pixelsArtifact = z.strictObject({
+  datasetId: z.string().min(1),
+  imageIds: z.array(z.string().min(1)).max(50),
+});
+
 /** 레슨 5 -- 어떤 것에 하트를 눌렀는지. */
 const likesArtifact = z.strictObject({
   datasetId: z.string().min(1),
@@ -45,11 +51,13 @@ const passagesArtifact = z.strictObject({
 export type WordsArtifact = z.infer<typeof wordsArtifact>;
 export type TeachArtifact = z.infer<typeof teachArtifact>;
 export type LikesArtifact = z.infer<typeof likesArtifact>;
+export type PixelsArtifact = z.infer<typeof pixelsArtifact>;
 export type PassagesArtifact = z.infer<typeof passagesArtifact>;
 export type ArtifactPayload =
   | WordsArtifact
   | TeachArtifact
   | LikesArtifact
+  | PixelsArtifact
   | PassagesArtifact;
 
 /**
@@ -107,6 +115,20 @@ export function parseArtifact(lesson: Lesson, raw: unknown): ArtifactPayload | n
     }
 
     return parsed.data;
+  }
+
+  if (dataset.kind === "pixels") {
+    const pixels = pixelsArtifact.safeParse(raw);
+    if (!pixels.success) return null;
+    if (pixels.data.datasetId !== dataset.id) return null;
+
+    const known = new Set(dataset.images.map((image) => image.id));
+    if (!pixels.data.imageIds.every((id) => known.has(id))) return null;
+    if (new Set(pixels.data.imageIds).size !== pixels.data.imageIds.length) {
+      return null;
+    }
+
+    return pixels.data;
   }
 
   const parsed = passagesArtifact.safeParse(raw);

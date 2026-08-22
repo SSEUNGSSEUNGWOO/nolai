@@ -154,6 +154,8 @@ describe("parseArtifact — 모든 레슨을 덮는다", () => {
     },
     "answer-gaps": { datasetId: "animal-facts-gaps", questionIds: ["g01"] },
     "like-recommender": { datasetId: "likes-kid", likedIds: ["pizza"] },
+    "pixel-zoom": { datasetId: "pixel-art", imageIds: ["heart"] },
+    "pixel-coarse": { datasetId: "pixel-art", imageIds: ["star"] },
   };
 
   it("레슨마다 결과물 예시가 준비돼 있다", () => {
@@ -166,5 +168,31 @@ describe("parseArtifact — 모든 레슨을 덮는다", () => {
     for (const [lessonId, payload] of Object.entries(samples)) {
       expect(parseArtifact(getLesson(lessonId), payload), lessonId).not.toBeNull();
     }
+  });
+});
+
+describe("parseArtifact — 그림 레슨", () => {
+  const lesson6 = getLesson("pixel-zoom");
+
+  it("데이터셋에 있는 그림 id를 통과시킨다", () => {
+    expect(parseArtifact(lesson6, {
+      datasetId: "pixel-art",
+      imageIds: ["heart", "star"],
+    })).not.toBeNull();
+  });
+
+  it("없는 그림을 거부한다", () => {
+    expect(parseArtifact(lesson6, {
+      datasetId: "pixel-art",
+      imageIds: ["ghost"],
+    })).toBeNull();
+  });
+
+  it("자유 텍스트를 거부한다", () => {
+    expect(parseArtifact(lesson6, {
+      datasetId: "pixel-art",
+      imageIds: ["heart"],
+      memo: "김민수",
+    })).toBeNull();
   });
 });

@@ -60,6 +60,31 @@ const passagesDataset = z.strictObject({
   questions: z.array(question).min(1),
 });
 
+/**
+ * 레슨 6·9 -- 그림을 이루는 칸(픽셀).
+ *
+ * 이 데이터셋만은 모델이 만들지 않는다. 손으로 그린 픽셀 아트다. 6장의
+ * "모든 숫자는 진짜다"는 여기서도 지켜진다 -- 아이에게 보여주는 색 숫자가
+ * 화면에 실제로 칠해지는 그 색이기 때문이다. 좌표형 데이터셋과 달리 손으로
+ * 고쳐도 되는 유일한 데이터셋이다.
+ */
+const pixelsDataset = z.strictObject({
+  kind: z.literal("pixels"),
+  id: z.string().min(1),
+  /** 글자 하나가 색 하나를 가리킨다. rows가 이 글자들로만 이루어져야 한다. */
+  palette: z.record(z.string().length(1), z.string().regex(/^#[0-9A-Fa-f]{6}$/)),
+  images: z
+    .array(
+      z.strictObject({
+        id: z.string().min(1),
+        label: z.string().min(1),
+        emoji: z.string().min(1),
+        rows: z.array(z.string().min(1)).min(2),
+      }),
+    )
+    .min(1),
+});
+
 function reportDuplicateIds(
   items: { id: string }[],
   path: string,
@@ -79,7 +104,7 @@ function reportDuplicateIds(
 }
 
 export const datasetSchema = z
-  .discriminatedUnion("kind", [wordsDataset, passagesDataset])
+  .discriminatedUnion("kind", [wordsDataset, passagesDataset, pixelsDataset])
   .superRefine((data, ctx) => {
     if (data.kind === "words") {
       reportDuplicateIds(data.categories, "categories", ctx);
@@ -94,6 +119,37 @@ export const datasetSchema = z
             path: ["words", i, "category"],
           });
         }
+      });
+      return;
+    }
+
+    if (data.kind === "pixels") {
+      reportDuplicateIds(data.images, "images", ctx);
+
+      const known = new Set(Object.keys(data.palette));
+      data.images.forEach((image, i) => {
+        const width = image.rows[0].length;
+
+        image.rows.forEach((row, r) => {
+          // 줄 길이가 다르면 격자가 아니라 들쭉날쭉한 모양이 된다.
+          if (row.length !== width) {
+            ctx.addIssue({
+              code: "custom",
+              message: `${r}번째 줄의 길이(${row.length})가 첫 줄(${width})과 다릅니다`,
+              path: ["images", i, "rows", r],
+            });
+          }
+
+          for (const char of row) {
+            if (!known.has(char)) {
+              ctx.addIssue({
+                code: "custom",
+                message: `팔레트에 없는 글자: ${char}`,
+                path: ["images", i, "rows", r],
+              });
+            }
+          }
+        });
       });
       return;
     }
@@ -127,6 +183,7 @@ export const datasetSchema = z
 export type Dataset = z.infer<typeof datasetSchema>;
 export type WordsDataset = Extract<Dataset, { kind: "words" }>;
 export type PassagesDataset = Extract<Dataset, { kind: "passages" }>;
+export type PixelsDataset = Extract<Dataset, { kind: "pixels" }>;
 export type DatasetWord = z.infer<typeof word>;
 export type DatasetCategory = z.infer<typeof category>;
 export type DatasetPassage = z.infer<typeof passage>;

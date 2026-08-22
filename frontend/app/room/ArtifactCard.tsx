@@ -17,6 +17,11 @@ export interface LikesView {
   chips: { label: string; color: string }[];
 }
 
+export interface PixelsView {
+  kind: "pixels";
+  images: { id: string; label: string; emoji: string }[];
+}
+
 export interface PassagesView {
   kind: "passages";
   questions: string[];
@@ -26,7 +31,12 @@ export interface ArtifactView {
   id: string;
   lessonTitle: string;
   createdAt: string;
-  detail: WordsView | TeachView | LikesView | PassagesView;
+  detail:
+    | WordsView
+    | TeachView
+    | LikesView
+    | PixelsView
+    | PassagesView;
 }
 
 function formatDate(iso: string): string {
@@ -70,6 +80,22 @@ export default function ArtifactCard({ view }: { view: ArtifactView }) {
           </svg>
           <p className="text-xs font-bold text-muted">
             단어 {view.detail.dots.length}개를 놓았어
+          </p>
+        </>
+      ) : view.detail.kind === "pixels" ? (
+        <>
+          <ul className="flex flex-wrap gap-1">
+            {view.detail.images.map((image) => (
+              <li
+                key={image.id}
+                className="rounded-full border-2 border-ink bg-cream px-2 py-0.5 text-xs font-extrabold"
+              >
+                {image.emoji} {image.label}
+              </li>
+            ))}
+          </ul>
+          <p className="text-xs font-bold text-muted">
+            그림 {view.detail.images.length}개를 들여다봤어
           </p>
         </>
       ) : view.detail.kind === "likes" ? (

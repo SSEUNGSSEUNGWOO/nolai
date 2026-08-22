@@ -23,6 +23,8 @@ export const badgeNames: Record<string, string> = {
   teacher: "꼬마 선생님",
   "gap-finder": "빈틈 탐정",
   "taste-reader": "취향 탐정",
+  "pixel-hunter": "픽셀 사냥꾼",
+  "sharp-eye": "매의 눈",
 };
 
 /** 계정과 내 방 화면의 문구. */

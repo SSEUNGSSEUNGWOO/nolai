@@ -1,0 +1,91 @@
+{
+  "kind": "pixels",
+  "id": "pixel-art",
+  "palette": {
+    ".": "#FFFDF6",
+    "R": "#FF6B6B",
+    "Y": "#FFD93D",
+    "T": "#4ECDC4",
+    "K": "#1F2430",
+    "G": "#7BC950",
+    "W": "#FFFFFF"
+  },
+  "images": [
+    {
+      "id": "heart",
+      "label": "하트",
+      "emoji": "❤️",
+      "rows": [
+        "............",
+        "..RR....RR..",
+        ".RRRR..RRRR.",
+        "RRRRRRRRRRRR",
+        "RRRRRRRRRRRR",
+        "RRRRRRRRRRRR",
+        ".RRRRRRRRRR.",
+        "..RRRRRRRR..",
+        "...RRRRRR...",
+        "....RRRR....",
+        ".....RR.....",
+        "............"
+      ]
+    },
+    {
+      "id": "star",
+      "label": "별",
+      "emoji": "⭐",
+      "rows": [
+        ".....YY.....",
+        ".....YY.....",
+        "....YYYY....",
+        "....YYYY....",
+        "YYYYYYYYYYYY",
+        ".YYYYYYYYYY.",
+        "..YYYYYYYY..",
+        "...YYYYYY...",
+        "..YYYYYYYY..",
+        "..YY....YY..",
+        ".YY......YY.",
+        "............"
+      ]
+    },
+    {
+      "id": "apple",
+      "label": "사과",
+      "emoji": "🍎",
+      "rows": [
+        ".....GG.....",
+        "....GG......",
+        "...RRRRRR...",
+        "..RRRRRRRR..",
+        ".RRRRRRRRRR.",
+        ".RRRRRRRRRR.",
+        ".RRRRRRRRRR.",
+        ".RRRRRRRRRR.",
+        "..RRRRRRRR..",
+        "..RRRRRRRR..",
+        "...RR..RR...",
+        "............"
+      ]
+    },
+    {
+      "id": "smile",
+      "label": "웃는 얼굴",
+      "emoji": "🙂",
+      "rows": [
+        "...TTTTTT...",
+        "..TTTTTTTT..",
+        ".TTTTTTTTTT.",
+        ".TTKTTTTKTT.",
+        ".TTKTTTTKTT.",
+        ".TTTTTTTTTT.",
+        ".TTTTTTTTTT.",
+        ".TTKTTTTKTT.",
+        ".TTKKKKKKTT.",
+        "..TTKKKKTT..",
+        "...TTTTTT...",
+        "............"
+      ]
+    }
+  ]
+}

@@ -181,13 +181,16 @@ describe("content 로더 — 레슨 5", () => {
     expect(lesson.playground).toBe("LikeRecommender");
   });
 
-  it("다섯 레슨이 order 순으로 나온다", () => {
-    expect(listLessons().map((l) => l.id)).toEqual([
-      "embedding-map",
-      "nearest-search",
-      "teach-sorter",
-      "answer-gaps",
-      "like-recommender",
-    ]);
+  it("레슨 순서가 1부터 빈틈없이 이어진다", () => {
+    // 목록을 손으로 적어두면 레슨을 늘릴 때마다 이 테스트부터 깨진다.
+    // 정말 지켜야 하는 것은 순서가 겹치거나 비지 않는다는 것이다.
+    const orders = listLessons().map((lesson) => lesson.order);
+
+    expect(orders).toEqual(orders.map((_, index) => index + 1));
+  });
+
+  it("레슨 id가 겹치지 않는다", () => {
+    const ids = listLessons().map((lesson) => lesson.id);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 });

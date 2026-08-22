@@ -124,6 +124,23 @@ function toView(artifact: RoomArtifact, lessonTitle: string): ArtifactView | nul
       };
     }
 
+    if ("imageIds" in payload) {
+      const dataset = getDataset(payload.datasetId);
+      if (dataset.kind !== "pixels") return null;
+
+      const images = payload.imageIds
+        .map((id) => dataset.images.find((image) => image.id === id))
+        .filter((image) => image !== undefined)
+        .map((image) => ({ id: image.id, label: image.label, emoji: image.emoji }));
+
+      return {
+        id: artifact.id,
+        lessonTitle,
+        createdAt: artifact.createdAt,
+        detail: { kind: "pixels", images },
+      };
+    }
+
     if ("likedIds" in payload) {
       const dataset = getDataset(payload.datasetId);
       if (dataset.kind !== "words") return null;
