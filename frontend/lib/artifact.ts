@@ -18,6 +18,12 @@ const wordsArtifact = z.strictObject({
   placedIds: z.array(z.string().min(1)).max(200),
 });
 
+/** 레슨 15 -- 어떤 문장에서 AI와 대결했는지. */
+const duelArtifact = z.strictObject({
+  datasetId: z.string().min(1),
+  judged: z.array(z.string().min(1)).max(60),
+});
+
 /** 레슨 14 -- 어떤 문장을 만들어봤는지. */
 const sentenceArtifact = z.strictObject({
   datasetId: z.string().min(1),
@@ -94,6 +100,7 @@ export type ClustersArtifact = z.infer<typeof clustersArtifact>;
 export type AnalogyArtifact = z.infer<typeof analogyArtifact>;
 export type SimilarityArtifact = z.infer<typeof similarityArtifact>;
 export type SentenceArtifact = z.infer<typeof sentenceArtifact>;
+export type DuelArtifact = z.infer<typeof duelArtifact>;
 export type PassagesArtifact = z.infer<typeof passagesArtifact>;
 export type ArtifactPayload =
   | WordsArtifact
@@ -106,6 +113,7 @@ export type ArtifactPayload =
   | AnalogyArtifact
   | SimilarityArtifact
   | SentenceArtifact
+  | DuelArtifact
   | PassagesArtifact;
 
 /**
@@ -163,6 +171,18 @@ export function parseArtifact(lesson: Lesson, raw: unknown): ArtifactPayload | n
     }
 
     return parsed.data;
+  }
+
+  if (dataset.kind === "sentiment") {
+    const duel = duelArtifact.safeParse(raw);
+    if (!duel.success) return null;
+    if (duel.data.datasetId !== dataset.id) return null;
+
+    const known = new Set(dataset.sentences.map((one) => one.id));
+    if (!duel.data.judged.every((id) => known.has(id))) return null;
+    if (new Set(duel.data.judged).size !== duel.data.judged.length) return null;
+
+    return duel.data;
   }
 
   if (dataset.kind === "nextword") {

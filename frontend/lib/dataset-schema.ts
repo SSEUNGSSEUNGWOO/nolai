@@ -261,6 +261,33 @@ const nextWordDataset = z.strictObject({
   ),
 });
 
+/**
+ * 레슨 15 -- AI가 기분을 어떻게 읽는지.
+ *
+ * 임베딩 모델이 아니라 **감정 분석 전용 모델**의 답을 담는다. 임베딩은 감정의
+ * 극성을 담지 않아(신남의 이웃이 화남이었다) 이 레슨을 만들 수 없었다.
+ *
+ * aiSays가 answer와 다른 문장이 이 레슨의 핵심이다. 하나도 없으면 보여줄
+ * 것이 없으므로 스키마가 막는다.
+ */
+const sentimentDataset = z.strictObject({
+  kind: z.literal("sentiment"),
+  id: z.string().min(1),
+  model: z.string().min(1),
+  sentences: z
+    .array(
+      z.strictObject({
+        id: z.string().min(1),
+        text: z.string().min(1),
+        /** 사람 눈높이의 답. 아이가 이길 수 있는 근거다. */
+        answer: z.enum(["good", "bad"]),
+        aiSays: z.enum(["good", "bad"]),
+        confidence: z.number().min(0).max(1),
+      }),
+    )
+    .min(2),
+});
+
 function reportDuplicateIds(
   items: { id: string }[],
   path: string,
@@ -290,6 +317,7 @@ export const datasetSchema = z
     analogyDataset,
     similarityDataset,
     nextWordDataset,
+    sentimentDataset,
   ])
   .superRefine((data, ctx) => {
     if (data.kind === "words") {
@@ -306,6 +334,29 @@ export const datasetSchema = z
           });
         }
       });
+      return;
+    }
+
+    if (data.kind === "sentiment") {
+      reportDuplicateIds(data.sentences, "sentences", ctx);
+
+      const wrong = data.sentences.filter((one) => one.aiSays !== one.answer);
+      if (wrong.length === 0) {
+        ctx.addIssue({
+          code: "custom",
+          message: "AI가 틀리는 문장이 하나도 없습니다. 이 레슨은 보여줄 것이 없습니다",
+          path: ["sentences"],
+        });
+      }
+      if (wrong.length > data.sentences.length / 2) {
+        ctx.addIssue({
+          code: "custom",
+          message:
+            `AI가 ${wrong.length}/${data.sentences.length}개를 틀립니다. ` +
+            "너무 많으면 아이가 \"AI는 바보구나\"로 읽고 끝난다",
+          path: ["sentences"],
+        });
+      }
       return;
     }
 
@@ -521,6 +572,7 @@ export type ClustersDataset = Extract<Dataset, { kind: "clusters" }>;
 export type AnalogyDataset = Extract<Dataset, { kind: "analogy" }>;
 export type SimilarityDataset = Extract<Dataset, { kind: "similarity" }>;
 export type NextWordDataset = Extract<Dataset, { kind: "nextword" }>;
+export type SentimentDataset = Extract<Dataset, { kind: "sentiment" }>;
 export type DatasetWord = z.infer<typeof word>;
 export type DatasetCategory = z.infer<typeof category>;
 export type DatasetPassage = z.infer<typeof passage>;

@@ -17,6 +17,7 @@ import selfClusterLesson from "@/lessons/self-cluster.json";
 import analogyLabLesson from "@/lessons/analogy-lab.json";
 import compareMeterLesson from "@/lessons/compare-meter.json";
 import wordWeaverLesson from "@/lessons/word-weaver.json";
+import feelingDuelLesson from "@/lessons/feeling-duel.json";
 import wordsAnimalsVehicles from "@/datasets/words-animals-vehicles.json";
 import animalFacts from "@/datasets/animal-facts.json";
 import wordsTeach from "@/datasets/words-teach.json";
@@ -30,6 +31,7 @@ import wordsCluster from "@/datasets/words-cluster.json";
 import analogyBasic from "@/datasets/analogy-basic.json";
 import wordsCompare from "@/datasets/words-compare.json";
 import storyNext from "@/datasets/story-next.json";
+import feelingDuel from "@/datasets/feeling-duel.json";
 
 const rawLessons: Record<string, unknown> = {
   "embedding-map": embeddingMapLesson,
@@ -46,6 +48,7 @@ const rawLessons: Record<string, unknown> = {
   "analogy-lab": analogyLabLesson,
   "compare-meter": compareMeterLesson,
   "word-weaver": wordWeaverLesson,
+  "feeling-duel": feelingDuelLesson,
 };
 
 const rawDatasets: Record<string, unknown> = {
@@ -62,6 +65,7 @@ const rawDatasets: Record<string, unknown> = {
   "analogy-basic": analogyBasic,
   "words-compare": wordsCompare,
   "story-next": storyNext,
+  "feeling-duel": feelingDuel,
 };
 
 /** 목표 종류마다 셀 수 있는 것을 담고 있는 데이터셋 종류가 정해져 있다. */
@@ -77,6 +81,7 @@ const goalDatasetKind = {
   calculated: "analogy",
   compared: "similarity",
   wrote: "nextword",
+  judged: "sentiment",
 } as const;
 
 export function getDataset(id: string): Dataset {
@@ -126,7 +131,9 @@ export function assertPlayable(lesson: Lesson, dataset: Dataset): void {
                     ? Object.keys(dataset.answers).length
                     : dataset.kind === "similarity"
                       ? Object.keys(dataset.sims).length
-                      : dataset.starts.length;
+                      : dataset.kind === "nextword"
+                        ? dataset.starts.length
+                        : dataset.sentences.length;
 
     if (step.goal.min > available) {
       throw new Error(

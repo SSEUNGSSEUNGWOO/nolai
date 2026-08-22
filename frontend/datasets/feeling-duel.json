@@ -1,0 +1,91 @@
+{
+  "kind": "sentiment",
+  "id": "feeling-duel",
+  "model": "matthewburke/korean_sentiment",
+  "sentences": [
+    {
+      "id": "f01",
+      "text": "생일 선물 받아서 기뻐",
+      "answer": "good",
+      "aiSays": "good",
+      "confidence": 0.8735
+    },
+    {
+      "id": "f02",
+      "text": "친구랑 놀아서 좋았어",
+      "answer": "good",
+      "aiSays": "good",
+      "confidence": 0.9534
+    },
+    {
+      "id": "f03",
+      "text": "강아지가 너무 귀여워",
+      "answer": "good",
+      "aiSays": "good",
+      "confidence": 0.9599
+    },
+    {
+      "id": "f04",
+      "text": "아이스크림 먹어서 행복해",
+      "answer": "good",
+      "aiSays": "good",
+      "confidence": 0.9485
+    },
+    {
+      "id": "f05",
+      "text": "칭찬 받아서 뿌듯해",
+      "answer": "good",
+      "aiSays": "good",
+      "confidence": 0.8781
+    },
+    {
+      "id": "f06",
+      "text": "숙제가 너무 많아",
+      "answer": "bad",
+      "aiSays": "bad",
+      "confidence": 0.9297
+    },
+    {
+      "id": "f07",
+      "text": "넘어져서 아파",
+      "answer": "bad",
+      "aiSays": "bad",
+      "confidence": 0.6105
+    },
+    {
+      "id": "f08",
+      "text": "장난감이 망가졌어",
+      "answer": "bad",
+      "aiSays": "bad",
+      "confidence": 0.9404
+    },
+    {
+      "id": "f09",
+      "text": "혼나서 기분 나빠",
+      "answer": "bad",
+      "aiSays": "bad",
+      "confidence": 0.7983
+    },
+    {
+      "id": "f10",
+      "text": "오늘 소풍 가서 신났어",
+      "answer": "good",
+      "aiSays": "bad",
+      "confidence": 0.9349
+    },
+    {
+      "id": "f11",
+      "text": "너무 슬퍼서 눈물이 나",
+      "answer": "bad",
+      "aiSays": "good",
+      "confidence": 0.9694
+    },
+    {
+      "id": "f12",
+      "text": "하나도 안 무서웠어",
+      "answer": "good",
+      "aiSays": "bad",
+      "confidence": 0.933
+    }
+  ]
+}
