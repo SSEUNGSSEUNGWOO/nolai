@@ -6,6 +6,12 @@ export interface WordsView {
   categories: DatasetCategory[];
 }
 
+export interface TeachView {
+  kind: "teach";
+  boxes: { label: string; color: string; words: string[] }[];
+  count: number;
+}
+
 export interface PassagesView {
   kind: "passages";
   questions: string[];
@@ -15,7 +21,7 @@ export interface ArtifactView {
   id: string;
   lessonTitle: string;
   createdAt: string;
-  detail: WordsView | PassagesView;
+  detail: WordsView | TeachView | PassagesView;
 }
 
 function formatDate(iso: string): string {
@@ -59,6 +65,29 @@ export default function ArtifactCard({ view }: { view: ArtifactView }) {
           </svg>
           <p className="text-xs font-bold text-muted">
             단어 {view.detail.dots.length}개를 놓았어
+          </p>
+        </>
+      ) : view.detail.kind === "teach" ? (
+        <>
+          <ul className="flex flex-col gap-2">
+            {view.detail.boxes.map((box) => (
+              <li key={box.label} className="flex flex-wrap items-center gap-1">
+                <span
+                  className="rounded-full border-2 border-ink px-2 py-0.5 text-xs font-extrabold"
+                  style={{ backgroundColor: box.color }}
+                >
+                  {box.label}
+                </span>
+                {box.words.map((word) => (
+                  <span key={word} className="text-xs font-bold">
+                    {word}
+                  </span>
+                ))}
+              </li>
+            ))}
+          </ul>
+          <p className="text-xs font-bold text-muted">
+            {view.detail.count}개를 가르쳤어
           </p>
         </>
       ) : (

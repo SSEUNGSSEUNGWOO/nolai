@@ -1,0 +1,45 @@
+# 레슨 3·4용 단어 (가르치기 / 치우침)
+#
+# 레슨 1의 words.yaml과 목적이 다르다. 저쪽은 "비슷한 것끼리 모인다"를 보여주면
+# 됐지만, 이쪽은 아이가 예시를 골라 가르치고 컴퓨터가 나머지를 분류해야 한다.
+# 그래서 경계가 훨씬 깨끗해야 하고, 동시에 한 무리 안에 **두 갈래**가 있어야
+# 한다 -- 한 갈래만 가르치면 다른 갈래를 틀리는 것이 레슨 4의 전부다.
+#
+# 그래서 규칙이 하나 늘었다:
+#
+# 6. 각 카테고리는 눈에 띄게 다른 두 갈래(group)로 나뉘어야 한다.
+#    동물 = 뭍 / 바다,  탈것 = 땅 / 하늘
+#    갈래는 아이에게 보이지 않는다. 아이가 무심코 한쪽만 고르게 되는 장치다.
+#
+# 레슨 1의 규칙 1~5(다의어 금지, 의미로 묶기, 좌표 손대지 않기)는 그대로 지킨다.
+# 레슨 1에서 경계가 지저분했던 병아리·물고기·포도는 넣지 않는다.
+
+id: words-teach
+categories:
+  - { id: animal,  label: 동물, color: "#FF6B6B" }
+  - { id: vehicle, label: 탈것, color: "#4ECDC4" }
+words:
+  # 동물 - 뭍
+  - { id: dog,        label: 강아지,   emoji: "🐶", category: animal,  group: land }
+  - { id: cat,        label: 고양이,   emoji: "🐱", category: animal,  group: land }
+  - { id: rabbit,     label: 토끼,     emoji: "🐰", category: animal,  group: land }
+  - { id: tiger,      label: 호랑이,   emoji: "🐯", category: animal,  group: land }
+  - { id: elephant,   label: 코끼리,   emoji: "🐘", category: animal,  group: land }
+  # 동물 - 바다
+  - { id: whale,      label: 고래,     emoji: "🐋", category: animal,  group: sea }
+  - { id: shark,      label: 상어,     emoji: "🦈", category: animal,  group: sea }
+  - { id: octopus,    label: 문어,     emoji: "🐙", category: animal,  group: sea }
+  - { id: crab,       label: 게,       emoji: "🦀", category: animal,  group: sea }
+  - { id: jellyfish,  label: 해파리,   emoji: "🪼", category: animal,  group: sea }
+  # 탈것 - 땅
+  - { id: car,        label: 자동차,   emoji: "🚗", category: vehicle, group: ground }
+  - { id: bus,        label: 버스,     emoji: "🚌", category: vehicle, group: ground }
+  - { id: truck,      label: 트럭,     emoji: "🚚", category: vehicle, group: ground }
+  - { id: train,      label: 기차,     emoji: "🚆", category: vehicle, group: ground }
+  - { id: bike,       label: 자전거,   emoji: "🚲", category: vehicle, group: ground }
+  # 탈것 - 하늘
+  - { id: airplane,   label: 비행기,   emoji: "✈️", category: vehicle, group: sky }
+  - { id: helicopter, label: 헬리콥터, emoji: "🚁", category: vehicle, group: sky }
+  - { id: rocket,     label: 로켓,     emoji: "🚀", category: vehicle, group: sky }
+  - { id: balloon,    label: 열기구,   emoji: "🎈", category: vehicle, group: sky }
+  - { id: glider,     label: 행글라이더, emoji: "🪂", category: vehicle, group: sky }

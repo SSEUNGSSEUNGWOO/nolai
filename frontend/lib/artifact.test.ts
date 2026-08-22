@@ -93,3 +93,48 @@ describe("parseArtifact — 문장형 레슨", () => {
     })).toBeNull();
   });
 });
+
+const lesson3 = getLesson("teach-sorter");
+
+describe("parseArtifact — 가르치기 레슨", () => {
+  it("단어와 상자 짝을 담은 결과물을 통과시킨다", () => {
+    expect(parseArtifact(lesson3, {
+      datasetId: "words-teach",
+      taught: [
+        { wordId: "dog", categoryId: "animal" },
+        { wordId: "car", categoryId: "vehicle" },
+      ],
+    })).not.toBeNull();
+  });
+
+  it("데이터셋에 없는 상자를 거부한다", () => {
+    expect(parseArtifact(lesson3, {
+      datasetId: "words-teach",
+      taught: [{ wordId: "dog", categoryId: "ghost" }],
+    })).toBeNull();
+  });
+
+  it("데이터셋에 없는 단어를 거부한다", () => {
+    expect(parseArtifact(lesson3, {
+      datasetId: "words-teach",
+      taught: [{ wordId: "ghost", categoryId: "animal" }],
+    })).toBeNull();
+  });
+
+  it("자유 텍스트를 상자 이름으로 넣지 못한다", () => {
+    expect(parseArtifact(lesson3, {
+      datasetId: "words-teach",
+      taught: [{ wordId: "dog", categoryId: "김민수" }],
+    })).toBeNull();
+  });
+
+  it("같은 단어를 두 상자에 넣으면 거부한다", () => {
+    expect(parseArtifact(lesson3, {
+      datasetId: "words-teach",
+      taught: [
+        { wordId: "dog", categoryId: "animal" },
+        { wordId: "dog", categoryId: "vehicle" },
+      ],
+    })).toBeNull();
+  });
+});

@@ -1,10 +1,12 @@
 import EmbeddingMap from "./embedding-map/EmbeddingMap";
 import NearestSearch from "./nearest-search/NearestSearch";
+import TeachSorter from "./teach-sorter/TeachSorter";
 import type { PlaygroundComponent } from "./types";
 
 export const registry: Record<string, PlaygroundComponent> = {
   EmbeddingMap,
   NearestSearch,
+  TeachSorter,
 };
 
 export function getPlayground(name: string): PlaygroundComponent {

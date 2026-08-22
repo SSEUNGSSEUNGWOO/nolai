@@ -18,14 +18,28 @@ const wordsArtifact = z.strictObject({
   placedIds: z.array(z.string().min(1)).max(200),
 });
 
+/** 레슨 3 -- 어느 단어를 어느 상자에 넣어 가르쳤는지. */
+const teachArtifact = z.strictObject({
+  datasetId: z.string().min(1),
+  taught: z
+    .array(
+      z.strictObject({
+        wordId: z.string().min(1),
+        categoryId: z.string().min(1),
+      }),
+    )
+    .max(200),
+});
+
 const passagesArtifact = z.strictObject({
   datasetId: z.string().min(1),
   questionIds: z.array(z.string().min(1)).max(200),
 });
 
 export type WordsArtifact = z.infer<typeof wordsArtifact>;
+export type TeachArtifact = z.infer<typeof teachArtifact>;
 export type PassagesArtifact = z.infer<typeof passagesArtifact>;
-export type ArtifactPayload = WordsArtifact | PassagesArtifact;
+export type ArtifactPayload = WordsArtifact | TeachArtifact | PassagesArtifact;
 
 /**
  * 레슨이 쓰는 데이터셋 종류에 맞는 결과물인지 확인한다.
@@ -37,6 +51,25 @@ export function parseArtifact(lesson: Lesson, raw: unknown): ArtifactPayload | n
   const dataset: Dataset = getDataset(lesson.dataset);
 
   if (dataset.kind === "words") {
+    // 좌표형 데이터셋을 쓰는 레슨이 둘이고 결과물 모양이 다르다. 어느
+    // 쪽이든 통과하면 받는다 -- 어차피 둘 다 id만 담는다.
+    const teach = teachArtifact.safeParse(raw);
+    if (teach.success) {
+      if (teach.data.datasetId !== dataset.id) return null;
+
+      const knownWords = new Set(dataset.words.map((word) => word.id));
+      const knownCategories = new Set(dataset.categories.map((c) => c.id));
+      const ok = teach.data.taught.every(
+        (t) => knownWords.has(t.wordId) && knownCategories.has(t.categoryId),
+      );
+      if (!ok) return null;
+
+      const ids = teach.data.taught.map((t) => t.wordId);
+      if (new Set(ids).size !== ids.length) return null;
+
+      return teach.data;
+    }
+
     const parsed = wordsArtifact.safeParse(raw);
     if (!parsed.success) return null;
     if (parsed.data.datasetId !== dataset.id) return null;

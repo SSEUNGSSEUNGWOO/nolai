@@ -124,6 +124,31 @@ function toView(artifact: RoomArtifact, lessonTitle: string): ArtifactView | nul
       };
     }
 
+    if ("taught" in payload) {
+      const dataset = getDataset(payload.datasetId);
+      if (dataset.kind !== "words") return null;
+
+      const wordById = new Map(dataset.words.map((word) => [word.id, word]));
+      const boxes = dataset.categories
+        .map((category) => ({
+          label: category.label,
+          color: category.color,
+          words: payload.taught
+            .filter((t) => t.categoryId === category.id)
+            .map((t) => wordById.get(t.wordId))
+            .filter((word) => word !== undefined)
+            .map((word) => `${word.emoji} ${word.label}`),
+        }))
+        .filter((box) => box.words.length > 0);
+
+      return {
+        id: artifact.id,
+        lessonTitle,
+        createdAt: artifact.createdAt,
+        detail: { kind: "teach", boxes, count: payload.taught.length },
+      };
+    }
+
     const dataset = getDataset(payload.datasetId);
     if (dataset.kind !== "passages") return null;
 

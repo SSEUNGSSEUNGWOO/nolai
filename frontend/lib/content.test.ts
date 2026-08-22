@@ -127,16 +127,32 @@ describe("content 로더 — 레슨 2", () => {
     ).not.toThrow();
   });
 
-  it("두 레슨이 order 순으로 나온다", () => {
-    expect(listLessons().map((l) => l.id)).toEqual([
-      "embedding-map",
-      "nearest-search",
-    ]);
-  });
-
   it("레슨 2의 배지에도 한글 이름이 있다", () => {
     expect(() =>
       assertBadgeNamesExist(getLesson("nearest-search")),
     ).not.toThrow();
+  });
+});
+
+describe("content 로더 — 레슨 3", () => {
+  it("teach-sorter 레슨을 검증해서 읽는다", () => {
+    const lesson = getLesson("teach-sorter");
+    expect(lesson.title).toBe("컴퓨터에게 가르쳐주기");
+    expect(lesson.playground).toBe("TeachSorter");
+  });
+
+  it("가르치기 목표는 좌표형 데이터셋을 쓴다", () => {
+    const lesson = getLesson("teach-sorter");
+    expect(() =>
+      assertPlayable(lesson, getDataset(lesson.dataset)),
+    ).not.toThrow();
+  });
+
+  it("세 레슨이 order 순으로 나온다", () => {
+    expect(listLessons().map((l) => l.id)).toEqual([
+      "embedding-map",
+      "nearest-search",
+      "teach-sorter",
+    ]);
   });
 });

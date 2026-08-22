@@ -20,6 +20,7 @@ export const ui = {
 export const badgeNames: Record<string, string> = {
   "map-explorer": "지도 탐험가",
   "path-finder": "길 찾기 대장",
+  teacher: "꼬마 선생님",
 };
 
 /** 계정과 내 방 화면의 문구. */

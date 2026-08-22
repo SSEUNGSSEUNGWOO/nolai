@@ -7,7 +7,8 @@ const hookStep = z.strictObject({
 
 /**
  * 놀이터마다 "충분히 놀았다"의 기준이 다르다. 임베딩 지도는 단어를 놓은 수,
- * 벡터검색은 질문을 골라본 수다. kind는 놀이터가 올려보내는 이벤트 이름과
+ * 벡터검색은 질문을 골라본 수,
+ * 가르치기는 상자에 넣어준 예시 수다. kind는 놀이터가 올려보내는 이벤트 이름과
  * 같으며, LessonRunner는 그 이름의 이벤트만 세어 목표 달성을 판단한다.
  */
 const goal = z.discriminatedUnion("kind", [
@@ -17,6 +18,10 @@ const goal = z.discriminatedUnion("kind", [
   }),
   z.strictObject({
     kind: z.literal("searched"),
+    min: z.number().int().positive(),
+  }),
+  z.strictObject({
+    kind: z.literal("taught"),
     min: z.number().int().positive(),
   }),
 ]);
