@@ -1,0 +1,13 @@
+{
+  "kind": "sounds",
+  "id": "sounds-simple",
+  "sampleRate": 8000,
+  "playMs": 400,
+  "showSamples": 160,
+  "sounds": [
+    { "id": "do", "label": "낮은 도", "emoji": "🎵", "frequency": 261.6, "harmonics": 1 },
+    { "id": "sol", "label": "솔", "emoji": "🎶", "frequency": 392.0, "harmonics": 1 },
+    { "id": "high", "label": "높은 라", "emoji": "🔔", "frequency": 880.0, "harmonics": 1 },
+    { "id": "rough", "label": "거친 도", "emoji": "📯", "frequency": 261.6, "harmonics": 5 }
+  ]
+}

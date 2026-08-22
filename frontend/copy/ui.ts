@@ -25,6 +25,7 @@ export const badgeNames: Record<string, string> = {
   "taste-reader": "취향 탐정",
   "pixel-hunter": "픽셀 사냥꾼",
   "sharp-eye": "매의 눈",
+  "wave-rider": "소리 파도타기",
 };
 
 /** 계정과 내 방 화면의 문구. */

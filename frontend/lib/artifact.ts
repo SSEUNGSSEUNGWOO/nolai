@@ -18,6 +18,12 @@ const wordsArtifact = z.strictObject({
   placedIds: z.array(z.string().min(1)).max(200),
 });
 
+/** 레슨 8 -- 어떤 소리를 들어봤는지. */
+const soundsArtifact = z.strictObject({
+  datasetId: z.string().min(1),
+  soundIds: z.array(z.string().min(1)).max(50),
+});
+
 /** 레슨 6·9 -- 어떤 그림을 들여다봤는지. */
 const pixelsArtifact = z.strictObject({
   datasetId: z.string().min(1),
@@ -52,12 +58,14 @@ export type WordsArtifact = z.infer<typeof wordsArtifact>;
 export type TeachArtifact = z.infer<typeof teachArtifact>;
 export type LikesArtifact = z.infer<typeof likesArtifact>;
 export type PixelsArtifact = z.infer<typeof pixelsArtifact>;
+export type SoundsArtifact = z.infer<typeof soundsArtifact>;
 export type PassagesArtifact = z.infer<typeof passagesArtifact>;
 export type ArtifactPayload =
   | WordsArtifact
   | TeachArtifact
   | LikesArtifact
   | PixelsArtifact
+  | SoundsArtifact
   | PassagesArtifact;
 
 /**
@@ -115,6 +123,20 @@ export function parseArtifact(lesson: Lesson, raw: unknown): ArtifactPayload | n
     }
 
     return parsed.data;
+  }
+
+  if (dataset.kind === "sounds") {
+    const sounds = soundsArtifact.safeParse(raw);
+    if (!sounds.success) return null;
+    if (sounds.data.datasetId !== dataset.id) return null;
+
+    const known = new Set(dataset.sounds.map((sound) => sound.id));
+    if (!sounds.data.soundIds.every((id) => known.has(id))) return null;
+    if (new Set(sounds.data.soundIds).size !== sounds.data.soundIds.length) {
+      return null;
+    }
+
+    return sounds.data;
   }
 
   if (dataset.kind === "pixels") {

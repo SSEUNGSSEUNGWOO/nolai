@@ -124,6 +124,24 @@ function toView(artifact: RoomArtifact, lessonTitle: string): ArtifactView | nul
       };
     }
 
+    if ("soundIds" in payload) {
+      const dataset = getDataset(payload.datasetId);
+      if (dataset.kind !== "sounds") return null;
+
+      // 화면에 보여줄 모양이 그림 작품과 같아서 같은 카드를 쓴다.
+      const images = payload.soundIds
+        .map((id) => dataset.sounds.find((sound) => sound.id === id))
+        .filter((sound) => sound !== undefined)
+        .map((sound) => ({ id: sound.id, label: sound.label, emoji: sound.emoji }));
+
+      return {
+        id: artifact.id,
+        lessonTitle,
+        createdAt: artifact.createdAt,
+        detail: { kind: "pixels", images },
+      };
+    }
+
     if ("imageIds" in payload) {
       const dataset = getDataset(payload.datasetId);
       if (dataset.kind !== "pixels") return null;

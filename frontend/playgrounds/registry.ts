@@ -3,6 +3,7 @@ import NearestSearch from "./nearest-search/NearestSearch";
 import TeachSorter from "./teach-sorter/TeachSorter";
 import LikeRecommender from "./like-recommender/LikeRecommender";
 import PixelZoom from "./pixel-zoom/PixelZoom";
+import WaveZoom from "./wave-zoom/WaveZoom";
 import type { PlaygroundComponent } from "./types";
 
 export const registry: Record<string, PlaygroundComponent> = {
@@ -11,6 +12,7 @@ export const registry: Record<string, PlaygroundComponent> = {
   TeachSorter,
   LikeRecommender,
   PixelZoom,
+  WaveZoom,
 };
 
 export function getPlayground(name: string): PlaygroundComponent {

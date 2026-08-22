@@ -32,6 +32,10 @@ const goal = z.discriminatedUnion("kind", [
     kind: z.literal("looked"),
     min: z.number().int().positive(),
   }),
+  z.strictObject({
+    kind: z.literal("heard"),
+    min: z.number().int().positive(),
+  }),
 ]);
 
 const playStep = z.strictObject({

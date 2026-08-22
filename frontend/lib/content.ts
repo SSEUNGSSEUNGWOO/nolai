@@ -10,12 +10,14 @@ import answerGapsLesson from "@/lessons/answer-gaps.json";
 import likeRecommenderLesson from "@/lessons/like-recommender.json";
 import pixelZoomLesson from "@/lessons/pixel-zoom.json";
 import pixelCoarseLesson from "@/lessons/pixel-coarse.json";
+import waveZoomLesson from "@/lessons/wave-zoom.json";
 import wordsAnimalsVehicles from "@/datasets/words-animals-vehicles.json";
 import animalFacts from "@/datasets/animal-facts.json";
 import wordsTeach from "@/datasets/words-teach.json";
 import animalFactsGaps from "@/datasets/animal-facts-gaps.json";
 import likesKid from "@/datasets/likes-kid.json";
 import pixelArt from "@/datasets/pixel-art.json";
+import soundsSimple from "@/datasets/sounds-simple.json";
 
 const rawLessons: Record<string, unknown> = {
   "embedding-map": embeddingMapLesson,
@@ -25,6 +27,7 @@ const rawLessons: Record<string, unknown> = {
   "like-recommender": likeRecommenderLesson,
   "pixel-zoom": pixelZoomLesson,
   "pixel-coarse": pixelCoarseLesson,
+  "wave-zoom": waveZoomLesson,
 };
 
 const rawDatasets: Record<string, unknown> = {
@@ -34,6 +37,7 @@ const rawDatasets: Record<string, unknown> = {
   "animal-facts-gaps": animalFactsGaps,
   "likes-kid": likesKid,
   "pixel-art": pixelArt,
+  "sounds-simple": soundsSimple,
 };
 
 /** 목표 종류마다 셀 수 있는 것을 담고 있는 데이터셋 종류가 정해져 있다. */
@@ -43,6 +47,7 @@ const goalDatasetKind = {
   taught: "words",
   liked: "words",
   looked: "pixels",
+  heard: "sounds",
 } as const;
 
 export function getDataset(id: string): Dataset {
@@ -80,7 +85,9 @@ export function assertPlayable(lesson: Lesson, dataset: Dataset): void {
         ? dataset.words.length
         : dataset.kind === "passages"
           ? dataset.questions.length
-          : dataset.images.length;
+          : dataset.kind === "pixels"
+            ? dataset.images.length
+            : dataset.sounds.length;
 
     if (step.goal.min > available) {
       throw new Error(

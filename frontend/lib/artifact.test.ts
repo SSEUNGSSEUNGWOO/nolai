@@ -156,6 +156,7 @@ describe("parseArtifact — 모든 레슨을 덮는다", () => {
     "like-recommender": { datasetId: "likes-kid", likedIds: ["pizza"] },
     "pixel-zoom": { datasetId: "pixel-art", imageIds: ["heart"] },
     "pixel-coarse": { datasetId: "pixel-art", imageIds: ["star"] },
+    "wave-zoom": { datasetId: "sounds-simple", soundIds: ["do"] },
   };
 
   it("레슨마다 결과물 예시가 준비돼 있다", () => {

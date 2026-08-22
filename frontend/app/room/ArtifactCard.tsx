@@ -95,7 +95,7 @@ export default function ArtifactCard({ view }: { view: ArtifactView }) {
             ))}
           </ul>
           <p className="text-xs font-bold text-muted">
-            그림 {view.detail.images.length}개를 들여다봤어
+            {view.detail.images.length}개를 살펴봤어
           </p>
         </>
       ) : view.detail.kind === "likes" ? (

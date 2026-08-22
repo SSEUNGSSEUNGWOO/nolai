@@ -85,6 +85,35 @@ const pixelsDataset = z.strictObject({
     .min(1),
 });
 
+/**
+ * 레슨 8 -- 소리를 이루는 숫자.
+ *
+ * 샘플 값을 담지 않고 만드는 방법(주파수·배음)만 담는다. 화면에 그리는 값과
+ * 귀에 들리는 값을 브라우저가 **한 번 계산해 함께 쓰기 위해서**다. 값을 미리
+ * 저장해두면 소리를 낼 때 다시 계산하게 되고, 둘이 어긋날 여지가 생긴다.
+ */
+const soundsDataset = z.strictObject({
+  kind: z.literal("sounds"),
+  id: z.string().min(1),
+  /** 초당 샘플 수. 보여주기용이라 실제 음악 파일보다 낮게 잡는다. */
+  sampleRate: z.number().int().positive(),
+  /** 소리를 들려주는 길이. */
+  playMs: z.number().int().positive(),
+  /** 화면에 그리는 샘플 수. 너무 많으면 물결이 뭉개져 보이지 않는다. */
+  showSamples: z.number().int().positive(),
+  sounds: z
+    .array(
+      z.strictObject({
+        id: z.string().min(1),
+        label: z.string().min(1),
+        emoji: z.string().min(1),
+        frequency: z.number().positive(),
+        harmonics: z.number().int().positive(),
+      }),
+    )
+    .min(1),
+});
+
 function reportDuplicateIds(
   items: { id: string }[],
   path: string,
@@ -104,7 +133,12 @@ function reportDuplicateIds(
 }
 
 export const datasetSchema = z
-  .discriminatedUnion("kind", [wordsDataset, passagesDataset, pixelsDataset])
+  .discriminatedUnion("kind", [
+    wordsDataset,
+    passagesDataset,
+    pixelsDataset,
+    soundsDataset,
+  ])
   .superRefine((data, ctx) => {
     if (data.kind === "words") {
       reportDuplicateIds(data.categories, "categories", ctx);
@@ -117,6 +151,25 @@ export const datasetSchema = z
             code: "custom",
             message: `알 수 없는 category: ${w.category}`,
             path: ["words", i, "category"],
+          });
+        }
+      });
+      return;
+    }
+
+    if (data.kind === "sounds") {
+      reportDuplicateIds(data.sounds, "sounds", ctx);
+
+      data.sounds.forEach((sound, i) => {
+        // 한 물결에 샘플이 두 개도 안 들어가면 화면에서 물결로 보이지 않고
+        // 소리도 제대로 나지 않는다(나이퀴스트).
+        if (sound.frequency * 2 >= data.sampleRate) {
+          ctx.addIssue({
+            code: "custom",
+            message:
+              `${sound.frequency}Hz는 sampleRate(${data.sampleRate})의 절반보다 ` +
+              `높습니다. 물결이 보이지 않습니다`,
+            path: ["sounds", i, "frequency"],
           });
         }
       });
@@ -184,6 +237,7 @@ export type Dataset = z.infer<typeof datasetSchema>;
 export type WordsDataset = Extract<Dataset, { kind: "words" }>;
 export type PassagesDataset = Extract<Dataset, { kind: "passages" }>;
 export type PixelsDataset = Extract<Dataset, { kind: "pixels" }>;
+export type SoundsDataset = Extract<Dataset, { kind: "sounds" }>;
 export type DatasetWord = z.infer<typeof word>;
 export type DatasetCategory = z.infer<typeof category>;
 export type DatasetPassage = z.infer<typeof passage>;
