@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { listLessons } from "@/lib/content";
 import { ui } from "@/copy/ui";
+import AccountLinks from "@/components/AccountLinks";
 
 export default function Home() {
   const lessons = listLessons();
@@ -10,6 +11,7 @@ export default function Home() {
       <h1 className="text-5xl font-black">{ui.landingTitle}</h1>
       <p className="text-lg font-extrabold">{ui.landingSubtitle}</p>
       <p className="text-sm text-muted">들어가서 만져봐 👋</p>
+      <AccountLinks />
 
       <div className="flex w-full flex-col gap-3 pt-4">
         {lessons.map((lesson) => (

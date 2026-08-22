@@ -20,6 +20,15 @@ export default function LessonClient({
   function handleComplete(result: LessonResult) {
     completeLesson(result.lessonId, result.badge);
     setDone(true);
+
+    // 로그인한 아이면 서버에도 남긴다. 로그인 안 했으면 401이 오는데 그대로
+    // 흘려보낸다 -- localStorage에는 이미 들어갔고, 나중에 계정을 만들 때
+    // /api/sync가 옮겨준다.
+    fetch("/api/progress", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lessonId: result.lessonId }),
+    }).catch(() => {});
   }
 
   return (

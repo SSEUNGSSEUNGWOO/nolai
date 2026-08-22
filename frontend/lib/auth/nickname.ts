@@ -1,5 +1,3 @@
-import { randomInt } from "node:crypto";
-
 /**
  * 닉네임은 "수식어 + 캐릭터" 조합으로만 만들어진다. 아이가 직접 입력할 수
  * 없다 — 고르기만 한다.
@@ -41,6 +39,11 @@ const allNicknames = new Set(
   ),
 );
 
+/** 후보를 고르는 데는 암호학적 난수가 필요 없다. 비밀인 것은 코드뿐이다. */
+function pick(pool: readonly string[]): string {
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
 /**
  * 서로 다른 닉네임 후보를 count개 뽑는다.
  *
@@ -52,8 +55,8 @@ export function randomNicknames(count: number): string[] {
   const picked = new Set<string>();
 
   while (picked.size < wanted) {
-    const modifier = NICKNAME_MODIFIERS[randomInt(NICKNAME_MODIFIERS.length)];
-    const character = NICKNAME_CHARACTERS[randomInt(NICKNAME_CHARACTERS.length)];
+    const modifier = pick(NICKNAME_MODIFIERS);
+    const character = pick(NICKNAME_CHARACTERS);
     picked.add(`${modifier}${character}`);
   }
 
