@@ -27,6 +27,8 @@ export const badgeNames: Record<string, string> = {
   "sharp-eye": "매의 눈",
   "wave-rider": "소리 파도타기",
   "piece-master": "조각 박사",
+  "bridge-builder": "다리 놓는 아이",
+  "group-finder": "무리 찾기 대장",
 };
 
 /** 계정과 내 방 화면의 문구. */

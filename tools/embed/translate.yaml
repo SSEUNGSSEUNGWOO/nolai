@@ -1,0 +1,47 @@
+# 레슨 10용 단어 (번역)
+#
+# 한국어와 영어를 같은 지도에 놓는다. 색(언어)은 섞여 있는데 짝끼리 붙는다 --
+# 컴퓨터에게는 "무슨 말인가"보다 "무슨 뜻인가"가 먼저라는 뜻이다.
+#
+# 놀이터는 레슨 1의 EmbeddingMap을 그대로 쓴다.
+#
+# 규칙 (레슨 1의 규칙에 더해):
+#
+# 9. **짝끼리 서로 먼 개념을 고른다.**
+#    강아지·고양이를 함께 넣었더니 둘이 서로 붙어 각자의 짝(dog·cat)보다
+#    가까워졌다(20개 중 13개만 짝을 맞힘). 서로 먼 개념 10쌍으로 바꾸니
+#    20/20이 됐다. 한 갈래에 둘 이상 넣지 않는다.
+#
+# 10. 다의어는 양쪽 언어 모두에서 피한다.
+#     걸렀던 예: 사과(apple/apology)는 apple과의 유사도가 0.524로 낮았다.
+#
+# 11. 아이가 읽을 수 있는 영어만 쓴다. 초등 3~4학년이 배우는 수준으로 제한한다.
+#
+# 확인한 값: 짝 맞춤 20/20, 두 언어 무리 중심 사이 거리 0.057
+# (0에 가까울수록 언어로 안 갈린다는 뜻이고, 그것이 이 레슨의 근거다)
+
+id: words-translate
+categories:
+  - { id: ko, label: 한국어,  color: "#FF6B6B" }
+  - { id: en, label: English, color: "#4ECDC4" }
+words:
+  - { id: dog_ko,    label: 강아지,  emoji: "🇰🇷", category: ko }
+  - { id: dog_en,    label: dog,     emoji: "🇺🇸", category: en }
+  - { id: school_ko, label: 학교,    emoji: "🇰🇷", category: ko }
+  - { id: school_en, label: school,  emoji: "🇺🇸", category: en }
+  - { id: water_ko,  label: 물,      emoji: "🇰🇷", category: ko }
+  - { id: water_en,  label: water,   emoji: "🇺🇸", category: en }
+  - { id: music_ko,  label: 음악,    emoji: "🇰🇷", category: ko }
+  - { id: music_en,  label: music,   emoji: "🇺🇸", category: en }
+  - { id: car_ko,    label: 자동차,  emoji: "🇰🇷", category: ko }
+  - { id: car_en,    label: car,     emoji: "🇺🇸", category: en }
+  - { id: bread_ko,  label: 빵,      emoji: "🇰🇷", category: ko }
+  - { id: bread_en,  label: bread,   emoji: "🇺🇸", category: en }
+  - { id: sea_ko,    label: 바다,    emoji: "🇰🇷", category: ko }
+  - { id: sea_en,    label: sea,     emoji: "🇺🇸", category: en }
+  - { id: friend_ko, label: 친구,    emoji: "🇰🇷", category: ko }
+  - { id: friend_en, label: friend,  emoji: "🇺🇸", category: en }
+  - { id: book_ko,   label: 책,      emoji: "🇰🇷", category: ko }
+  - { id: book_en,   label: book,    emoji: "🇺🇸", category: en }
+  - { id: wind_ko,   label: 바람,    emoji: "🇰🇷", category: ko }
+  - { id: wind_en,   label: wind,    emoji: "🇺🇸", category: en }

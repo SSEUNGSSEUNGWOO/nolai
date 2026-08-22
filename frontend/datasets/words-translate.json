@@ -1,0 +1,180 @@
+{
+  "kind": "words",
+  "id": "words-translate",
+  "model": "nlpai-lab/KURE-v1",
+  "projection": "mds",
+  "categories": [
+    {
+      "id": "ko",
+      "label": "한국어",
+      "color": "#FF6B6B"
+    },
+    {
+      "id": "en",
+      "label": "English",
+      "color": "#4ECDC4"
+    }
+  ],
+  "words": [
+    {
+      "id": "dog_ko",
+      "label": "강아지",
+      "emoji": "🇰🇷",
+      "category": "ko",
+      "x": 0.1035,
+      "y": 0.7284
+    },
+    {
+      "id": "dog_en",
+      "label": "dog",
+      "emoji": "🇺🇸",
+      "category": "en",
+      "x": 0.1754,
+      "y": 0.6594
+    },
+    {
+      "id": "school_ko",
+      "label": "학교",
+      "emoji": "🇰🇷",
+      "category": "ko",
+      "x": 0.1987,
+      "y": 0.224
+    },
+    {
+      "id": "school_en",
+      "label": "school",
+      "emoji": "🇺🇸",
+      "category": "en",
+      "x": 0.3159,
+      "y": 0.3303
+    },
+    {
+      "id": "water_ko",
+      "label": "물",
+      "emoji": "🇰🇷",
+      "category": "ko",
+      "x": 0.6187,
+      "y": 0.0989
+    },
+    {
+      "id": "water_en",
+      "label": "water",
+      "emoji": "🇺🇸",
+      "category": "en",
+      "x": 0.6196,
+      "y": 0.2002
+    },
+    {
+      "id": "music_ko",
+      "label": "음악",
+      "emoji": "🇰🇷",
+      "category": "ko",
+      "x": 0.4746,
+      "y": 0.4515
+    },
+    {
+      "id": "music_en",
+      "label": "music",
+      "emoji": "🇺🇸",
+      "category": "en",
+      "x": 0.5005,
+      "y": 0.4778
+    },
+    {
+      "id": "car_ko",
+      "label": "자동차",
+      "emoji": "🇰🇷",
+      "category": "ko",
+      "x": 0.08,
+      "y": 0.3825
+    },
+    {
+      "id": "car_en",
+      "label": "car",
+      "emoji": "🇺🇸",
+      "category": "en",
+      "x": 0.1643,
+      "y": 0.4312
+    },
+    {
+      "id": "bread_ko",
+      "label": "빵",
+      "emoji": "🇰🇷",
+      "category": "ko",
+      "x": 0.6307,
+      "y": 0.92
+    },
+    {
+      "id": "bread_en",
+      "label": "bread",
+      "emoji": "🇺🇸",
+      "category": "en",
+      "x": 0.7082,
+      "y": 0.7665
+    },
+    {
+      "id": "sea_ko",
+      "label": "바다",
+      "emoji": "🇰🇷",
+      "category": "ko",
+      "x": 0.7962,
+      "y": 0.2842
+    },
+    {
+      "id": "sea_en",
+      "label": "sea",
+      "emoji": "🇺🇸",
+      "category": "en",
+      "x": 0.7842,
+      "y": 0.2026
+    },
+    {
+      "id": "friend_ko",
+      "label": "친구",
+      "emoji": "🇰🇷",
+      "category": "ko",
+      "x": 0.3648,
+      "y": 0.7661
+    },
+    {
+      "id": "friend_en",
+      "label": "friend",
+      "emoji": "🇺🇸",
+      "category": "en",
+      "x": 0.4385,
+      "y": 0.6995
+    },
+    {
+      "id": "book_ko",
+      "label": "책",
+      "emoji": "🇰🇷",
+      "category": "ko",
+      "x": 0.3135,
+      "y": 0.08
+    },
+    {
+      "id": "book_en",
+      "label": "book",
+      "emoji": "🇺🇸",
+      "category": "en",
+      "x": 0.3572,
+      "y": 0.1121
+    },
+    {
+      "id": "wind_ko",
+      "label": "바람",
+      "emoji": "🇰🇷",
+      "category": "ko",
+      "x": 0.8598,
+      "y": 0.587
+    },
+    {
+      "id": "wind_en",
+      "label": "wind",
+      "emoji": "🇺🇸",
+      "category": "en",
+      "x": 0.92,
+      "y": 0.4864
+    }
+  ]
+}

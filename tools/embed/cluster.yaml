@@ -1,0 +1,42 @@
+# 레슨 11용 단어 (스스로 무리 짓기)
+#
+# 레슨 3은 아이가 예시를 주면 컴퓨터가 배우는 것(지도학습)이고, 이 레슨은
+# 아무도 안 가르쳤는데 컴퓨터가 스스로 나누는 것(비지도학습)이다. 둘을 나란히
+# 두는 것이 이 레슨의 값이다.
+#
+# 아이는 "몇 개로 나눌까"만 정한다. 3개일 때는 딱 맞고, 2개나 4개면 이상해진다.
+# 그것이 아하다 -- **컴퓨터가 스스로 나누기는 하지만 몇 개로 나눌지는 사람이
+# 정해줘야 한다.**
+#
+# 확인한 값 (2026-08-22):
+#   2개: 동물+음식이 한 무리가 되고 만두가 탈것 쪽으로 간다
+#   3개: 18/18 정확
+#   4개: 동물이 둘로 쪼개지고 피자가 동물 쪽으로 간다
+#
+# 규칙: 레슨 1의 규칙을 그대로 따른다. '배'는 다의어라 뺐다.
+
+id: words-cluster
+groupings: [2, 3, 4, 5]
+categories:
+  - { id: animal,  label: 동물, color: "#FF6B6B" }
+  - { id: vehicle, label: 탈것, color: "#4ECDC4" }
+  - { id: food,    label: 음식, color: "#FFD93D" }
+words:
+  - { id: dog,      label: 강아지, emoji: "🐶", category: animal }
+  - { id: cat,      label: 고양이, emoji: "🐱", category: animal }
+  - { id: rabbit,   label: 토끼,   emoji: "🐰", category: animal }
+  - { id: tiger,    label: 호랑이, emoji: "🐯", category: animal }
+  - { id: elephant, label: 코끼리, emoji: "🐘", category: animal }
+  - { id: penguin,  label: 펭귄,   emoji: "🐧", category: animal }
+  - { id: car,      label: 자동차, emoji: "🚗", category: vehicle }
+  - { id: bus,      label: 버스,   emoji: "🚌", category: vehicle }
+  - { id: train,    label: 기차,   emoji: "🚆", category: vehicle }
+  - { id: airplane, label: 비행기, emoji: "✈️", category: vehicle }
+  - { id: bike,     label: 자전거, emoji: "🚲", category: vehicle }
+  - { id: truck,    label: 트럭,   emoji: "🚚", category: vehicle }
+  - { id: pizza,    label: 피자,   emoji: "🍕", category: food }
+  - { id: gimbap,   label: 김밥,   emoji: "🍙", category: food }
+  - { id: ramen,    label: 라면,   emoji: "🍜", category: food }
+  - { id: tteok,    label: 떡볶이, emoji: "🌶️", category: food }
+  - { id: burger,   label: 햄버거, emoji: "🍔", category: food }
+  - { id: dumpling, label: 만두,   emoji: "🥟", category: food }

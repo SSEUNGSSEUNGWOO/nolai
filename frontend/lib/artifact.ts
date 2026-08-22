@@ -18,6 +18,12 @@ const wordsArtifact = z.strictObject({
   placedIds: z.array(z.string().min(1)).max(200),
 });
 
+/** 레슨 11 -- 무리를 몇 개로 나눠봤는지. */
+const clustersArtifact = z.strictObject({
+  datasetId: z.string().min(1),
+  triedGroupings: z.array(z.number().int().positive()).max(20),
+});
+
 /** 레슨 9 -- 어떤 글을 조각내봤는지. */
 const tokensArtifact = z.strictObject({
   datasetId: z.string().min(1),
@@ -66,6 +72,7 @@ export type LikesArtifact = z.infer<typeof likesArtifact>;
 export type PixelsArtifact = z.infer<typeof pixelsArtifact>;
 export type SoundsArtifact = z.infer<typeof soundsArtifact>;
 export type TokensArtifact = z.infer<typeof tokensArtifact>;
+export type ClustersArtifact = z.infer<typeof clustersArtifact>;
 export type PassagesArtifact = z.infer<typeof passagesArtifact>;
 export type ArtifactPayload =
   | WordsArtifact
@@ -74,6 +81,7 @@ export type ArtifactPayload =
   | PixelsArtifact
   | SoundsArtifact
   | TokensArtifact
+  | ClustersArtifact
   | PassagesArtifact;
 
 /**
@@ -131,6 +139,23 @@ export function parseArtifact(lesson: Lesson, raw: unknown): ArtifactPayload | n
     }
 
     return parsed.data;
+  }
+
+  if (dataset.kind === "clusters") {
+    const clusters = clustersArtifact.safeParse(raw);
+    if (!clusters.success) return null;
+    if (clusters.data.datasetId !== dataset.id) return null;
+
+    const known = new Set(Object.keys(dataset.groupings).map(Number));
+    if (!clusters.data.triedGroupings.every((k) => known.has(k))) return null;
+    if (
+      new Set(clusters.data.triedGroupings).size !==
+      clusters.data.triedGroupings.length
+    ) {
+      return null;
+    }
+
+    return clusters.data;
   }
 
   if (dataset.kind === "tokens") {

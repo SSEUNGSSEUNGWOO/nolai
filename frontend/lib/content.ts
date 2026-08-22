@@ -12,6 +12,8 @@ import pixelZoomLesson from "@/lessons/pixel-zoom.json";
 import pixelCoarseLesson from "@/lessons/pixel-coarse.json";
 import waveZoomLesson from "@/lessons/wave-zoom.json";
 import tokenSplitLesson from "@/lessons/token-split.json";
+import translateMapLesson from "@/lessons/translate-map.json";
+import selfClusterLesson from "@/lessons/self-cluster.json";
 import wordsAnimalsVehicles from "@/datasets/words-animals-vehicles.json";
 import animalFacts from "@/datasets/animal-facts.json";
 import wordsTeach from "@/datasets/words-teach.json";
@@ -20,6 +22,8 @@ import likesKid from "@/datasets/likes-kid.json";
 import pixelArt from "@/datasets/pixel-art.json";
 import soundsSimple from "@/datasets/sounds-simple.json";
 import textPieces from "@/datasets/text-pieces.json";
+import wordsTranslate from "@/datasets/words-translate.json";
+import wordsCluster from "@/datasets/words-cluster.json";
 
 const rawLessons: Record<string, unknown> = {
   "embedding-map": embeddingMapLesson,
@@ -31,6 +35,8 @@ const rawLessons: Record<string, unknown> = {
   "pixel-coarse": pixelCoarseLesson,
   "wave-zoom": waveZoomLesson,
   "token-split": tokenSplitLesson,
+  "translate-map": translateMapLesson,
+  "self-cluster": selfClusterLesson,
 };
 
 const rawDatasets: Record<string, unknown> = {
@@ -42,6 +48,8 @@ const rawDatasets: Record<string, unknown> = {
   "pixel-art": pixelArt,
   "sounds-simple": soundsSimple,
   "text-pieces": textPieces,
+  "words-translate": wordsTranslate,
+  "words-cluster": wordsCluster,
 };
 
 /** 목표 종류마다 셀 수 있는 것을 담고 있는 데이터셋 종류가 정해져 있다. */
@@ -53,6 +61,7 @@ const goalDatasetKind = {
   looked: "pixels",
   heard: "sounds",
   split: "tokens",
+  grouped: "clusters",
 } as const;
 
 export function getDataset(id: string): Dataset {
@@ -94,7 +103,9 @@ export function assertPlayable(lesson: Lesson, dataset: Dataset): void {
             ? dataset.images.length
             : dataset.kind === "sounds"
               ? dataset.sounds.length
-              : dataset.items.length;
+              : dataset.kind === "tokens"
+                ? dataset.items.length
+                : Object.keys(dataset.groupings).length;
 
     if (step.goal.min > available) {
       throw new Error(

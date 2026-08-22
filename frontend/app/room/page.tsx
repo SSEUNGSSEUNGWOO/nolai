@@ -124,6 +124,21 @@ function toView(artifact: RoomArtifact, lessonTitle: string): ArtifactView | nul
       };
     }
 
+    if ("triedGroupings" in payload) {
+      const images = payload.triedGroupings.map((k) => ({
+        id: String(k),
+        label: `${k}개로`,
+        emoji: "🧩",
+      }));
+
+      return {
+        id: artifact.id,
+        lessonTitle,
+        createdAt: artifact.createdAt,
+        detail: { kind: "pixels", images },
+      };
+    }
+
     if ("itemIds" in payload) {
       const dataset = getDataset(payload.datasetId);
       if (dataset.kind !== "tokens") return null;

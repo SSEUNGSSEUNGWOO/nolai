@@ -1,0 +1,251 @@
+{
+  "kind": "clusters",
+  "id": "words-cluster",
+  "model": "nlpai-lab/KURE-v1",
+  "projection": "mds",
+  "categories": [
+    {
+      "id": "animal",
+      "label": "동물",
+      "color": "#FF6B6B"
+    },
+    {
+      "id": "vehicle",
+      "label": "탈것",
+      "color": "#4ECDC4"
+    },
+    {
+      "id": "food",
+      "label": "음식",
+      "color": "#FFD93D"
+    }
+  ],
+  "words": [
+    {
+      "id": "dog",
+      "label": "강아지",
+      "emoji": "🐶",
+      "category": "animal",
+      "x": 0.6301,
+      "y": 0.3574
+    },
+    {
+      "id": "cat",
+      "label": "고양이",
+      "emoji": "🐱",
+      "category": "animal",
+      "x": 0.6755,
+      "y": 0.2486
+    },
+    {
+      "id": "rabbit",
+      "label": "토끼",
+      "emoji": "🐰",
+      "category": "animal",
+      "x": 0.8434,
+      "y": 0.2956
+    },
+    {
+      "id": "tiger",
+      "label": "호랑이",
+      "emoji": "🐯",
+      "category": "animal",
+      "x": 0.843,
+      "y": 0.4534
+    },
+    {
+      "id": "elephant",
+      "label": "코끼리",
+      "emoji": "🐘",
+      "category": "animal",
+      "x": 0.8704,
+      "y": 0.1317
+    },
+    {
+      "id": "penguin",
+      "label": "펭귄",
+      "emoji": "🐧",
+      "category": "animal",
+      "x": 0.92,
+      "y": 0.6278
+    },
+    {
+      "id": "car",
+      "label": "자동차",
+      "emoji": "🚗",
+      "category": "vehicle",
+      "x": 0.3104,
+      "y": 0.1048
+    },
+    {
+      "id": "bus",
+      "label": "버스",
+      "emoji": "🚌",
+      "category": "vehicle",
+      "x": 0.1097,
+      "y": 0.3315
+    },
+    {
+      "id": "train",
+      "label": "기차",
+      "emoji": "🚆",
+      "category": "vehicle",
+      "x": 0.2391,
+      "y": 0.2984
+    },
+    {
+      "id": "airplane",
+      "label": "비행기",
+      "emoji": "✈️",
+      "category": "vehicle",
+      "x": 0.4395,
+      "y": 0.08
+    },
+    {
+      "id": "bike",
+      "label": "자전거",
+      "emoji": "🚲",
+      "category": "vehicle",
+      "x": 0.1525,
+      "y": 0.4921
+    },
+    {
+      "id": "truck",
+      "label": "트럭",
+      "emoji": "🚚",
+      "category": "vehicle",
+      "x": 0.1481,
+      "y": 0.164
+    },
+    {
+      "id": "pizza",
+      "label": "피자",
+      "emoji": "🍕",
+      "category": "food",
+      "x": 0.7138,
+      "y": 0.7615
+    },
+    {
+      "id": "gimbap",
+      "label": "김밥",
+      "emoji": "🍙",
+      "category": "food",
+      "x": 0.4902,
+      "y": 0.92
+    },
+    {
+      "id": "ramen",
+      "label": "라면",
+      "emoji": "🍜",
+      "category": "food",
+      "x": 0.2917,
+      "y": 0.8516
+    },
+    {
+      "id": "tteok",
+      "label": "떡볶이",
+      "emoji": "🌶️",
+      "category": "food",
+      "x": 0.5378,
+      "y": 0.7934
+    },
+    {
+      "id": "burger",
+      "label": "햄버거",
+      "emoji": "🍔",
+      "category": "food",
+      "x": 0.4104,
+      "y": 0.631
+    },
+    {
+      "id": "dumpling",
+      "label": "만두",
+      "emoji": "🥟",
+      "category": "food",
+      "x": 0.08,
+      "y": 0.7899
+    }
+  ],
+  "groupings": {
+    "2": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    "3": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "4": [
+      3,
+      3,
+      3,
+      0,
+      3,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "5": [
+      3,
+      3,
+      3,
+      3,
+      3,
+      0,
+      4,
+      1,
+      4,
+      4,
+      1,
+      4,
+      0,
+      2,
+      2,
+      2,
+      2,
+      2
+    ]
+  }
+}

@@ -145,6 +145,23 @@ const tokensDataset = z.strictObject({
     .min(1),
 });
 
+/**
+ * 레슨 11 -- 컴퓨터가 스스로 나눈 무리.
+ *
+ * 무리 배정은 미리 계산해 담는다. 브라우저에서 k-means를 돌리면 구현이 달라
+ * 다른 답이 나올 수 있고, 그러면 미리 재보고 쓴 문구가 화면과 어긋난다.
+ */
+const clustersDataset = z.strictObject({
+  kind: z.literal("clusters"),
+  id: z.string().min(1),
+  model: z.string().min(1),
+  projection: z.literal("mds"),
+  categories: z.array(category).min(1),
+  words: z.array(word).min(2),
+  /** 무리 개수(문자열 키) → 단어마다의 무리 번호. words와 순서가 같다. */
+  groupings: z.record(z.string(), z.array(z.number().int().nonnegative())),
+});
+
 function reportDuplicateIds(
   items: { id: string }[],
   path: string,
@@ -170,6 +187,7 @@ export const datasetSchema = z
     pixelsDataset,
     soundsDataset,
     tokensDataset,
+    clustersDataset,
   ])
   .superRefine((data, ctx) => {
     if (data.kind === "words") {
@@ -183,6 +201,43 @@ export const datasetSchema = z
             code: "custom",
             message: `알 수 없는 category: ${w.category}`,
             path: ["words", i, "category"],
+          });
+        }
+      });
+      return;
+    }
+
+    if (data.kind === "clusters") {
+      reportDuplicateIds(data.words, "words", ctx);
+
+      const known = new Set(data.categories.map((c) => c.id));
+      data.words.forEach((w, i) => {
+        if (!known.has(w.category)) {
+          ctx.addIssue({
+            code: "custom",
+            message: `알 수 없는 category: ${w.category}`,
+            path: ["words", i, "category"],
+          });
+        }
+      });
+
+      Object.entries(data.groupings).forEach(([k, assigned]) => {
+        // 배정이 단어 수와 다르면 엉뚱한 단어가 엉뚱한 무리로 간다.
+        if (assigned.length !== data.words.length) {
+          ctx.addIssue({
+            code: "custom",
+            message: `무리 ${k}개의 배정 수(${assigned.length})가 단어 수(${data.words.length})와 다릅니다`,
+            path: ["groupings", k],
+          });
+          return;
+        }
+
+        const used = new Set(assigned).size;
+        if (used !== Number(k)) {
+          ctx.addIssue({
+            code: "custom",
+            message: `무리를 ${k}개로 나눴다는데 실제로는 ${used}개입니다`,
+            path: ["groupings", k],
           });
         }
       });
@@ -293,6 +348,7 @@ export type PassagesDataset = Extract<Dataset, { kind: "passages" }>;
 export type PixelsDataset = Extract<Dataset, { kind: "pixels" }>;
 export type SoundsDataset = Extract<Dataset, { kind: "sounds" }>;
 export type TokensDataset = Extract<Dataset, { kind: "tokens" }>;
+export type ClustersDataset = Extract<Dataset, { kind: "clusters" }>;
 export type DatasetWord = z.infer<typeof word>;
 export type DatasetCategory = z.infer<typeof category>;
 export type DatasetPassage = z.infer<typeof passage>;

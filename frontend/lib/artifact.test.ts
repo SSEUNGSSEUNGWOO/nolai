@@ -158,6 +158,11 @@ describe("parseArtifact — 모든 레슨을 덮는다", () => {
     "pixel-coarse": { datasetId: "pixel-art", imageIds: ["star"] },
     "wave-zoom": { datasetId: "sounds-simple", soundIds: ["do"] },
     "token-split": { datasetId: "text-pieces", itemIds: ["t01"] },
+    "self-cluster": { datasetId: "words-cluster", triedGroupings: [3] },
+    "translate-map": {
+      datasetId: "words-translate",
+      placedIds: ["dog_ko", "dog_en"],
+    },
   };
 
   it("레슨마다 결과물 예시가 준비돼 있다", () => {

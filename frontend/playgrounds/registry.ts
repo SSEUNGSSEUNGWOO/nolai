@@ -5,6 +5,7 @@ import LikeRecommender from "./like-recommender/LikeRecommender";
 import PixelZoom from "./pixel-zoom/PixelZoom";
 import WaveZoom from "./wave-zoom/WaveZoom";
 import TokenSplit from "./token-split/TokenSplit";
+import SelfCluster from "./self-cluster/SelfCluster";
 import type { PlaygroundComponent } from "./types";
 
 export const registry: Record<string, PlaygroundComponent> = {
@@ -15,6 +16,7 @@ export const registry: Record<string, PlaygroundComponent> = {
   PixelZoom,
   WaveZoom,
   TokenSplit,
+  SelfCluster,
 };
 
 export function getPlayground(name: string): PlaygroundComponent {
