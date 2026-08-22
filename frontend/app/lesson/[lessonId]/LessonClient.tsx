@@ -7,6 +7,7 @@ import type { Dataset } from "@/lib/dataset-schema";
 import LessonRunner, { type LessonResult } from "@/components/LessonRunner";
 import { completeLesson } from "@/lib/local-progress";
 import { ui } from "@/copy/ui";
+import MuteButton from "@/components/MuteButton";
 
 export default function LessonClient({
   lesson,
@@ -41,7 +42,10 @@ export default function LessonClient({
     <main className="mx-auto flex min-h-screen max-w-md flex-col gap-4 px-5 py-6">
       <header className="flex items-center justify-between text-sm font-extrabold">
         <Link href="/">← 놀AI</Link>
-        <span>{lesson.title}</span>
+        <span className="flex items-center gap-2">
+          {lesson.title}
+          <MuteButton />
+        </span>
       </header>
 
       {done ? (

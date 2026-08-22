@@ -13,6 +13,8 @@ export const ui = {
   rewardTitle: "배지 획득!",
   rewardCta: "좋아!",
   lessonComplete: "레슨을 끝냈어!",
+  soundOn: "소리 켜기",
+  soundOff: "소리 끄기",
 } as const;
 
 export const badgeNames: Record<string, string> = {

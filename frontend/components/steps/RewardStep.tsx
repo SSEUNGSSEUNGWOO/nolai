@@ -1,6 +1,8 @@
 "use client";
 
 import { motion } from "motion/react";
+import { useEffect } from "react";
+import { playReward } from "@/lib/sound";
 import { popButton } from "./styles";
 import { ui, badgeNames } from "@/copy/ui";
 
@@ -11,6 +13,9 @@ export default function RewardStep({
   badge: string;
   onDone: () => void;
 }) {
+  // 배지가 뜨는 순간에 낸다. 음소거면 playReward가 알아서 아무 일도 안 한다.
+  useEffect(() => playReward(), []);
+
   return (
     <div className="flex flex-col items-center gap-3 py-10">
       <motion.span

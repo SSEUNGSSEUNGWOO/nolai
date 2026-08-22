@@ -93,3 +93,19 @@ test.describe("작은 폰", () => {
     }
   });
 });
+
+test("음소거 버튼이 레슨 화면에 있고 상태가 남는다", async ({ page }) => {
+  // 설계 문서 9장: 교실·도서관에서 쓸 수 있어야 한다
+  await page.goto("/lesson/nearest-search");
+
+  const mute = page.getByTestId("mute");
+  await expect(mute).toBeVisible();
+  await expect(mute).toHaveAttribute("data-muted", "false");
+
+  await mute.click();
+  await expect(mute).toHaveAttribute("data-muted", "true");
+
+  // 다른 레슨으로 옮겨도 꺼진 채로 있어야 한다
+  await page.goto("/lesson/embedding-map");
+  await expect(page.getByTestId("mute")).toHaveAttribute("data-muted", "true");
+});

@@ -12,6 +12,7 @@ import ChallengeStep from "./steps/ChallengeStep";
 import RewardStep from "./steps/RewardStep";
 import { popButton } from "./steps/styles";
 import { ui } from "@/copy/ui";
+import { unlockAudio } from "@/lib/sound";
 
 export interface LessonResult {
   lessonId: string;
@@ -45,6 +46,10 @@ export default function LessonRunner({
   const Playground = registry[lesson.playground];
 
   function next() {
+    // 브라우저는 사용자 조작 없이 소리를 못 내게 막는다. 버튼을 누른 이
+    // 순간이 그 조작이라, 보상 화면에 닿기 전에 미리 깨워둔다.
+    unlockAudio();
+
     if (stepIndex + 1 < lesson.steps.length) {
       setStepIndex(stepIndex + 1);
       return;
