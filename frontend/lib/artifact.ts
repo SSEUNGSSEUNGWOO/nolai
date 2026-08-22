@@ -18,6 +18,12 @@ const wordsArtifact = z.strictObject({
   placedIds: z.array(z.string().min(1)).max(200),
 });
 
+/** 레슨 5 -- 어떤 것에 하트를 눌렀는지. */
+const likesArtifact = z.strictObject({
+  datasetId: z.string().min(1),
+  likedIds: z.array(z.string().min(1)).max(200),
+});
+
 /** 레슨 3 -- 어느 단어를 어느 상자에 넣어 가르쳤는지. */
 const teachArtifact = z.strictObject({
   datasetId: z.string().min(1),
@@ -38,8 +44,13 @@ const passagesArtifact = z.strictObject({
 
 export type WordsArtifact = z.infer<typeof wordsArtifact>;
 export type TeachArtifact = z.infer<typeof teachArtifact>;
+export type LikesArtifact = z.infer<typeof likesArtifact>;
 export type PassagesArtifact = z.infer<typeof passagesArtifact>;
-export type ArtifactPayload = WordsArtifact | TeachArtifact | PassagesArtifact;
+export type ArtifactPayload =
+  | WordsArtifact
+  | TeachArtifact
+  | LikesArtifact
+  | PassagesArtifact;
 
 /**
  * 레슨이 쓰는 데이터셋 종류에 맞는 결과물인지 확인한다.
@@ -53,6 +64,19 @@ export function parseArtifact(lesson: Lesson, raw: unknown): ArtifactPayload | n
   if (dataset.kind === "words") {
     // 좌표형 데이터셋을 쓰는 레슨이 둘이고 결과물 모양이 다르다. 어느
     // 쪽이든 통과하면 받는다 -- 어차피 둘 다 id만 담는다.
+    const likes = likesArtifact.safeParse(raw);
+    if (likes.success) {
+      if (likes.data.datasetId !== dataset.id) return null;
+
+      const known = new Set(dataset.words.map((word) => word.id));
+      if (!likes.data.likedIds.every((id) => known.has(id))) return null;
+      if (new Set(likes.data.likedIds).size !== likes.data.likedIds.length) {
+        return null;
+      }
+
+      return likes.data;
+    }
+
     const teach = teachArtifact.safeParse(raw);
     if (teach.success) {
       if (teach.data.datasetId !== dataset.id) return null;

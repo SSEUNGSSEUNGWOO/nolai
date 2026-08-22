@@ -124,6 +124,27 @@ function toView(artifact: RoomArtifact, lessonTitle: string): ArtifactView | nul
       };
     }
 
+    if ("likedIds" in payload) {
+      const dataset = getDataset(payload.datasetId);
+      if (dataset.kind !== "words") return null;
+
+      const colorOf = new Map(dataset.categories.map((c) => [c.id, c.color]));
+      const chips = payload.likedIds
+        .map((id) => dataset.words.find((word) => word.id === id))
+        .filter((word) => word !== undefined)
+        .map((word) => ({
+          label: `${word.emoji} ${word.label}`,
+          color: colorOf.get(word.category) ?? "#FFFFFF",
+        }));
+
+      return {
+        id: artifact.id,
+        lessonTitle,
+        createdAt: artifact.createdAt,
+        detail: { kind: "likes", chips },
+      };
+    }
+
     if ("taught" in payload) {
       const dataset = getDataset(payload.datasetId);
       if (dataset.kind !== "words") return null;

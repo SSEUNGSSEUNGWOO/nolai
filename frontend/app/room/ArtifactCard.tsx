@@ -12,6 +12,11 @@ export interface TeachView {
   count: number;
 }
 
+export interface LikesView {
+  kind: "likes";
+  chips: { label: string; color: string }[];
+}
+
 export interface PassagesView {
   kind: "passages";
   questions: string[];
@@ -21,7 +26,7 @@ export interface ArtifactView {
   id: string;
   lessonTitle: string;
   createdAt: string;
-  detail: WordsView | TeachView | PassagesView;
+  detail: WordsView | TeachView | LikesView | PassagesView;
 }
 
 function formatDate(iso: string): string {
@@ -65,6 +70,23 @@ export default function ArtifactCard({ view }: { view: ArtifactView }) {
           </svg>
           <p className="text-xs font-bold text-muted">
             단어 {view.detail.dots.length}개를 놓았어
+          </p>
+        </>
+      ) : view.detail.kind === "likes" ? (
+        <>
+          <ul className="flex flex-wrap gap-1">
+            {view.detail.chips.map((chip) => (
+              <li
+                key={chip.label}
+                className="rounded-full border-2 border-ink px-2 py-0.5 text-xs font-extrabold"
+                style={{ backgroundColor: chip.color }}
+              >
+                ❤️ {chip.label}
+              </li>
+            ))}
+          </ul>
+          <p className="text-xs font-bold text-muted">
+            {view.detail.chips.length}개를 좋아했어
           </p>
         </>
       ) : view.detail.kind === "teach" ? (

@@ -172,12 +172,22 @@ describe("content 로더 — 레슨 4", () => {
     );
   });
 
-  it("네 레슨이 order 순으로 나온다", () => {
+});
+
+describe("content 로더 — 레슨 5", () => {
+  it("like-recommender 레슨을 검증해서 읽는다", () => {
+    const lesson = getLesson("like-recommender");
+    expect(lesson.title).toBe("내 취향을 어떻게 알까");
+    expect(lesson.playground).toBe("LikeRecommender");
+  });
+
+  it("다섯 레슨이 order 순으로 나온다", () => {
     expect(listLessons().map((l) => l.id)).toEqual([
       "embedding-map",
       "nearest-search",
       "teach-sorter",
       "answer-gaps",
+      "like-recommender",
     ]);
   });
 });

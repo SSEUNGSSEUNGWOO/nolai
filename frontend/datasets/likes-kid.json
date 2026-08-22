@@ -1,0 +1,217 @@
+{
+  "kind": "words",
+  "id": "likes-kid",
+  "model": "nlpai-lab/KURE-v1",
+  "projection": "mds",
+  "categories": [
+    {
+      "id": "food",
+      "label": "먹는 것",
+      "color": "#FF6B6B"
+    },
+    {
+      "id": "sport",
+      "label": "몸 쓰는 것",
+      "color": "#4ECDC4"
+    },
+    {
+      "id": "make",
+      "label": "만드는 것",
+      "color": "#FFD93D"
+    }
+  ],
+  "words": [
+    {
+      "id": "pizza",
+      "label": "피자",
+      "emoji": "🍕",
+      "category": "food",
+      "x": 0.2323,
+      "y": 0.7603
+    },
+    {
+      "id": "tteok",
+      "label": "떡볶이",
+      "emoji": "🌶️",
+      "category": "food",
+      "x": 0.3575,
+      "y": 0.6957
+    },
+    {
+      "id": "icecream",
+      "label": "아이스크림",
+      "emoji": "🍦",
+      "category": "food",
+      "x": 0.4669,
+      "y": 0.7898
+    },
+    {
+      "id": "gimbap",
+      "label": "김밥",
+      "emoji": "🍙",
+      "category": "food",
+      "x": 0.5043,
+      "y": 0.92
+    },
+    {
+      "id": "chocolate",
+      "label": "초콜릿",
+      "emoji": "🍫",
+      "category": "food",
+      "x": 0.5194,
+      "y": 0.6351
+    },
+    {
+      "id": "ramen",
+      "label": "라면",
+      "emoji": "🍜",
+      "category": "food",
+      "x": 0.3397,
+      "y": 0.9008
+    },
+    {
+      "id": "burger",
+      "label": "햄버거",
+      "emoji": "🍔",
+      "category": "food",
+      "x": 0.6395,
+      "y": 0.7542
+    },
+    {
+      "id": "dumpling",
+      "label": "만두",
+      "emoji": "🥟",
+      "category": "food",
+      "x": 0.7202,
+      "y": 0.8998
+    },
+    {
+      "id": "soccer",
+      "label": "축구",
+      "emoji": "⚽",
+      "category": "sport",
+      "x": 0.848,
+      "y": 0.6214
+    },
+    {
+      "id": "baseball",
+      "label": "야구",
+      "emoji": "⚾",
+      "category": "sport",
+      "x": 0.92,
+      "y": 0.5767
+    },
+    {
+      "id": "swim",
+      "label": "수영",
+      "emoji": "🏊",
+      "category": "sport",
+      "x": 0.7272,
+      "y": 0.2941
+    },
+    {
+      "id": "taekwondo",
+      "label": "태권도",
+      "emoji": "🥋",
+      "category": "sport",
+      "x": 0.8154,
+      "y": 0.2607
+    },
+    {
+      "id": "rope",
+      "label": "줄넘기",
+      "emoji": "🪢",
+      "category": "sport",
+      "x": 0.5114,
+      "y": 0.3085
+    },
+    {
+      "id": "basket",
+      "label": "농구",
+      "emoji": "🏀",
+      "category": "sport",
+      "x": 0.9002,
+      "y": 0.4707
+    },
+    {
+      "id": "badminton",
+      "label": "배드민턴",
+      "emoji": "🏸",
+      "category": "sport",
+      "x": 0.9015,
+      "y": 0.3834
+    },
+    {
+      "id": "skate",
+      "label": "스케이트",
+      "emoji": "⛸️",
+      "category": "sport",
+      "x": 0.6324,
+      "y": 0.4829
+    },
+    {
+      "id": "lego",
+      "label": "레고",
+      "emoji": "🧱",
+      "category": "make",
+      "x": 0.1402,
+      "y": 0.4784
+    },
+    {
+      "id": "origami",
+      "label": "종이접기",
+      "emoji": "🦢",
+      "category": "make",
+      "x": 0.1511,
+      "y": 0.2417
+    },
+    {
+      "id": "drawing",
+      "label": "그림 그리기",
+      "emoji": "🎨",
+      "category": "make",
+      "x": 0.3704,
+      "y": 0.2993
+    },
+    {
+      "id": "clay",
+      "label": "찰흙놀이",
+      "emoji": "🧑‍🎨",
+      "category": "make",
+      "x": 0.4663,
+      "y": 0.08
+    },
+    {
+      "id": "knit",
+      "label": "뜨개질",
+      "emoji": "🧶",
+      "category": "make",
+      "x": 0.2307,
+      "y": 0.3524
+    },
+    {
+      "id": "cross",
+      "label": "십자수",
+      "emoji": "🪡",
+      "category": "make",
+      "x": 0.08,
+      "y": 0.6122
+    },
+    {
+      "id": "blocks",
+      "label": "블록 쌓기",
+      "emoji": "🏗️",
+      "category": "make",
+      "x": 0.5535,
+      "y": 0.1422
+    },
+    {
+      "id": "beads",
+      "label": "비즈 공예",
+      "emoji": "📿",
+      "category": "make",
+      "x": 0.2694,
+      "y": 0.0811
+    }
+  ]
+}

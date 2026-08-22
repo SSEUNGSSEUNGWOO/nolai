@@ -7,16 +7,19 @@ import embeddingMapLesson from "@/lessons/embedding-map.json";
 import nearestSearchLesson from "@/lessons/nearest-search.json";
 import teachSorterLesson from "@/lessons/teach-sorter.json";
 import answerGapsLesson from "@/lessons/answer-gaps.json";
+import likeRecommenderLesson from "@/lessons/like-recommender.json";
 import wordsAnimalsVehicles from "@/datasets/words-animals-vehicles.json";
 import animalFacts from "@/datasets/animal-facts.json";
 import wordsTeach from "@/datasets/words-teach.json";
 import animalFactsGaps from "@/datasets/animal-facts-gaps.json";
+import likesKid from "@/datasets/likes-kid.json";
 
 const rawLessons: Record<string, unknown> = {
   "embedding-map": embeddingMapLesson,
   "nearest-search": nearestSearchLesson,
   "teach-sorter": teachSorterLesson,
   "answer-gaps": answerGapsLesson,
+  "like-recommender": likeRecommenderLesson,
 };
 
 const rawDatasets: Record<string, unknown> = {
@@ -24,6 +27,7 @@ const rawDatasets: Record<string, unknown> = {
   "animal-facts": animalFacts,
   "words-teach": wordsTeach,
   "animal-facts-gaps": animalFactsGaps,
+  "likes-kid": likesKid,
 };
 
 /** 목표 종류마다 셀 수 있는 것을 담고 있는 데이터셋 종류가 정해져 있다. */
@@ -31,6 +35,7 @@ const goalDatasetKind = {
   placed: "words",
   searched: "passages",
   taught: "words",
+  liked: "words",
 } as const;
 
 export function getDataset(id: string): Dataset {

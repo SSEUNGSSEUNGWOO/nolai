@@ -22,6 +22,7 @@ export const badgeNames: Record<string, string> = {
   "path-finder": "길 찾기 대장",
   teacher: "꼬마 선생님",
   "gap-finder": "빈틈 탐정",
+  "taste-reader": "취향 탐정",
 };
 
 /** 계정과 내 방 화면의 문구. */

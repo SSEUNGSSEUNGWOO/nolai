@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { parseArtifact } from "./artifact";
-import { getLesson } from "./content";
+import { getLesson, listLessons } from "./content";
 
 const lesson1 = getLesson("embedding-map");
 const lesson2 = getLesson("nearest-search");
@@ -136,5 +136,35 @@ describe("parseArtifact — 가르치기 레슨", () => {
         { wordId: "dog", categoryId: "vehicle" },
       ],
     })).toBeNull();
+  });
+});
+
+describe("parseArtifact — 모든 레슨을 덮는다", () => {
+  // 레슨을 늘릴 때 결과물 모양을 여기 추가하지 않으면 작품이 조용히 버려진다.
+  // 화면에도 에러가 안 뜨고 내 방만 비어 있다. 실제로 레슨 5에서 그럴 뻔했다.
+  const samples: Record<string, unknown> = {
+    "embedding-map": {
+      datasetId: "words-animals-vehicles",
+      placedIds: ["dog"],
+    },
+    "nearest-search": { datasetId: "animal-facts", questionIds: ["q01"] },
+    "teach-sorter": {
+      datasetId: "words-teach",
+      taught: [{ wordId: "dog", categoryId: "animal" }],
+    },
+    "answer-gaps": { datasetId: "animal-facts-gaps", questionIds: ["g01"] },
+    "like-recommender": { datasetId: "likes-kid", likedIds: ["pizza"] },
+  };
+
+  it("레슨마다 결과물 예시가 준비돼 있다", () => {
+    expect(Object.keys(samples).sort()).toEqual(
+      listLessons().map((lesson) => lesson.id).sort(),
+    );
+  });
+
+  it("모든 레슨의 결과물이 저장 가능한 모양으로 통과한다", () => {
+    for (const [lessonId, payload] of Object.entries(samples)) {
+      expect(parseArtifact(getLesson(lessonId), payload), lessonId).not.toBeNull();
+    }
   });
 });
