@@ -8,6 +8,15 @@ import {
   assertBadgeNamesExist,
 } from "./content";
 
+/** 이 파일의 검사는 좌표형(words) 데이터셋을 전제한다. 좁혀서 꺼낸다. */
+function wordsDataset(id: string) {
+  const dataset = getDataset(id);
+  if (dataset.kind !== "words") {
+    throw new Error(`${id}는 words 데이터셋이 아닙니다`);
+  }
+  return dataset;
+}
+
 describe("content 로더", () => {
   it("embedding-map 레슨을 검증해서 읽는다", () => {
     const lesson = getLesson("embedding-map");
@@ -17,7 +26,7 @@ describe("content 로더", () => {
 
   it("레슨이 참조하는 데이터셋이 실제로 존재한다", () => {
     const lesson = getLesson("embedding-map");
-    const dataset = getDataset(lesson.dataset);
+    const dataset = wordsDataset(lesson.dataset);
     expect(dataset.words.length).toBeGreaterThanOrEqual(10);
   });
 
@@ -37,12 +46,12 @@ describe("content 로더", () => {
     ).not.toThrow();
   });
 
-  it("데이터셋 단어 수보다 minPlaced가 크면 거부한다", () => {
+  it("데이터셋 항목 수보다 goal.min이 크면 거부한다", () => {
     const lesson = getLesson("embedding-map");
-    const dataset = getDataset(lesson.dataset);
+    const dataset = wordsDataset(lesson.dataset);
     const tooFew = { ...dataset, words: dataset.words.slice(0, 2) };
 
-    expect(() => assertPlayable(lesson, tooFew)).toThrow(/minPlaced/);
+    expect(() => assertPlayable(lesson, tooFew)).toThrow(/goal.min/);
   });
 
   it("레슨이 참조하는 놀이터가 실제로 등록돼 있다", () => {
@@ -72,5 +81,28 @@ describe("content 로더", () => {
     };
 
     expect(() => assertBadgeNamesExist(broken)).toThrow(/unknown-badge/);
+  });
+});
+
+describe("assertPlayable — 목표와 데이터셋 종류", () => {
+  const passages = {
+    kind: "passages" as const,
+    id: "animal-facts",
+    model: "nlpai-lab/KURE-v1",
+    projection: "mds" as const,
+    passages: [
+      { id: "p1", text: "코끼리는 코로 물을 마신다.", x: 0.2, y: 0.3 },
+      { id: "p2", text: "기차는 선로 위를 달린다.", x: 0.8, y: 0.7 },
+    ],
+    questions: [
+      { id: "q1", text: "코끼리는 물을 어떻게 마셔?", x: 0.25, y: 0.35, top: ["p1"] },
+    ],
+  };
+
+  it("goal.kind와 데이터셋 종류가 어긋나면 거부한다", () => {
+    // 레슨 1은 goal.kind가 "placed"라 words 데이터셋이 필요하다.
+    // passages를 물리면 아이가 무엇을 해도 진도가 안 나간다.
+    const lesson = getLesson("embedding-map");
+    expect(() => assertPlayable(lesson, passages)).toThrow(/passages/);
   });
 });

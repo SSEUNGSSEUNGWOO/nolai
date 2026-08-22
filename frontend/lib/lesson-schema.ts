@@ -5,10 +5,26 @@ const hookStep = z.strictObject({
   owl: z.string().min(1),
 });
 
+/**
+ * 놀이터마다 "충분히 놀았다"의 기준이 다르다. 임베딩 지도는 단어를 놓은 수,
+ * 벡터검색은 질문을 골라본 수다. kind는 놀이터가 올려보내는 이벤트 이름과
+ * 같으며, LessonRunner는 그 이름의 이벤트만 세어 목표 달성을 판단한다.
+ */
+const goal = z.discriminatedUnion("kind", [
+  z.strictObject({
+    kind: z.literal("placed"),
+    min: z.number().int().positive(),
+  }),
+  z.strictObject({
+    kind: z.literal("searched"),
+    min: z.number().int().positive(),
+  }),
+]);
+
 const playStep = z.strictObject({
   type: z.literal("play"),
   owl: z.array(z.string().min(1)).min(1),
-  goal: z.strictObject({ minPlaced: z.number().int().positive() }),
+  goal,
 });
 
 const nameStep = z.strictObject({
@@ -96,3 +112,4 @@ export const lessonSchema = z
 
 export type Lesson = z.infer<typeof lessonSchema>;
 export type LessonStep = z.infer<typeof lessonStepSchema>;
+export type PlayGoal = z.infer<typeof goal>;

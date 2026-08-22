@@ -4,7 +4,11 @@ import LessonRunner from "./LessonRunner";
 import { getLesson, getDataset } from "@/lib/content";
 
 const lesson = getLesson("embedding-map");
-const dataset = getDataset(lesson.dataset);
+const rawDataset = getDataset(lesson.dataset);
+if (rawDataset.kind !== "words") {
+  throw new Error("레슨 1은 words 데이터셋이어야 합니다");
+}
+const dataset = rawDataset;
 
 beforeEach(() => {
   Element.prototype.getBoundingClientRect = vi.fn(() => ({
@@ -31,7 +35,7 @@ describe("LessonRunner", () => {
     expect(screen.getByTestId("word-drawer")).toBeInTheDocument();
   });
 
-  it("minPlaced를 채우기 전에는 '다 했어요' 버튼이 없다", () => {
+  it("goal.min을 채우기 전에는 '다 했어요' 버튼이 없다", () => {
     renderRunner();
     fireEvent.click(screen.getByRole("button", { name: "궁금해!" }));
 
@@ -39,7 +43,7 @@ describe("LessonRunner", () => {
     expect(screen.queryByRole("button", { name: "다 했어요" })).not.toBeInTheDocument();
   });
 
-  it("minPlaced를 채우면 '다 했어요' 버튼이 나오고 이름 붙이기로 넘어간다", () => {
+  it("goal.min을 채우면 '다 했어요' 버튼이 나오고 이름 붙이기로 넘어간다", () => {
     renderRunner();
     fireEvent.click(screen.getByRole("button", { name: "궁금해!" }));
 
