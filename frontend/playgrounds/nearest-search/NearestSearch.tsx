@@ -131,7 +131,10 @@ export default function NearestSearch({
             <motion.div
               key={current.id}
               data-testid="question-marker"
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl"
+              // 이모지는 글리프가 텍스트 상자 안에서 치우쳐 그려진다. 크기를
+              // 정한 상자 안에 가운데 정렬해야 광선이 시작하는 (50,50)과 별의
+              // 눈에 보이는 중심이 맞는다.
+              className="absolute left-1/2 top-1/2 flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center text-3xl leading-none"
               initial={{ scale: 0, rotate: -30 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 260, damping: 14 }}
@@ -162,7 +165,13 @@ export default function NearestSearch({
         </ol>
       )}
 
-      <div data-testid="question-drawer" className="flex flex-wrap gap-2">
+      {/* 질문이 20장이고 문장이라 길다. 그대로 늘어놓으면 놀이터 아래에 오는
+          노리 말풍선과 "다 했어요" 버튼이 화면 밖으로 밀려 아이가 안내도 못 보고
+          다음으로 넘어가지도 못한다. 서랍 안에서만 스크롤되게 높이를 묶는다. */}
+      <div
+        data-testid="question-drawer"
+        className="flex max-h-[38vh] flex-wrap gap-2 overflow-y-auto rounded-pop border-[2.5px] border-ink bg-cream p-2"
+      >
         {dataset.questions.map((question) => (
           <button
             key={question.id}
