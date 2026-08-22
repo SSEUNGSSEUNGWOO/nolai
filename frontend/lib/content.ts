@@ -14,6 +14,12 @@ const rawDatasets: Record<string, unknown> = {
   "words-animals-vehicles": wordsAnimalsVehicles,
 };
 
+/** 목표 종류마다 셀 수 있는 것을 담고 있는 데이터셋 종류가 정해져 있다. */
+const goalDatasetKind = {
+  placed: "words",
+  searched: "passages",
+} as const;
+
 export function getDataset(id: string): Dataset {
   const raw = rawDatasets[id];
   if (!raw) throw new Error(`알 수 없는 데이터셋: ${id}`);
@@ -23,19 +29,35 @@ export function getDataset(id: string): Dataset {
 /**
  * 레슨이 자기 데이터셋으로 실제로 끝까지 진행 가능한지 확인한다.
  *
- * play 스텝의 minPlaced가 데이터셋 단어 수보다 크면, 아이가 단어를 전부
- * 놓아도 목표를 못 채워 다음 단계로 못 넘어간다 — 소프트락이다.
- * 스키마는 두 파일을 따로 보므로 이 검사는 여기서만 할 수 있다.
+ * 두 가지 소프트락을 막는다. (1) 목표 종류와 데이터셋 종류가 어긋나면 아이가
+ * 무엇을 해도 러너가 기다리는 이벤트가 올라오지 않는다. (2) 목표치가 데이터셋이
+ * 가진 개수보다 크면 전부 해도 목표를 못 채운다. 둘 다 화면에는 에러가 뜨지
+ * 않고 그냥 다음으로 넘어가지 못한다. 스키마는 두 파일을 따로 보므로 이 검사는
+ * 여기서만 할 수 있다.
  */
 export function assertPlayable(lesson: Lesson, dataset: Dataset): void {
   lesson.steps.forEach((step) => {
     if (step.type !== "play") return;
 
-    if (step.goal.minPlaced > dataset.words.length) {
+    const expectedKind = goalDatasetKind[step.goal.kind];
+    if (dataset.kind !== expectedKind) {
       throw new Error(
-        `레슨 ${lesson.id}: minPlaced(${step.goal.minPlaced})가 ` +
-          `데이터셋 단어 수(${dataset.words.length})보다 많습니다. ` +
-          `아이가 전부 놓아도 다음으로 넘어갈 수 없습니다.`,
+        `레슨 ${lesson.id}: goal.kind가 "${step.goal.kind}"인데 ` +
+          `데이터셋 ${dataset.id}는 "${dataset.kind}" 종류입니다. ` +
+          `"${expectedKind}" 종류가 필요합니다.`,
+      );
+    }
+
+    const available =
+      dataset.kind === "words"
+        ? dataset.words.length
+        : dataset.questions.length;
+
+    if (step.goal.min > available) {
+      throw new Error(
+        `레슨 ${lesson.id}: goal.min(${step.goal.min})이 ` +
+          `데이터셋 항목 수(${available})보다 많습니다. ` +
+          `아이가 전부 해도 다음으로 넘어갈 수 없습니다.`,
       );
     }
   });

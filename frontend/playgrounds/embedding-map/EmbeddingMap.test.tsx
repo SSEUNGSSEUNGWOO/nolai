@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import EmbeddingMap from "./EmbeddingMap";
-import type { Dataset } from "@/lib/dataset-schema";
+import type { WordsDataset } from "@/lib/dataset-schema";
 
-const data: Dataset = {
+const data: WordsDataset = {
+  kind: "words",
   id: "test",
   model: "nlpai-lab/KURE-v1",
   projection: "mds",
@@ -54,7 +55,7 @@ describe("EmbeddingMap", () => {
 
     expect(onEvent).toHaveBeenCalledWith({
       type: "placed",
-      payload: { wordId: "dog", placedCount: 1 },
+      payload: { wordId: "dog", count: 1 },
     });
   });
 

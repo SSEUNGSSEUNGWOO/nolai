@@ -1,4 +1,5 @@
 {
+  "kind": "words",
   "id": "words-animals-vehicles",
   "model": "nlpai-lab/KURE-v1",
   "projection": "mds",

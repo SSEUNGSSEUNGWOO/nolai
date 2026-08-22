@@ -147,6 +147,7 @@ def main() -> None:
         print("=" * 60 + "\n")
 
     dataset = {
+        "kind": "words",
         "id": source["id"],
         "model": MODEL,
         "projection": "mds",

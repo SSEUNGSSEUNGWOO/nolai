@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
-import type { Dataset } from "@/lib/dataset-schema";
+import type { WordsDataset } from "@/lib/dataset-schema";
 import type { PlaygroundProps } from "../types";
 import WordChip from "./WordChip";
 import { buildLinks, isInsideRect } from "./geometry";
@@ -19,7 +19,7 @@ export default function EmbeddingMap({
   onEvent,
   onArtifact,
 }: PlaygroundProps) {
-  const dataset = data as Dataset;
+  const dataset = data as WordsDataset;
   const [placedIds, setPlacedIds] = useState<string[]>([]);
   // 렌더링 사이 간격 없이 값을 즉시 반영해야 하므로 ref로 최신 상태를 따로 추적한다.
   // (state만 쓰면 같은 배치 안에서 연속으로 place()가 호출될 때 클로저가 오래된
@@ -52,7 +52,7 @@ export default function EmbeddingMap({
     setPlacedIds(next);
     onEvent({
       type: "placed",
-      payload: { wordId, placedCount: next.length },
+      payload: { wordId, count: next.length },
     });
 
     onArtifact({

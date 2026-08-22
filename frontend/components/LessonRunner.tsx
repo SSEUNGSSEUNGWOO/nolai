@@ -28,7 +28,7 @@ export default function LessonRunner({
   onComplete: (result: LessonResult) => void;
 }) {
   const [stepIndex, setStepIndex] = useState(0);
-  const [placedCount, setPlacedCount] = useState(0);
+  const [progressCount, setProgressCount] = useState(0);
 
   // 놀이터가 만든 산출물을 받아둔다. state가 아니라 ref인 이유는
   // 값이 바뀌어도 다시 그릴 필요가 없어서다. 계획 2에서 서버에 저장한다.
@@ -55,9 +55,12 @@ export default function LessonRunner({
     });
   }
 
+  // 놀이터는 자기가 하는 일의 이름으로 이벤트를 올린다("placed", "searched").
+  // 러너는 지금 스텝의 목표와 이름이 같은 이벤트만 세고 나머지는 흘려보낸다.
+  // 이렇게 해야 놀이터가 레슨의 목표를 몰라도 된다.
   function handlePlaygroundEvent(event: PlaygroundEvent) {
-    if (event.type === "placed") {
-      setPlacedCount(Number(event.payload?.placedCount ?? 0));
+    if (step.type === "play" && event.type === step.goal.kind) {
+      setProgressCount(Number(event.payload?.count ?? 0));
     }
   }
 
@@ -66,9 +69,9 @@ export default function LessonRunner({
   }
 
   if (step.type === "play") {
-    // 놓은 개수만큼 대사가 따라 올라간다. 대사가 모자라면 마지막 대사를 유지한다.
-    const line = step.owl[Math.min(placedCount, step.owl.length - 1)];
-    const canAdvance = placedCount >= step.goal.minPlaced;
+    // 해낸 개수만큼 대사가 따라 올라간다. 대사가 모자라면 마지막 대사를 유지한다.
+    const line = step.owl[Math.min(progressCount, step.owl.length - 1)];
+    const canAdvance = progressCount >= step.goal.min;
 
     return (
       <div className="flex flex-col gap-3">

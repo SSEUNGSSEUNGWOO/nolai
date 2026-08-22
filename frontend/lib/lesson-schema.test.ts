@@ -10,7 +10,7 @@ const validLesson = {
   dataset: "words-animals-vehicles",
   steps: [
     { type: "hook", owl: "컴퓨터는 '강아지'라는 말을 몰라." },
-    { type: "play", owl: ["아무거나 끌어다 놔봐!"], goal: { minPlaced: 5 } },
+    { type: "play", owl: ["아무거나 끌어다 놔봐!"], goal: { kind: "placed", min: 5 } },
     { type: "name", concept: "임베딩", body: "말을 숫자로 바꿔서 기억해." },
     {
       type: "challenge",
@@ -52,15 +52,15 @@ describe("lessonSchema", () => {
   it("play 스텝의 owl 대사가 비어 있으면 거부한다", () => {
     const bad = {
       ...validLesson,
-      steps: [{ type: "play", owl: [], goal: { minPlaced: 1 } }],
+      steps: [{ type: "play", owl: [], goal: { kind: "placed", min: 1 } }],
     };
     expect(() => lessonSchema.parse(bad)).toThrow();
   });
 
-  it("goal.minPlaced가 0이면 거부한다", () => {
+  it("goal.min이 0이면 거부한다", () => {
     const bad = {
       ...validLesson,
-      steps: [{ type: "play", owl: ["가"], goal: { minPlaced: 0 } }],
+      steps: [{ type: "play", owl: ["가"], goal: { kind: "placed", min: 0 } }],
     };
     expect(() => lessonSchema.parse(bad)).toThrow();
   });
@@ -117,14 +117,14 @@ describe("lessonSchema", () => {
   it("스텝의 오타를 해당 필드만 짚어서 알려준다", () => {
     const bad = {
       ...validLesson,
-      steps: [{ type: "play", owl: ["가"], goal: { minPlace: 5 } }],
+      steps: [{ type: "play", owl: ["가"], goal: { kind: "placed", minn: 5 } }],
     };
 
     const result = lessonSchema.safeParse(bad);
     expect(result.success).toBe(false);
 
     const issues = JSON.stringify(result.error!.issues);
-    expect(issues).toMatch(/minPlace/);
+    expect(issues).toMatch(/minn/);
     // 다른 스텝 타입의 필드가 섞여 나오면 안 된다
     expect(issues).not.toMatch(/concept|badge|question/);
   });
