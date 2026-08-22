@@ -17,4 +17,5 @@ export const ui = {
 
 export const badgeNames: Record<string, string> = {
   "map-explorer": "지도 탐험가",
+  "path-finder": "길 찾기 대장",
 };

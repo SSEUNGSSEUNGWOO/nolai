@@ -4,14 +4,18 @@ import { getPlayground } from "@/playgrounds/registry";
 import { badgeNames } from "@/copy/ui";
 
 import embeddingMapLesson from "@/lessons/embedding-map.json";
+import nearestSearchLesson from "@/lessons/nearest-search.json";
 import wordsAnimalsVehicles from "@/datasets/words-animals-vehicles.json";
+import animalFacts from "@/datasets/animal-facts.json";
 
 const rawLessons: Record<string, unknown> = {
   "embedding-map": embeddingMapLesson,
+  "nearest-search": nearestSearchLesson,
 };
 
 const rawDatasets: Record<string, unknown> = {
   "words-animals-vehicles": wordsAnimalsVehicles,
+  "animal-facts": animalFacts,
 };
 
 /** 목표 종류마다 셀 수 있는 것을 담고 있는 데이터셋 종류가 정해져 있다. */
