@@ -1,11 +1,5 @@
 import { z } from "zod";
 
-/** 지도 위 위치. 사전 계산된 값이며 손으로 고치지 않는다. */
-const coord = {
-  x: z.number().min(0).max(1),
-  y: z.number().min(0).max(1),
-};
-
 const category = z.strictObject({
   id: z.string().min(1),
   label: z.string().min(1),
@@ -17,21 +11,22 @@ const word = z.strictObject({
   label: z.string().min(1),
   emoji: z.string().min(1),
   category: z.string().min(1),
-  ...coord,
+  x: z.number().min(0).max(1),
+  y: z.number().min(0).max(1),
 });
 
 const passage = z.strictObject({
   id: z.string().min(1),
   text: z.string().min(1),
-  ...coord,
+  /** 화면에서 이 문장이 늘 놓이는 방향. 0 이상 1 미만의 회전수다. */
+  angle: z.number().min(0).lt(1),
 });
 
 const question = z.strictObject({
   id: z.string().min(1),
   text: z.string().min(1),
-  ...coord,
-  /** 원본 임베딩 공간에서 가까운 순서대로 고른 passage id. 사전 계산값이다. */
-  top: z.array(z.string().min(1)).min(1),
+  /** passages와 같은 순서로 늘어놓은 코사인 유사도. 사전 계산값이다. */
+  sims: z.array(z.number().min(-1).max(1)).min(2),
 });
 
 /** 레슨 1 — 단어를 지도 위에 놓는다. */
@@ -44,12 +39,23 @@ const wordsDataset = z.strictObject({
   words: z.array(word).min(2),
 });
 
-/** 레슨 2 — 질문을 골라 가장 가까운 문장을 찾는다. */
+/**
+ * 레슨 2 — 질문을 골라 가장 가까운 문장을 찾는다.
+ *
+ * 좌표를 담지 않는다. 질문이 늘 화면 한가운데 서고 문장은 실제 유사도를
+ * 반지름으로 삼아 둘러서므로, 배치는 화면에서 계산한다. 2D 지도로 눌러 두면
+ * 유사도 차이가 사라져 화면에서 먼 문장이 1등이 되는 일이 생긴다.
+ */
 const passagesDataset = z.strictObject({
   kind: z.literal("passages"),
   id: z.string().min(1),
   model: z.string().min(1),
-  projection: z.literal("mds"),
+  projection: z.literal("radial"),
+  /** 유사도를 반지름으로 바꿀 때 쓰는 전역 기준. 질문마다 따로 재지 않는다. */
+  simRange: z.strictObject({
+    min: z.number().min(-1).max(1),
+    max: z.number().min(-1).max(1),
+  }),
   passages: z.array(passage).min(2),
   questions: z.array(question).min(1),
 });
@@ -95,25 +101,24 @@ export const datasetSchema = z
     reportDuplicateIds(data.passages, "passages", ctx);
     reportDuplicateIds(data.questions, "questions", ctx);
 
-    // top이 존재하지 않는 passage를 가리키면 아이가 질문을 골랐을 때 답이
-    // 비어 있는 채로 검색이 끝난다. 화면에는 에러가 안 뜨고 아무 일도 안 난다.
-    const known = new Set(data.passages.map((p) => p.id));
-    data.questions.forEach((q, i) => {
-      q.top.forEach((id, j) => {
-        if (!known.has(id)) {
-          ctx.addIssue({
-            code: "custom",
-            message: `알 수 없는 passage: ${id}`,
-            path: ["questions", i, "top", j],
-          });
-        }
+    if (data.simRange.min >= data.simRange.max) {
+      ctx.addIssue({
+        code: "custom",
+        message: "simRange.min이 max보다 작아야 합니다",
+        path: ["simRange"],
       });
+    }
 
-      if (new Set(q.top).size !== q.top.length) {
+    // sims는 passages와 자리를 맞춰 읽는다. 길이가 어긋나면 엉뚱한 문장의
+    // 유사도를 읽게 되는데, 화면에는 에러가 아니라 이상한 순위로만 나타난다.
+    data.questions.forEach((q, i) => {
+      if (q.sims.length !== data.passages.length) {
         ctx.addIssue({
           code: "custom",
-          message: "top에 같은 passage가 두 번 들어 있습니다",
-          path: ["questions", i, "top"],
+          message:
+            `sims 길이(${q.sims.length})가 passages 수(${data.passages.length})와 ` +
+            `다릅니다`,
+          path: ["questions", i, "sims"],
         });
       }
     });

@@ -63,13 +63,14 @@ const validPassages = {
   kind: "passages",
   id: "animal-facts",
   model: "nlpai-lab/KURE-v1",
-  projection: "mds",
+  projection: "radial",
+  simRange: { min: 0.25, max: 0.72 },
   passages: [
-    { id: "p1", text: "코끼리는 코로 물을 마신다.", x: 0.2, y: 0.3 },
-    { id: "p2", text: "기차는 선로 위를 달린다.", x: 0.8, y: 0.7 },
+    { id: "p1", text: "코끼리는 코로 물을 마신다.", angle: 0 },
+    { id: "p2", text: "기차는 선로 위를 달린다.", angle: 0.5 },
   ],
   questions: [
-    { id: "q1", text: "코끼리는 물을 어떻게 마셔?", x: 0.25, y: 0.35, top: ["p1", "p2"] },
+    { id: "q1", text: "코끼리는 물을 어떻게 마셔?", sims: [0.71, 0.3] },
   ],
 };
 
@@ -77,23 +78,28 @@ describe("datasetSchema — passages", () => {
   it("올바른 문장 데이터셋을 통과시킨다", () => {
     const parsed = datasetSchema.parse(validPassages);
     if (parsed.kind !== "passages") throw new Error("passages 데이터셋이어야 합니다");
-    expect(parsed.questions[0].top).toEqual(["p1", "p2"]);
+    expect(parsed.questions[0].sims).toEqual([0.71, 0.3]);
   });
 
-  it("top이 없는 passage를 가리키면 거부한다", () => {
+  it("sims 길이가 passages 수와 다르면 거부한다", () => {
     const bad = {
       ...validPassages,
-      questions: [{ ...validPassages.questions[0], top: ["ghost"] }],
+      questions: [{ ...validPassages.questions[0], sims: [0.71] }],
     };
-    expect(() => datasetSchema.parse(bad)).toThrow(/ghost/);
+    expect(() => datasetSchema.parse(bad)).toThrow(/sims 길이/);
   });
 
-  it("top에 같은 passage가 두 번 들어가면 거부한다", () => {
+  it("angle이 한 바퀴를 넘으면 거부한다", () => {
     const bad = {
       ...validPassages,
-      questions: [{ ...validPassages.questions[0], top: ["p1", "p1"] }],
+      passages: [{ ...validPassages.passages[0], angle: 1 }, validPassages.passages[1]],
     };
-    expect(() => datasetSchema.parse(bad)).toThrow(/두 번/);
+    expect(() => datasetSchema.parse(bad)).toThrow();
+  });
+
+  it("simRange가 뒤집혀 있으면 거부한다", () => {
+    const bad = { ...validPassages, simRange: { min: 0.72, max: 0.25 } };
+    expect(() => datasetSchema.parse(bad)).toThrow(/simRange/);
   });
 
   it("passage id가 중복되면 거부한다", () => {

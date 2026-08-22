@@ -89,13 +89,14 @@ describe("assertPlayable — 목표와 데이터셋 종류", () => {
     kind: "passages" as const,
     id: "animal-facts",
     model: "nlpai-lab/KURE-v1",
-    projection: "mds" as const,
+    projection: "radial" as const,
+    simRange: { min: 0.25, max: 0.72 },
     passages: [
-      { id: "p1", text: "코끼리는 코로 물을 마신다.", x: 0.2, y: 0.3 },
-      { id: "p2", text: "기차는 선로 위를 달린다.", x: 0.8, y: 0.7 },
+      { id: "p1", text: "코끼리는 코로 물을 마신다.", angle: 0 },
+      { id: "p2", text: "기차는 선로 위를 달린다.", angle: 0.5 },
     ],
     questions: [
-      { id: "q1", text: "코끼리는 물을 어떻게 마셔?", x: 0.25, y: 0.35, top: ["p1"] },
+      { id: "q1", text: "코끼리는 물을 어떻게 마셔?", sims: [0.71, 0.3] },
     ],
   };
 
@@ -104,5 +105,38 @@ describe("assertPlayable — 목표와 데이터셋 종류", () => {
     // passages를 물리면 아이가 무엇을 해도 진도가 안 나간다.
     const lesson = getLesson("embedding-map");
     expect(() => assertPlayable(lesson, passages)).toThrow(/passages/);
+  });
+});
+
+describe("content 로더 — 레슨 2", () => {
+  it("nearest-search 레슨을 검증해서 읽는다", () => {
+    const lesson = getLesson("nearest-search");
+    expect(lesson.title).toBe("가장 가까운 걸 찾아줘");
+    expect(lesson.playground).toBe("NearestSearch");
+  });
+
+  it("레슨 2의 데이터셋은 문장 종류다", () => {
+    const dataset = getDataset(getLesson("nearest-search").dataset);
+    expect(dataset.kind).toBe("passages");
+  });
+
+  it("레슨 2와 데이터셋 조합은 끝까지 진행 가능하다", () => {
+    const lesson = getLesson("nearest-search");
+    expect(() =>
+      assertPlayable(lesson, getDataset(lesson.dataset)),
+    ).not.toThrow();
+  });
+
+  it("두 레슨이 order 순으로 나온다", () => {
+    expect(listLessons().map((l) => l.id)).toEqual([
+      "embedding-map",
+      "nearest-search",
+    ]);
+  });
+
+  it("레슨 2의 배지에도 한글 이름이 있다", () => {
+    expect(() =>
+      assertBadgeNamesExist(getLesson("nearest-search")),
+    ).not.toThrow();
   });
 });
