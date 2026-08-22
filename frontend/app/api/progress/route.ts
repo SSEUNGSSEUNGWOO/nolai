@@ -1,9 +1,14 @@
 import { z } from "zod";
 import { currentKidId } from "@/lib/auth/current";
 import { getLesson } from "@/lib/content";
-import { completeLesson } from "@/lib/room";
+import { completeLesson, saveArtifact } from "@/lib/room";
+import { parseArtifact } from "@/lib/artifact";
 
-const body = z.strictObject({ lessonId: z.string().min(1) });
+const body = z.strictObject({
+  lessonId: z.string().min(1),
+  // 모양 검사는 서버가 한다(lib/artifact.ts). 여기서는 있는지만 본다.
+  artifact: z.unknown().optional(),
+});
 
 export async function POST(request: Request) {
   const kidId = await currentKidId();
@@ -28,5 +33,10 @@ export async function POST(request: Request) {
 
   await completeLesson(kidId, lesson.id, badge);
 
-  return Response.json({ ok: true });
+  // 결과물이 모양에 안 맞으면 조용히 버린다. 레슨을 끝낸 것은 사실이고,
+  // 작품 하나 때문에 배지를 못 받게 하는 것이 더 나쁘다.
+  const artifact = parseArtifact(lesson, parsed.data.artifact);
+  if (artifact) await saveArtifact(kidId, lesson.id, artifact);
+
+  return Response.json({ ok: true, artifactSaved: artifact !== null });
 }

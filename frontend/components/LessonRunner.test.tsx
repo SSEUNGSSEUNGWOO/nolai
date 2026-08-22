@@ -72,6 +72,14 @@ describe("LessonRunner", () => {
     expect(onComplete).toHaveBeenCalledWith({
       lessonId: "embedding-map",
       badge: "map-explorer",
+      // 놀이터가 만든 결과물도 함께 올라온다 -- 내 방에 저장할 재료다
+      artifact: {
+        kind: "embedding-map",
+        payload: {
+          datasetId: dataset.id,
+          placedIds: dataset.words.slice(0, 9).map((word) => word.id),
+        },
+      },
     });
   });
 });

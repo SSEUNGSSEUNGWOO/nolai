@@ -41,6 +41,8 @@ export const account = {
   roomBadges: "모은 배지",
   roomNoBadges: "아직 배지가 없어. 레슨을 하나 끝내보자!",
   roomProgress: "끝낸 레슨",
+  roomArtifacts: "내 작품",
+  roomNoArtifacts: "아직 작품이 없어. 레슨에서 만든 게 여기 쌓여!",
   logout: "나가기",
   join: "내 방 만들기",
   login: "내 방 들어가기",

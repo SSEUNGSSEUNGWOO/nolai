@@ -35,13 +35,16 @@ function split(nickname: string): { modifier: string; character: string } {
 
 async function join(page: Page): Promise<{ nickname: string; code: string }> {
   await page.goto("/join");
-  await page.locator('[data-testid^="nickname-"]').first().click();
+  // 누르기 전에 이름을 먼저 적어둔다. 가입 뒤 단언에서 실패하면 뒷정리가
+  // 이 계정을 놓쳐 DB에 고아 계정이 남는다.
+  const candidate = page.locator('[data-testid^="nickname-"]').first();
+  created.push((await candidate.innerText()).trim());
+  await candidate.click();
 
   await expect(page.getByTestId("issued-code")).toBeVisible();
   const nickname = (await page.getByTestId("issued-nickname").innerText()).trim();
   const code = (await page.getByTestId("issued-code").innerText()).trim();
 
-  created.push(nickname);
   return { nickname, code };
 }
 
@@ -66,7 +69,7 @@ test("가입하고 레슨을 끝내면 내 방에 배지가 꽂힌다", async ({
   const { nickname } = await join(page);
 
   await page.getByRole("button", { name: "내 방으로 가기" }).click();
-  await expect(page.getByText(`${nickname}의 내 방`)).toBeVisible();
+  await expect(page.getByRole("heading", { name: `${nickname}의 내 방` })).toBeVisible();
   await expect(page.getByText("아직 배지가 없어")).toBeVisible();
 
   await finishLesson2(page);
@@ -94,7 +97,7 @@ test("나갔다가 닉네임과 코드로 다시 들어오면 진도가 그대�
   await page.getByTestId("code").fill(code);
   await page.getByTestId("login-submit").click();
 
-  await expect(page.getByText(`${nickname}의 내 방`)).toBeVisible();
+  await expect(page.getByRole("heading", { name: `${nickname}의 내 방` })).toBeVisible();
   await expect(page.getByTestId("badge-path-finder")).toBeVisible();
 });
 
@@ -111,7 +114,7 @@ test("소문자로 코드를 쳐도 들어갈 수 있다", async ({ page }) => {
   await page.getByTestId("code").fill(code.toLowerCase());
   await page.getByTestId("login-submit").click();
 
-  await expect(page.getByText(`${nickname}의 내 방`)).toBeVisible();
+  await expect(page.getByRole("heading", { name: `${nickname}의 내 방` })).toBeVisible();
 });
 
 test("코드가 틀리면 들어가지 못한다", async ({ page }) => {
@@ -130,6 +133,24 @@ test("로그인 없이 끝낸 레슨이 가입할 때 따라온다", async ({ pa
   const { nickname } = await join(page);
 
   await page.goto("/room");
-  await expect(page.getByText(`${nickname}의 내 방`)).toBeVisible();
+  await expect(page.getByRole("heading", { name: `${nickname}의 내 방` })).toBeVisible();
   await expect(page.getByTestId("badge-path-finder")).toBeVisible();
+});
+
+test("레슨에서 만든 작품이 내 방에 쌓인다", async ({ page }) => {
+  const { nickname } = await join(page);
+
+  await page.goto("/room");
+  await expect(page.getByText("아직 작품이 없어")).toBeVisible();
+
+  await finishLesson2(page);
+
+  await page.goto("/room");
+  await expect(page.getByRole("heading", { name: `${nickname}의 내 방` })).toBeVisible();
+
+  const shelf = page.getByTestId("artifact-shelf");
+  await expect(shelf).toBeVisible();
+  // 놀이터에서 고른 질문 3개가 작품에 그대로 담겨 있어야 한다
+  await expect(shelf).toContainText("질문 3개를 찾아봤어");
+  await expect(shelf).toContainText("먹을 게 어디 있는지 친구한테 어떻게 알려줘?");
 });

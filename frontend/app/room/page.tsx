@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { currentKidId } from "@/lib/auth/current";
-import { loadRoom } from "@/lib/room";
-import { listLessons } from "@/lib/content";
+import { loadRoom, type RoomArtifact } from "@/lib/room";
+import { getDataset, listLessons } from "@/lib/content";
 import { account, badgeNames, ui } from "@/copy/ui";
 import LogoutButton from "./LogoutButton";
+import ArtifactCard, { type ArtifactView } from "./ArtifactCard";
 
 // 세션 쿠키를 읽으므로 요청마다 그린다.
 export const dynamic = "force-dynamic";
@@ -17,6 +18,10 @@ export default async function RoomPage() {
   if (!room) redirect("/join");
 
   const lessons = listLessons();
+  const titleOf = new Map(lessons.map((lesson) => [lesson.id, lesson.title]));
+  const views = room.artifacts
+    .map((artifact) => toView(artifact, titleOf.get(artifact.lessonId) ?? artifact.lessonId))
+    .filter((view): view is ArtifactView => view !== null);
   const done = new Set(room.completedLessons);
 
   return (
@@ -50,6 +55,19 @@ export default async function RoomPage() {
       </section>
 
       <section className="flex flex-col gap-3">
+        <h2 className="text-lg font-extrabold">{account.roomArtifacts}</h2>
+        {views.length === 0 ? (
+          <p className="text-sm text-muted">{account.roomNoArtifacts}</p>
+        ) : (
+          <ul data-testid="artifact-shelf" className="flex flex-col gap-3">
+            {views.map((view) => (
+              <ArtifactCard key={view.id} view={view} />
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="flex flex-col gap-3">
         <h2 className="text-lg font-extrabold">{account.roomProgress}</h2>
         <ul className="flex flex-col gap-3">
           {lessons.map((lesson) => (
@@ -71,4 +89,56 @@ export default async function RoomPage() {
       </section>
     </main>
   );
+}
+
+/**
+ * 저장된 결과물을 화면이 그릴 수 있는 모양으로 바꾼다.
+ *
+ * 데이터셋이 바뀌어 id가 사라졌을 수 있다. 그런 작품은 조용히 빼고 나머지를
+ * 보여준다 -- 예전 작품 하나 때문에 내 방 전체가 죽으면 안 된다.
+ */
+function toView(artifact: RoomArtifact, lessonTitle: string): ArtifactView | null {
+  try {
+    const payload = artifact.payload;
+
+    if ("placedIds" in payload) {
+      const dataset = getDataset(payload.datasetId);
+      if (dataset.kind !== "words") return null;
+
+      const colorOf = new Map(dataset.categories.map((c) => [c.id, c.color]));
+      const dots = payload.placedIds
+        .map((id) => dataset.words.find((word) => word.id === id))
+        .filter((word) => word !== undefined)
+        .map((word) => ({
+          id: word.id,
+          x: word.x,
+          y: word.y,
+          color: colorOf.get(word.category) ?? "#FFFFFF",
+        }));
+
+      return {
+        id: artifact.id,
+        lessonTitle,
+        createdAt: artifact.createdAt,
+        detail: { kind: "words", dots, categories: dataset.categories },
+      };
+    }
+
+    const dataset = getDataset(payload.datasetId);
+    if (dataset.kind !== "passages") return null;
+
+    const questions = payload.questionIds
+      .map((id) => dataset.questions.find((question) => question.id === id))
+      .filter((question) => question !== undefined)
+      .map((question) => question.text);
+
+    return {
+      id: artifact.id,
+      lessonTitle,
+      createdAt: artifact.createdAt,
+      detail: { kind: "passages", questions },
+    };
+  } catch {
+    return null;
+  }
 }

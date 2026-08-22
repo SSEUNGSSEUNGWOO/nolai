@@ -24,10 +24,16 @@ export default function LessonClient({
     // 로그인한 아이면 서버에도 남긴다. 로그인 안 했으면 401이 오는데 그대로
     // 흘려보낸다 -- localStorage에는 이미 들어갔고, 나중에 계정을 만들 때
     // /api/sync가 옮겨준다.
+    // keepalive: 아이가 끝나자마자 "처음으로"를 눌러 화면을 벗어나도 이 요청은
+    // 살아서 도착한다. 없으면 브라우저가 이동하면서 취소해 진도가 사라진다.
     fetch("/api/progress", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lessonId: result.lessonId }),
+      keepalive: true,
+      body: JSON.stringify({
+        lessonId: result.lessonId,
+        artifact: result.artifact?.payload ?? null,
+      }),
     }).catch(() => {});
   }
 

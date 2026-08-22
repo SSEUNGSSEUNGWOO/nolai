@@ -16,6 +16,8 @@ import { ui } from "@/copy/ui";
 export interface LessonResult {
   lessonId: string;
   badge: string;
+  /** 놀이터가 마지막으로 올린 결과물. 아무것도 안 만들었으면 null. */
+  artifact: Artifact | null;
 }
 
 export default function LessonRunner({
@@ -52,6 +54,7 @@ export default function LessonRunner({
     onComplete({
       lessonId: lesson.id,
       badge: reward && reward.type === "reward" ? reward.badge : "",
+      artifact: artifactRef.current,
     });
   }
 
