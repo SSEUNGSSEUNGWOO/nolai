@@ -159,6 +159,8 @@ describe("parseArtifact — 모든 레슨을 덮는다", () => {
     "wave-zoom": { datasetId: "sounds-simple", soundIds: ["do"] },
     "token-split": { datasetId: "text-pieces", itemIds: ["t01"] },
     "self-cluster": { datasetId: "words-cluster", triedGroupings: [3] },
+    "analogy-lab": { datasetId: "analogy-basic", tried: ["gender|king"] },
+    "compare-meter": { datasetId: "words-compare", compared: ["big|small"] },
     "translate-map": {
       datasetId: "words-translate",
       placedIds: ["dog_ko", "dog_en"],

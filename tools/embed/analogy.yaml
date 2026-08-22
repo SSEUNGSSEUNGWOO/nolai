@@ -1,0 +1,66 @@
+# 레슨 12용 유추 (관계 계산)
+#
+# 아이가 "관계 카드"와 "단어 카드"를 골라 식을 만들면 컴퓨터가 답한다.
+#   왕 에 [남자→여자] 를 쓰면?  →  여왕
+#
+# 임베딩이 뜻을 **계산할 수 있다**는 것이 이 레슨의 아하다. 지금까지는 "가깝다,
+# 멀다"만 봤는데 여기서는 더하고 빼서 새 뜻을 만든다.
+#
+# 규칙:
+#
+# 12. **관계마다 어울리는 단어 무리를 함께 넣는다.** 어울리는 조합은 정확하고,
+#     안 어울리면 엉뚱한 답이 나온다. 둘 다 필요하다 -- 성공을 먼저 겪고,
+#     그다음에 "관계랑 안 맞으면 이상해진다"를 겪는다.
+#
+# 13. 답이 단어 목록에 없어도 된다(왕→여왕에서 '여왕'은 고를 수 없는 단어다).
+#     컴퓨터가 아는 말 중에서 찾아오는 것이 이 레슨의 그림이다.
+#
+# 확인한 값 (2026-08-22): 어울리는 조합 12개 중 12개 정확
+#   가족 + [남자→여자]  5/5    나라 + [한국→서울]  4/4    형용사 + [크다→작다]  3/3
+# 걸러낸 것:
+#   삼촌  - [남자→여자]에서 '딸'이 나왔다(이모가 아니라). 뺐다.
+#   무겁다 - [크다→작다]에서 '낮다'가 나왔다(가볍다가 아니라). 뺐다.
+
+id: analogy-basic
+
+relations:
+  - { id: gender, from: 남자,  to: 여자,  label: "남자 → 여자" }
+  - { id: capital, from: 한국, to: 서울, label: "나라 → 수도" }
+  - { id: opposite, from: 크다, to: 작다, label: "크다 → 작다" }
+
+subjects:
+  - { id: king,    label: 왕,       emoji: "👑", group: family }
+  - { id: dad,     label: 아빠,     emoji: "👨", group: family }
+  - { id: brother, label: 형,       emoji: "🧑", group: family }
+  - { id: son,     label: 아들,     emoji: "👦", group: family }
+  - { id: grandpa, label: 할아버지, emoji: "👴", group: family }
+  - { id: japan,   label: 일본,     emoji: "🇯🇵", group: country }
+  - { id: france,  label: 프랑스,   emoji: "🇫🇷", group: country }
+  - { id: china,   label: 중국,     emoji: "🇨🇳", group: country }
+  - { id: usa,     label: 미국,     emoji: "🇺🇸", group: country }
+  - { id: high,    label: 높다,     emoji: "⬆️", group: adjective }
+  - { id: hot,     label: 덥다,     emoji: "🔥", group: adjective }
+  - { id: fast,    label: 빠르다,   emoji: "💨", group: adjective }
+
+# 컴퓨터가 답으로 고를 수 있는 말들. 여기 없으면 답할 수 없다.
+vocabulary:
+  - 여왕
+  - 엄마
+  - 누나
+  - 딸
+  - 할머니
+  - 이모
+  - 도쿄
+  - 파리
+  - 베이징
+  - 워싱턴
+  - 낮다
+  - 춥다
+  - 느리다
+  - 가볍다
+  - 남자
+  - 여자
+  - 한국
+  - 서울
+  - 크다
+  - 작다

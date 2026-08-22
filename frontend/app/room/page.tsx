@@ -124,6 +124,60 @@ function toView(artifact: RoomArtifact, lessonTitle: string): ArtifactView | nul
       };
     }
 
+    if ("compared" in payload) {
+      const dataset = getDataset(payload.datasetId);
+      if (dataset.kind !== "similarity") return null;
+
+      const images = payload.compared
+        .map((pair) => {
+          const [a, b] = pair.split("|");
+          const left = dataset.words.find((w) => w.id === a);
+          const right = dataset.words.find((w) => w.id === b);
+          if (!left || !right) return undefined;
+
+          return {
+            id: pair,
+            label: `${left.label} ↔ ${right.label}`,
+            emoji: "⚖️",
+          };
+        })
+        .filter((one) => one !== undefined);
+
+      return {
+        id: artifact.id,
+        lessonTitle,
+        createdAt: artifact.createdAt,
+        detail: { kind: "pixels", images },
+      };
+    }
+
+    if ("tried" in payload) {
+      const dataset = getDataset(payload.datasetId);
+      if (dataset.kind !== "analogy") return null;
+
+      const images = payload.tried
+        .map((key) => {
+          const [relationId, subjectId] = key.split("|");
+          const relation = dataset.relations.find((r) => r.id === relationId);
+          const subject = dataset.subjects.find((s) => s.id === subjectId);
+          if (!relation || !subject) return undefined;
+
+          return {
+            id: key,
+            label: `${subject.label} + [${relation.label}]`,
+            emoji: subject.emoji,
+          };
+        })
+        .filter((one) => one !== undefined);
+
+      return {
+        id: artifact.id,
+        lessonTitle,
+        createdAt: artifact.createdAt,
+        detail: { kind: "pixels", images },
+      };
+    }
+
     if ("triedGroupings" in payload) {
       const images = payload.triedGroupings.map((k) => ({
         id: String(k),

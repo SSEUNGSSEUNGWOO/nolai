@@ -1,0 +1,34 @@
+# 레슨 13용 단어 (닮은 정도 재기)
+#
+# 아이가 두 단어를 고르면 얼마나 닮았는지 숫자로 나온다. 반대말을 골라보면
+# 놀랍게도 높게 나온다 -- 컴퓨터는 **무엇에 대한 말인지**(주제)를 먼저 보기
+# 때문이다. 크다·작다는 둘 다 '크기'에 대한 말이라 가깝다.
+#
+# 지도(2D)로 만들려다 실패했다. 고차원에서는 반대말 평균 0.709 / 무관 0.466로
+# 뚜렷한데, 2D로 누르고 화면 가득 펴면 그 차이가 사라진다(6쌍 중 2쌍만 붙었고,
+# 쌍을 줄이면 오히려 더 벌어졌다). 그래서 투영을 거치지 않고 원래 숫자를
+# 그대로 보여준다.
+#
+# 규칙:
+#
+# 15. 반대말 쌍, 같은 주제 쌍, 무관한 쌍을 함께 넣는다. 셋을 비교해봐야
+#     "반대말이 가깝다"가 놀라움이 된다.
+
+id: words-compare
+categories:
+  - { id: size,  label: 크기,  color: "#FF6B6B" }
+  - { id: temp,  label: 온도,  color: "#4ECDC4" }
+  - { id: light, label: 밝기,  color: "#FFD93D" }
+  - { id: thing, label: 물건,  color: "#A78BFA" }
+words:
+  - { id: big,    label: 크다,   emoji: "🐘", category: size }
+  - { id: small,  label: 작다,   emoji: "🐜", category: size }
+  - { id: long,   label: 길다,   emoji: "📏", category: size }
+  - { id: hot,    label: 덥다,   emoji: "🔥", category: temp }
+  - { id: cold,   label: 춥다,   emoji: "❄️", category: temp }
+  - { id: warm,   label: 따뜻하다, emoji: "🧣", category: temp }
+  - { id: bright, label: 밝다,   emoji: "☀️", category: light }
+  - { id: dark,   label: 어둡다, emoji: "🌙", category: light }
+  - { id: pencil, label: 연필,   emoji: "✏️", category: thing }
+  - { id: car,    label: 자동차, emoji: "🚗", category: thing }
+  - { id: pizza,  label: 피자,   emoji: "🍕", category: thing }

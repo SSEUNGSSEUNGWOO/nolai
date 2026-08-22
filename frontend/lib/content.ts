@@ -14,6 +14,8 @@ import waveZoomLesson from "@/lessons/wave-zoom.json";
 import tokenSplitLesson from "@/lessons/token-split.json";
 import translateMapLesson from "@/lessons/translate-map.json";
 import selfClusterLesson from "@/lessons/self-cluster.json";
+import analogyLabLesson from "@/lessons/analogy-lab.json";
+import compareMeterLesson from "@/lessons/compare-meter.json";
 import wordsAnimalsVehicles from "@/datasets/words-animals-vehicles.json";
 import animalFacts from "@/datasets/animal-facts.json";
 import wordsTeach from "@/datasets/words-teach.json";
@@ -24,6 +26,8 @@ import soundsSimple from "@/datasets/sounds-simple.json";
 import textPieces from "@/datasets/text-pieces.json";
 import wordsTranslate from "@/datasets/words-translate.json";
 import wordsCluster from "@/datasets/words-cluster.json";
+import analogyBasic from "@/datasets/analogy-basic.json";
+import wordsCompare from "@/datasets/words-compare.json";
 
 const rawLessons: Record<string, unknown> = {
   "embedding-map": embeddingMapLesson,
@@ -37,6 +41,8 @@ const rawLessons: Record<string, unknown> = {
   "token-split": tokenSplitLesson,
   "translate-map": translateMapLesson,
   "self-cluster": selfClusterLesson,
+  "analogy-lab": analogyLabLesson,
+  "compare-meter": compareMeterLesson,
 };
 
 const rawDatasets: Record<string, unknown> = {
@@ -50,6 +56,8 @@ const rawDatasets: Record<string, unknown> = {
   "text-pieces": textPieces,
   "words-translate": wordsTranslate,
   "words-cluster": wordsCluster,
+  "analogy-basic": analogyBasic,
+  "words-compare": wordsCompare,
 };
 
 /** 목표 종류마다 셀 수 있는 것을 담고 있는 데이터셋 종류가 정해져 있다. */
@@ -62,6 +70,8 @@ const goalDatasetKind = {
   heard: "sounds",
   split: "tokens",
   grouped: "clusters",
+  calculated: "analogy",
+  compared: "similarity",
 } as const;
 
 export function getDataset(id: string): Dataset {
@@ -105,7 +115,11 @@ export function assertPlayable(lesson: Lesson, dataset: Dataset): void {
               ? dataset.sounds.length
               : dataset.kind === "tokens"
                 ? dataset.items.length
-                : Object.keys(dataset.groupings).length;
+                : dataset.kind === "clusters"
+                  ? Object.keys(dataset.groupings).length
+                  : dataset.kind === "analogy"
+                    ? Object.keys(dataset.answers).length
+                    : Object.keys(dataset.sims).length;
 
     if (step.goal.min > available) {
       throw new Error(

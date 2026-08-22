@@ -1,0 +1,152 @@
+{
+  "kind": "similarity",
+  "id": "words-compare",
+  "model": "nlpai-lab/KURE-v1",
+  "categories": [
+    {
+      "id": "size",
+      "label": "크기",
+      "color": "#FF6B6B"
+    },
+    {
+      "id": "temp",
+      "label": "온도",
+      "color": "#4ECDC4"
+    },
+    {
+      "id": "light",
+      "label": "밝기",
+      "color": "#FFD93D"
+    },
+    {
+      "id": "thing",
+      "label": "물건",
+      "color": "#A78BFA"
+    }
+  ],
+  "words": [
+    {
+      "id": "big",
+      "label": "크다",
+      "emoji": "🐘",
+      "category": "size"
+    },
+    {
+      "id": "small",
+      "label": "작다",
+      "emoji": "🐜",
+      "category": "size"
+    },
+    {
+      "id": "long",
+      "label": "길다",
+      "emoji": "📏",
+      "category": "size"
+    },
+    {
+      "id": "hot",
+      "label": "덥다",
+      "emoji": "🔥",
+      "category": "temp"
+    },
+    {
+      "id": "cold",
+      "label": "춥다",
+      "emoji": "❄️",
+      "category": "temp"
+    },
+    {
+      "id": "warm",
+      "label": "따뜻하다",
+      "emoji": "🧣",
+      "category": "temp"
+    },
+    {
+      "id": "bright",
+      "label": "밝다",
+      "emoji": "☀️",
+      "category": "light"
+    },
+    {
+      "id": "dark",
+      "label": "어둡다",
+      "emoji": "🌙",
+      "category": "light"
+    },
+    {
+      "id": "pencil",
+      "label": "연필",
+      "emoji": "✏️",
+      "category": "thing"
+    },
+    {
+      "id": "car",
+      "label": "자동차",
+      "emoji": "🚗",
+      "category": "thing"
+    },
+    {
+      "id": "pizza",
+      "label": "피자",
+      "emoji": "🍕",
+      "category": "thing"
+    }
+  ],
+  "sims": {
+    "big|small": 0.7417,
+    "big|long": 0.7234,
+    "big|hot": 0.6921,
+    "big|cold": 0.6023,
+    "big|warm": 0.6255,
+    "big|bright": 0.6604,
+    "big|dark": 0.5885,
+    "big|pencil": 0.4504,
+    "big|car": 0.5042,
+    "big|pizza": 0.4811,
+    "small|long": 0.6761,
+    "small|hot": 0.5834,
+    "small|cold": 0.6039,
+    "small|warm": 0.5383,
+    "small|bright": 0.6262,
+    "small|dark": 0.5722,
+    "small|pencil": 0.4202,
+    "small|car": 0.4506,
+    "small|pizza": 0.4959,
+    "long|hot": 0.637,
+    "long|cold": 0.5811,
+    "long|warm": 0.562,
+    "long|bright": 0.6059,
+    "long|dark": 0.5693,
+    "long|pencil": 0.4993,
+    "long|car": 0.4853,
+    "long|pizza": 0.49,
+    "hot|cold": 0.7768,
+    "hot|warm": 0.7747,
+    "hot|bright": 0.7104,
+    "hot|dark": 0.6727,
+    "hot|pencil": 0.4932,
+    "hot|car": 0.4915,
+    "hot|pizza": 0.5038,
+    "cold|warm": 0.7827,
+    "cold|bright": 0.6455,
+    "cold|dark": 0.7289,
+    "cold|pencil": 0.4397,
+    "cold|car": 0.4569,
+    "cold|pizza": 0.4725,
+    "warm|bright": 0.7539,
+    "warm|dark": 0.6077,
+    "warm|pencil": 0.4676,
+    "warm|car": 0.4333,
+    "warm|pizza": 0.4623,
+    "bright|dark": 0.7294,
+    "bright|pencil": 0.4754,
+    "bright|car": 0.4385,
+    "bright|pizza": 0.4657,
+    "dark|pencil": 0.497,
+    "dark|car": 0.4192,
+    "dark|pizza": 0.3954,
+    "pencil|car": 0.4324,
+    "pencil|pizza": 0.439,
+    "car|pizza": 0.497
+  }
+}

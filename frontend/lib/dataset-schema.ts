@@ -162,6 +162,78 @@ const clustersDataset = z.strictObject({
   groupings: z.record(z.string(), z.array(z.number().int().nonnegative())),
 });
 
+/**
+ * 레슨 12 -- 관계 계산(유추).
+ *
+ * 아이가 고를 수 있는 조합이 관계 x 단어로 정해져 있으므로 답을 전부 미리
+ * 구해 담는다. 브라우저에서 1024차원 벡터를 다루면 파일이 커지고, 계산이
+ * 달라지면 미리 재보고 쓴 문구가 화면과 어긋난다.
+ */
+const analogyDataset = z.strictObject({
+  kind: z.literal("analogy"),
+  id: z.string().min(1),
+  model: z.string().min(1),
+  relations: z
+    .array(
+      z.strictObject({
+        id: z.string().min(1),
+        label: z.string().min(1),
+        from: z.string().min(1),
+        to: z.string().min(1),
+      }),
+    )
+    .min(1),
+  subjects: z
+    .array(
+      z.strictObject({
+        id: z.string().min(1),
+        label: z.string().min(1),
+        emoji: z.string().min(1),
+        /** 어느 무리의 말인지. 관계와 어울리는지 판단하는 데 쓴다. */
+        group: z.string().min(1),
+      }),
+    )
+    .min(1),
+  /** "관계id|단어id" → 가까운 순으로 고른 답. */
+  answers: z.record(
+    z.string(),
+    z
+      .array(
+        z.strictObject({
+          label: z.string().min(1),
+          score: z.number(),
+        }),
+      )
+      .min(1),
+  ),
+});
+
+/**
+ * 레슨 13 -- 두 단어가 얼마나 닮았는지.
+ *
+ * 2D로 누르지 않고 원래 공간의 값을 그대로 담는다. 이 레슨이 보여주려는
+ * 차이가 투영 과정에서 사라지기 때문이다(반대말을 지도에 놓아봤을 때 6쌍 중
+ * 2쌍만 붙었고, 쌍을 줄이면 오히려 더 벌어졌다).
+ */
+const similarityDataset = z.strictObject({
+  kind: z.literal("similarity"),
+  id: z.string().min(1),
+  model: z.string().min(1),
+  categories: z.array(category).min(1),
+  words: z
+    .array(
+      z.strictObject({
+        id: z.string().min(1),
+        label: z.string().min(1),
+        emoji: z.string().min(1),
+        category: z.string().min(1),
+      }),
+    )
+    .min(2),
+  /** "단어id|단어id" → 코사인 유사도. 순서는 words 순서를 따른다. */
+  sims: z.record(z.string(), z.number().min(-1).max(1)),
+});
+
 function reportDuplicateIds(
   items: { id: string }[],
   path: string,
@@ -188,6 +260,8 @@ export const datasetSchema = z
     soundsDataset,
     tokensDataset,
     clustersDataset,
+    analogyDataset,
+    similarityDataset,
   ])
   .superRefine((data, ctx) => {
     if (data.kind === "words") {
@@ -203,6 +277,47 @@ export const datasetSchema = z
             path: ["words", i, "category"],
           });
         }
+      });
+      return;
+    }
+
+    if (data.kind === "similarity") {
+      reportDuplicateIds(data.words, "words", ctx);
+
+      // 아이가 고를 수 있는 모든 쌍에 값이 있어야 한다. 없으면 화면이 빈다.
+      data.words.forEach((a, i) => {
+        data.words.slice(i + 1).forEach((b) => {
+          const has =
+            data.sims[`${a.id}|${b.id}`] !== undefined ||
+            data.sims[`${b.id}|${a.id}`] !== undefined;
+          if (!has) {
+            ctx.addIssue({
+              code: "custom",
+              message: `${a.id}와 ${b.id}의 값이 없습니다`,
+              path: ["sims"],
+            });
+          }
+        });
+      });
+      return;
+    }
+
+    if (data.kind === "analogy") {
+      reportDuplicateIds(data.relations, "relations", ctx);
+      reportDuplicateIds(data.subjects, "subjects", ctx);
+
+      // 아이가 고를 수 있는 조합에 답이 없으면 화면이 비어 있게 된다.
+      data.relations.forEach((relation) => {
+        data.subjects.forEach((subject) => {
+          const key = `${relation.id}|${subject.id}`;
+          if (!data.answers[key]) {
+            ctx.addIssue({
+              code: "custom",
+            message: `조합 ${key}의 답이 없습니다`,
+              path: ["answers", key],
+            });
+          }
+        });
       });
       return;
     }
@@ -349,6 +464,8 @@ export type PixelsDataset = Extract<Dataset, { kind: "pixels" }>;
 export type SoundsDataset = Extract<Dataset, { kind: "sounds" }>;
 export type TokensDataset = Extract<Dataset, { kind: "tokens" }>;
 export type ClustersDataset = Extract<Dataset, { kind: "clusters" }>;
+export type AnalogyDataset = Extract<Dataset, { kind: "analogy" }>;
+export type SimilarityDataset = Extract<Dataset, { kind: "similarity" }>;
 export type DatasetWord = z.infer<typeof word>;
 export type DatasetCategory = z.infer<typeof category>;
 export type DatasetPassage = z.infer<typeof passage>;

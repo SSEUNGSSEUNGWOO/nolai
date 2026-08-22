@@ -44,6 +44,14 @@ const goal = z.discriminatedUnion("kind", [
     kind: z.literal("grouped"),
     min: z.number().int().positive(),
   }),
+  z.strictObject({
+    kind: z.literal("calculated"),
+    min: z.number().int().positive(),
+  }),
+  z.strictObject({
+    kind: z.literal("compared"),
+    min: z.number().int().positive(),
+  }),
 ]);
 
 const playStep = z.strictObject({

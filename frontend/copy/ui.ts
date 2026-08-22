@@ -29,6 +29,8 @@ export const badgeNames: Record<string, string> = {
   "piece-master": "조각 박사",
   "bridge-builder": "다리 놓는 아이",
   "group-finder": "무리 찾기 대장",
+  "word-math": "말 수학자",
+  "meter-master": "저울 박사",
 };
 
 /** 계정과 내 방 화면의 문구. */

@@ -1,0 +1,33 @@
+# 레슨 13용 단어 (반대말도 가까울까)
+#
+# 반대말을 지도에 놓으면 붙는다. 아이는 "반대인데 왜 붙어?"라고 묻게 되고,
+# 그 답이 이 레슨이다 -- 컴퓨터는 **무엇에 대한 말인지**(주제)를 먼저 본다.
+# 크다·작다는 둘 다 '크기'에 대한 말이라 같은 자리에 있다.
+#
+# 놀이터는 레슨 1의 EmbeddingMap을 그대로 쓴다.
+#
+# 규칙 (레슨 10과 같다):
+#
+# 14. 반대말 쌍끼리는 서로 먼 주제를 고른다. 크기·온도·속도·높이·무게처럼
+#     다른 주제여야 각자의 짝과 붙는다.
+#
+# 확인한 값 (2026-08-22):
+#   반대말 평균 유사도 0.709 / 무관한 말 평균 0.466 (차이 +0.243)
+
+id: words-opposite
+categories:
+  - { id: a, label: 이쪽,  color: "#FF6B6B" }
+  - { id: b, label: 반대쪽, color: "#4ECDC4" }
+words:
+  - { id: big,    label: 크다,   emoji: "🐘", category: a }
+  - { id: small,  label: 작다,   emoji: "🐜", category: b }
+  - { id: hot,    label: 덥다,   emoji: "🔥", category: a }
+  - { id: cold,   label: 춥다,   emoji: "❄️", category: b }
+  - { id: fast,   label: 빠르다, emoji: "💨", category: a }
+  - { id: slow,   label: 느리다, emoji: "🐌", category: b }
+  - { id: high,   label: 높다,   emoji: "⬆️", category: a }
+  - { id: low,    label: 낮다,   emoji: "⬇️", category: b }
+  - { id: heavy,  label: 무겁다, emoji: "🪨", category: a }
+  - { id: light,  label: 가볍다, emoji: "🪶", category: b }
+  - { id: bright, label: 밝다,   emoji: "☀️", category: a }
+  - { id: dark,   label: 어둡다, emoji: "🌙", category: b }

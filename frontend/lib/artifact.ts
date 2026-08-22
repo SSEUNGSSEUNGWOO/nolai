@@ -18,6 +18,18 @@ const wordsArtifact = z.strictObject({
   placedIds: z.array(z.string().min(1)).max(200),
 });
 
+/** 레슨 13 -- 어떤 두 단어를 재봤는지. */
+const similarityArtifact = z.strictObject({
+  datasetId: z.string().min(1),
+  compared: z.array(z.string().min(1)).max(60),
+});
+
+/** 레슨 12 -- 어떤 식을 만들어봤는지. */
+const analogyArtifact = z.strictObject({
+  datasetId: z.string().min(1),
+  tried: z.array(z.string().min(1)).max(60),
+});
+
 /** 레슨 11 -- 무리를 몇 개로 나눠봤는지. */
 const clustersArtifact = z.strictObject({
   datasetId: z.string().min(1),
@@ -73,6 +85,8 @@ export type PixelsArtifact = z.infer<typeof pixelsArtifact>;
 export type SoundsArtifact = z.infer<typeof soundsArtifact>;
 export type TokensArtifact = z.infer<typeof tokensArtifact>;
 export type ClustersArtifact = z.infer<typeof clustersArtifact>;
+export type AnalogyArtifact = z.infer<typeof analogyArtifact>;
+export type SimilarityArtifact = z.infer<typeof similarityArtifact>;
 export type PassagesArtifact = z.infer<typeof passagesArtifact>;
 export type ArtifactPayload =
   | WordsArtifact
@@ -82,6 +96,8 @@ export type ArtifactPayload =
   | SoundsArtifact
   | TokensArtifact
   | ClustersArtifact
+  | AnalogyArtifact
+  | SimilarityArtifact
   | PassagesArtifact;
 
 /**
@@ -139,6 +155,38 @@ export function parseArtifact(lesson: Lesson, raw: unknown): ArtifactPayload | n
     }
 
     return parsed.data;
+  }
+
+  if (dataset.kind === "similarity") {
+    const parsedSim = similarityArtifact.safeParse(raw);
+    if (!parsedSim.success) return null;
+    if (parsedSim.data.datasetId !== dataset.id) return null;
+
+    const known = new Set(dataset.words.map((w) => w.id));
+    const ok = parsedSim.data.compared.every((pair) => {
+      const [a, b] = pair.split("|");
+      return known.has(a) && known.has(b) && a !== b;
+    });
+    if (!ok) return null;
+    if (new Set(parsedSim.data.compared).size !== parsedSim.data.compared.length) {
+      return null;
+    }
+
+    return parsedSim.data;
+  }
+
+  if (dataset.kind === "analogy") {
+    const analogy = analogyArtifact.safeParse(raw);
+    if (!analogy.success) return null;
+    if (analogy.data.datasetId !== dataset.id) return null;
+
+    const known = new Set(Object.keys(dataset.answers));
+    if (!analogy.data.tried.every((key) => known.has(key))) return null;
+    if (new Set(analogy.data.tried).size !== analogy.data.tried.length) {
+      return null;
+    }
+
+    return analogy.data;
   }
 
   if (dataset.kind === "clusters") {

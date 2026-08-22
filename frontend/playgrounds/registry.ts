@@ -6,6 +6,8 @@ import PixelZoom from "./pixel-zoom/PixelZoom";
 import WaveZoom from "./wave-zoom/WaveZoom";
 import TokenSplit from "./token-split/TokenSplit";
 import SelfCluster from "./self-cluster/SelfCluster";
+import AnalogyLab from "./analogy-lab/AnalogyLab";
+import CompareMeter from "./compare-meter/CompareMeter";
 import type { PlaygroundComponent } from "./types";
 
 export const registry: Record<string, PlaygroundComponent> = {
@@ -17,6 +19,8 @@ export const registry: Record<string, PlaygroundComponent> = {
   WaveZoom,
   TokenSplit,
   SelfCluster,
+  AnalogyLab,
+  CompareMeter,
 };
 
 export function getPlayground(name: string): PlaygroundComponent {

@@ -1,0 +1,605 @@
+{
+  "kind": "analogy",
+  "id": "analogy-basic",
+  "model": "nlpai-lab/KURE-v1",
+  "relations": [
+    {
+      "id": "gender",
+      "label": "남자 → 여자",
+      "from": "남자",
+      "to": "여자"
+    },
+    {
+      "id": "capital",
+      "label": "나라 → 수도",
+      "from": "한국",
+      "to": "서울"
+    },
+    {
+      "id": "opposite",
+      "label": "크다 → 작다",
+      "from": "크다",
+      "to": "작다"
+    }
+  ],
+  "subjects": [
+    {
+      "id": "king",
+      "label": "왕",
+      "emoji": "👑",
+      "group": "family"
+    },
+    {
+      "id": "dad",
+      "label": "아빠",
+      "emoji": "👨",
+      "group": "family"
+    },
+    {
+      "id": "brother",
+      "label": "형",
+      "emoji": "🧑",
+      "group": "family"
+    },
+    {
+      "id": "son",
+      "label": "아들",
+      "emoji": "👦",
+      "group": "family"
+    },
+    {
+      "id": "grandpa",
+      "label": "할아버지",
+      "emoji": "👴",
+      "group": "family"
+    },
+    {
+      "id": "japan",
+      "label": "일본",
+      "emoji": "🇯🇵",
+      "group": "country"
+    },
+    {
+      "id": "france",
+      "label": "프랑스",
+      "emoji": "🇫🇷",
+      "group": "country"
+    },
+    {
+      "id": "china",
+      "label": "중국",
+      "emoji": "🇨🇳",
+      "group": "country"
+    },
+    {
+      "id": "usa",
+      "label": "미국",
+      "emoji": "🇺🇸",
+      "group": "country"
+    },
+    {
+      "id": "high",
+      "label": "높다",
+      "emoji": "⬆️",
+      "group": "adjective"
+    },
+    {
+      "id": "hot",
+      "label": "덥다",
+      "emoji": "🔥",
+      "group": "adjective"
+    },
+    {
+      "id": "fast",
+      "label": "빠르다",
+      "emoji": "💨",
+      "group": "adjective"
+    }
+  ],
+  "answers": {
+    "gender|king": [
+      {
+        "label": "여왕",
+        "score": 0.6494
+      },
+      {
+        "label": "딸",
+        "score": 0.5419
+      },
+      {
+        "label": "엄마",
+        "score": 0.4859
+      }
+    ],
+    "gender|dad": [
+      {
+        "label": "엄마",
+        "score": 0.7562
+      },
+      {
+        "label": "딸",
+        "score": 0.6706
+      },
+      {
+        "label": "할머니",
+        "score": 0.6077
+      }
+    ],
+    "gender|brother": [
+      {
+        "label": "누나",
+        "score": 0.6423
+      },
+      {
+        "label": "딸",
+        "score": 0.606
+      },
+      {
+        "label": "엄마",
+        "score": 0.5399
+      }
+    ],
+    "gender|son": [
+      {
+        "label": "딸",
+        "score": 0.8039
+      },
+      {
+        "label": "엄마",
+        "score": 0.6749
+      },
+      {
+        "label": "누나",
+        "score": 0.563
+      }
+    ],
+    "gender|grandpa": [
+      {
+        "label": "할머니",
+        "score": 0.7118
+      },
+      {
+        "label": "엄마",
+        "score": 0.6071
+      },
+      {
+        "label": "딸",
+        "score": 0.5853
+      }
+    ],
+    "gender|japan": [
+      {
+        "label": "도쿄",
+        "score": 0.5825
+      },
+      {
+        "label": "미국",
+        "score": 0.54
+      },
+      {
+        "label": "중국",
+        "score": 0.5355
+      }
+    ],
+    "gender|france": [
+      {
+        "label": "파리",
+        "score": 0.5896
+      },
+      {
+        "label": "일본",
+        "score": 0.5301
+      },
+      {
+        "label": "중국",
+        "score": 0.5282
+      }
+    ],
+    "gender|china": [
+      {
+        "label": "일본",
+        "score": 0.5254
+      },
+      {
+        "label": "한국",
+        "score": 0.5253
+      },
+      {
+        "label": "베이징",
+        "score": 0.5247
+      }
+    ],
+    "gender|usa": [
+      {
+        "label": "일본",
+        "score": 0.5742
+      },
+      {
+        "label": "중국",
+        "score": 0.5571
+      },
+      {
+        "label": "워싱턴",
+        "score": 0.5554
+      }
+    ],
+    "gender|high": [
+      {
+        "label": "낮다",
+        "score": 0.5776
+      },
+      {
+        "label": "크다",
+        "score": 0.5674
+      },
+      {
+        "label": "딸",
+        "score": 0.5482
+      }
+    ],
+    "gender|hot": [
+      {
+        "label": "춥다",
+        "score": 0.5845
+      },
+      {
+        "label": "딸",
+        "score": 0.5762
+      },
+      {
+        "label": "엄마",
+        "score": 0.5622
+      }
+    ],
+    "gender|fast": [
+      {
+        "label": "딸",
+        "score": 0.499
+      },
+      {
+        "label": "엄마",
+        "score": 0.4643
+      },
+      {
+        "label": "작다",
+        "score": 0.4493
+      }
+    ],
+    "capital|king": [
+      {
+        "label": "여왕",
+        "score": 0.5284
+      },
+      {
+        "label": "워싱턴",
+        "score": 0.4566
+      },
+      {
+        "label": "파리",
+        "score": 0.4484
+      }
+    ],
+    "capital|dad": [
+      {
+        "label": "엄마",
+        "score": 0.5786
+      },
+      {
+        "label": "아들",
+        "score": 0.5603
+      },
+      {
+        "label": "할아버지",
+        "score": 0.5555
+      }
+    ],
+    "capital|brother": [
+      {
+        "label": "아들",
+        "score": 0.4982
+      },
+      {
+        "label": "남자",
+        "score": 0.4904
+      },
+      {
+        "label": "아빠",
+        "score": 0.4636
+      }
+    ],
+    "capital|son": [
+      {
+        "label": "남자",
+        "score": 0.5511
+      },
+      {
+        "label": "아빠",
+        "score": 0.5492
+      },
+      {
+        "label": "딸",
+        "score": 0.5398
+      }
+    ],
+    "capital|grandpa": [
+      {
+        "label": "아빠",
+        "score": 0.5535
+      },
+      {
+        "label": "할머니",
+        "score": 0.5074
+      },
+      {
+        "label": "아들",
+        "score": 0.4856
+      }
+    ],
+    "capital|japan": [
+      {
+        "label": "도쿄",
+        "score": 0.729
+      },
+      {
+        "label": "파리",
+        "score": 0.6163
+      },
+      {
+        "label": "워싱턴",
+        "score": 0.5951
+      }
+    ],
+    "capital|france": [
+      {
+        "label": "파리",
+        "score": 0.7685
+      },
+      {
+        "label": "워싱턴",
+        "score": 0.5514
+      },
+      {
+        "label": "미국",
+        "score": 0.5435
+      }
+    ],
+    "capital|china": [
+      {
+        "label": "베이징",
+        "score": 0.6702
+      },
+      {
+        "label": "워싱턴",
+        "score": 0.6009
+      },
+      {
+        "label": "파리",
+        "score": 0.5977
+      }
+    ],
+    "capital|usa": [
+      {
+        "label": "워싱턴",
+        "score": 0.7329
+      },
+      {
+        "label": "파리",
+        "score": 0.6289
+      },
+      {
+        "label": "도쿄",
+        "score": 0.5732
+      }
+    ],
+    "capital|high": [
+      {
+        "label": "낮다",
+        "score": 0.6296
+      },
+      {
+        "label": "크다",
+        "score": 0.6281
+      },
+      {
+        "label": "덥다",
+        "score": 0.5972
+      }
+    ],
+    "capital|hot": [
+      {
+        "label": "춥다",
+        "score": 0.626
+      },
+      {
+        "label": "높다",
+        "score": 0.5563
+      },
+      {
+        "label": "크다",
+        "score": 0.5446
+      }
+    ],
+    "capital|fast": [
+      {
+        "label": "파리",
+        "score": 0.5098
+      },
+      {
+        "label": "작다",
+        "score": 0.4824
+      },
+      {
+        "label": "덥다",
+        "score": 0.4735
+      }
+    ],
+    "opposite|king": [
+      {
+        "label": "여왕",
+        "score": 0.4873
+      },
+      {
+        "label": "낮다",
+        "score": 0.4028
+      },
+      {
+        "label": "남자",
+        "score": 0.3868
+      }
+    ],
+    "opposite|dad": [
+      {
+        "label": "아들",
+        "score": 0.5568
+      },
+      {
+        "label": "남자",
+        "score": 0.5495
+      },
+      {
+        "label": "할아버지",
+        "score": 0.5395
+      }
+    ],
+    "opposite|brother": [
+      {
+        "label": "남자",
+        "score": 0.4717
+      },
+      {
+        "label": "아들",
+        "score": 0.4635
+      },
+      {
+        "label": "누나",
+        "score": 0.4631
+      }
+    ],
+    "opposite|son": [
+      {
+        "label": "남자",
+        "score": 0.5528
+      },
+      {
+        "label": "딸",
+        "score": 0.5242
+      },
+      {
+        "label": "아빠",
+        "score": 0.5118
+      }
+    ],
+    "opposite|grandpa": [
+      {
+        "label": "아빠",
+        "score": 0.5215
+      },
+      {
+        "label": "할머니",
+        "score": 0.503
+      },
+      {
+        "label": "남자",
+        "score": 0.4743
+      }
+    ],
+    "opposite|japan": [
+      {
+        "label": "도쿄",
+        "score": 0.5969
+      },
+      {
+        "label": "미국",
+        "score": 0.5597
+      },
+      {
+        "label": "한국",
+        "score": 0.5439
+      }
+    ],
+    "opposite|france": [
+      {
+        "label": "파리",
+        "score": 0.6397
+      },
+      {
+        "label": "일본",
+        "score": 0.6089
+      },
+      {
+        "label": "미국",
+        "score": 0.5583
+      }
+    ],
+    "opposite|china": [
+      {
+        "label": "일본",
+        "score": 0.6032
+      },
+      {
+        "label": "한국",
+        "score": 0.5639
+      },
+      {
+        "label": "베이징",
+        "score": 0.555
+      }
+    ],
+    "opposite|usa": [
+      {
+        "label": "일본",
+        "score": 0.656
+      },
+      {
+        "label": "중국",
+        "score": 0.5847
+      },
+      {
+        "label": "프랑스",
+        "score": 0.5796
+      }
+    ],
+    "opposite|high": [
+      {
+        "label": "낮다",
+        "score": 0.806
+      },
+      {
+        "label": "느리다",
+        "score": 0.5942
+      },
+      {
+        "label": "가볍다",
+        "score": 0.5743
+      }
+    ],
+    "opposite|hot": [
+      {
+        "label": "춥다",
+        "score": 0.683
+      },
+      {
+        "label": "낮다",
+        "score": 0.6391
+      },
+      {
+        "label": "느리다",
+        "score": 0.5771
+      }
+    ],
+    "opposite|fast": [
+      {
+        "label": "느리다",
+        "score": 0.4552
+      },
+      {
+        "label": "낮다",
+        "score": 0.4532
+      },
+      {
+        "label": "파리",
+        "score": 0.4014
+      }
+    ]
+  }
+}

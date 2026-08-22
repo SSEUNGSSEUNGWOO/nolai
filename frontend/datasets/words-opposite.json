@@ -1,0 +1,116 @@
+{
+  "kind": "words",
+  "id": "words-opposite",
+  "model": "nlpai-lab/KURE-v1",
+  "projection": "mds",
+  "categories": [
+    {
+      "id": "a",
+      "label": "이쪽",
+      "color": "#FF6B6B"
+    },
+    {
+      "id": "b",
+      "label": "반대쪽",
+      "color": "#4ECDC4"
+    }
+  ],
+  "words": [
+    {
+      "id": "big",
+      "label": "크다",
+      "emoji": "🐘",
+      "category": "a",
+      "x": 0.5751,
+      "y": 0.849
+    },
+    {
+      "id": "small",
+      "label": "작다",
+      "emoji": "🐜",
+      "category": "b",
+      "x": 0.7436,
+      "y": 0.6853
+    },
+    {
+      "id": "hot",
+      "label": "덥다",
+      "emoji": "🔥",
+      "category": "a",
+      "x": 0.2216,
+      "y": 0.3762
+    },
+    {
+      "id": "cold",
+      "label": "춥다",
+      "emoji": "❄️",
+      "category": "b",
+      "x": 0.1029,
+      "y": 0.2319
+    },
+    {
+      "id": "fast",
+      "label": "빠르다",
+      "emoji": "💨",
+      "category": "a",
+      "x": 0.92,
+      "y": 0.2528
+    },
+    {
+      "id": "slow",
+      "label": "느리다",
+      "emoji": "🐌",
+      "category": "b",
+      "x": 0.4925,
+      "y": 0.1716
+    },
+    {
+      "id": "high",
+      "label": "높다",
+      "emoji": "⬆️",
+      "category": "a",
+      "x": 0.3906,
+      "y": 0.92
+    },
+    {
+      "id": "low",
+      "label": "낮다",
+      "emoji": "⬇️",
+      "category": "b",
+      "x": 0.3848,
+      "y": 0.6915
+    },
+    {
+      "id": "heavy",
+      "label": "무겁다",
+      "emoji": "🪨",
+      "category": "a",
+      "x": 0.0862,
+      "y": 0.609
+    },
+    {
+      "id": "light",
+      "label": "가볍다",
+      "emoji": "🪶",
+      "category": "b",
+      "x": 0.08,
+      "y": 0.804
+    },
+    {
+      "id": "bright",
+      "label": "밝다",
+      "emoji": "☀️",
+      "category": "a",
+      "x": 0.4887,
+      "y": 0.4242
+    },
+    {
+      "id": "dark",
+      "label": "어둡다",
+      "emoji": "🌙",
+      "category": "b",
+      "x": 0.2801,
+      "y": 0.08
+    }
+  ]
+}
