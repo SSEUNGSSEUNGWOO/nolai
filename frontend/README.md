@@ -8,9 +8,27 @@
 npm install
 npm run dev        # http://localhost:3000
 npm run test       # 단위 테스트
-npm run test:e2e   # 브라우저 E2E
+npm run test:e2e   # 브라우저 E2E (3100 포트, test 스키마)
 npm run build
 ```
+
+## 데이터
+
+서버 코드만 Supabase에 붙는다. 브라우저는 DB에 직접 닿지 않고, 권한 판단은
+Route Handler가 한다. `service_role` 키는 `lib/supabase.ts`에서만 읽으며,
+그 파일의 `server-only` import가 클라이언트 번들로 새어 나가면 빌드를 막는다.
+
+| 환경변수 | 쓰임 |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase 주소 |
+| `SUPABASE_SERVICE_ROLE_KEY` | 서버 전용. RLS를 우회하므로 절대 클라이언트로 내보내지 않는다 |
+| `SESSION_SECRET` | 세션 쿠키 서명. 바뀌면 모든 아이가 로그아웃된다 |
+| `SUPABASE_SCHEMA` | 안 주면 `public`. E2E만 `test`로 띄운다 |
+
+**E2E는 `test` 스키마를 쓴다.** 실제 계정을 만들고 지우는 코드라 운영 데이터와
+물리적으로 갈라둔다. `playwright.config.ts`가 3100 포트에 `SUPABASE_SCHEMA=test`로
+서버를 직접 띄우고, 이미 떠 있는 서버를 빌리지 않는다 -- 빌리면 그 서버가
+`public`을 보고 있을 수 있다.
 
 ## 구조
 

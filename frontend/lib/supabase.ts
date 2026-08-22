@@ -1,6 +1,6 @@
 import "server-only";
 
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 
 /**
  * service_role 키를 쓰는 서버 전용 클라이언트.
@@ -13,11 +13,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
  * 권한 판단은 전부 이 위의 Route Handler가 한다. DB는 "서버가 요청한 것"이면
  * 무엇이든 해주므로, kid_id를 세션에서 꺼내 쓰는 책임이 서버 코드에 있다.
  */
-let cached: SupabaseClient | null = null;
-
-export function serverSupabase(): SupabaseClient {
-  if (cached) return cached;
-
+function connect() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -28,9 +24,19 @@ export function serverSupabase(): SupabaseClient {
     );
   }
 
-  cached = createClient(url, key, {
+  return createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
+    // E2E는 실제 계정을 만들고 지운다. 그 코드가 public을 보고 있으면 언젠가
+    // 진짜 아이의 데이터를 지운다. 테스트일 때만 test 스키마를 보게 한다.
+    // 기본값이 public이므로 이 변수를 안 주면 운영 그대로 동작한다.
+    db: { schema: process.env.SUPABASE_SCHEMA ?? "public" },
   });
+}
+
+let cached: ReturnType<typeof connect> | null = null;
+
+export function serverSupabase(): ReturnType<typeof connect> {
+  cached ??= connect();
 
   return cached;
 }

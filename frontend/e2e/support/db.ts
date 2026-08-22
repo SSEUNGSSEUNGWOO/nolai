@@ -3,12 +3,16 @@ import path from "node:path";
 import { createClient } from "@supabase/supabase-js";
 
 /**
- * E2E는 실제 Supabase 프로젝트를 쓴다. 별도의 테스트 프로젝트가 없기 때문이다.
+ * E2E는 같은 Supabase 프로젝트의 **test 스키마**를 쓴다.
  *
- * 그래서 정리는 **이 테스트가 만든 닉네임만** 지운다. 테이블을 통째로 비우는
- * 코드는 여기에 두지 않는다 -- 언젠가 진짜 아이의 데이터가 들어왔을 때
- * 테스트를 한 번 돌리는 것으로 다 날아가면 안 된다.
+ * 운영 데이터는 public에 있고 이 파일은 test만 본다. 스키마가 다르므로 여기
+ * 코드가 잘못되어도 진짜 아이의 데이터에 닿지 못한다. 별도 프로젝트를 쓰면
+ * 더 깨끗하지만 월 $10이 계속 나가고, 지금 막으려는 것은 그 한 가지뿐이다.
+ *
+ * 그래도 정리는 이 테스트가 만든 닉네임만 지운다 -- 스키마가 갈렸다고 해서
+ * 통째로 비우는 습관을 남기고 싶지 않다.
  */
+const TEST_SCHEMA = "test";
 function env(): { url: string; key: string } {
   const raw = readFileSync(path.resolve(__dirname, "../../.env.local"), "utf8");
   const values = Object.fromEntries(
@@ -32,6 +36,7 @@ export function testDb() {
 
   return createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
+    db: { schema: TEST_SCHEMA },
   });
 }
 
