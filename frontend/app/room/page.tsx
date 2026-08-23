@@ -7,6 +7,8 @@ import { account, badgeNames, ui } from "@/copy/ui";
 import LogoutButton from "./LogoutButton";
 import DeleteRoomButton from "./DeleteRoomButton";
 import ArtifactCard, { type ArtifactView } from "./ArtifactCard";
+import Image from "next/image";
+import { badgeArt } from "@/lib/art";
 
 // 세션 쿠키를 읽으므로 요청마다 그린다.
 export const dynamic = "force-dynamic";
@@ -46,9 +48,10 @@ export default async function RoomPage() {
               <li
                 key={badge}
                 data-testid={`badge-${badge}`}
-                className="rounded-pop border-[2.5px] border-ink bg-candy-yellow px-4 py-2 font-extrabold shadow-[0_3px_0_var(--color-ink)]"
+                className="flex items-center gap-2 rounded-pop border-[2.5px] border-ink bg-candy-yellow py-1 pl-2 pr-4 font-extrabold shadow-[0_3px_0_var(--color-ink)]"
               >
-                🏅 {badgeNames[badge] ?? badge}
+                <Image src={badgeArt(badge)} alt="" width={40} height={40} className="h-10 w-10" />
+                {badgeNames[badge] ?? badge}
               </li>
             ))}
           </ul>
