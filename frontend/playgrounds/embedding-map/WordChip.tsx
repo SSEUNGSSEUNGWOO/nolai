@@ -1,8 +1,10 @@
 "use client";
 
 import type { PointerEvent as ReactPointerEvent } from "react";
+import WordIcon from "@/components/WordIcon";
 
 interface WordChipProps {
+  wordId: string;
   label: string;
   emoji: string;
   color: string;
@@ -15,6 +17,7 @@ const chipClassName =
   "inline-block whitespace-nowrap rounded-full border-[2.5px] border-ink px-3 py-1 text-sm font-extrabold text-ink shadow-[0_3px_0_var(--color-ink)]";
 
 export default function WordChip({
+  wordId,
   label,
   emoji,
   color,
@@ -27,7 +30,7 @@ export default function WordChip({
   if (!onActivate) {
     return (
       <span data-testid={testId} style={{ backgroundColor: color }} className={chipClassName}>
-        {emoji} {label}
+        <WordIcon wordId={wordId} emoji={emoji} /> {label}
       </span>
     );
   }
@@ -41,7 +44,7 @@ export default function WordChip({
       style={{ backgroundColor: color, touchAction: "none" }}
       className={chipClassName}
     >
-      {emoji} {label}
+      <WordIcon wordId={wordId} emoji={emoji} /> {label}
     </button>
   );
 }

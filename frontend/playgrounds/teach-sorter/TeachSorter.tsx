@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import WordIcon from "@/components/WordIcon";
 import { motion } from "motion/react";
 import type { WordsDataset } from "@/lib/dataset-schema";
 import type { PlaygroundProps } from "../types";
@@ -92,7 +93,7 @@ export default function TeachSorter({
                     className="rounded-full border-2 border-ink px-2 py-0.5 text-xs font-extrabold"
                     style={{ backgroundColor: category.color }}
                   >
-                    {wordById.get(t.wordId)!.emoji} {wordById.get(t.wordId)!.label}
+                    <WordIcon wordId={t.wordId} emoji={wordById.get(t.wordId)!.emoji} /> {wordById.get(t.wordId)!.label}
                   </span>
                 ))}
 
@@ -110,7 +111,7 @@ export default function TeachSorter({
                       animate={{ scale: 1, opacity: 1 }}
                       className="rounded-full border-2 border-dashed border-ink bg-cream px-2 py-0.5 text-xs font-bold"
                     >
-                      {word.emoji} {word.label} {right ? "" : "❓"}
+                      <WordIcon wordId={word.id} emoji={word.emoji} /> {word.label} {right ? "" : "❓"}
                     </motion.span>
                   );
                 })}
@@ -135,7 +136,7 @@ export default function TeachSorter({
               opacity: guessById.has(word.id) ? 0.45 : 1,
             }}
           >
-            {word.emoji} {word.label}
+            <WordIcon wordId={word.id} emoji={word.emoji} /> {word.label}
           </button>
         ))}
       </div>

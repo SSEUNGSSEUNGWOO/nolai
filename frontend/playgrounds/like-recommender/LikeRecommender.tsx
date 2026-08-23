@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import WordIcon from "@/components/WordIcon";
 import { motion } from "motion/react";
 import type { WordsDataset } from "@/lib/dataset-schema";
 import type { PlaygroundProps } from "../types";
@@ -71,7 +72,7 @@ export default function LikeRecommender({
               }}
             >
               {isLiked ? "❤️ " : ""}
-              {word.emoji} {word.label}
+              <WordIcon wordId={word.id} emoji={word.emoji} /> {word.label}
             </button>
           );
         })}
@@ -102,12 +103,12 @@ export default function LikeRecommender({
                   className="rounded-full border-2 border-ink px-2 py-0.5 text-sm font-extrabold"
                   style={{ backgroundColor: colorOf(word.category) }}
                 >
-                  {word.emoji} {word.label}
+                  <WordIcon wordId={word.id} emoji={word.emoji} /> {word.label}
                 </span>
                 {/* 왜 골랐는지를 늘 함께 보여준다. 이유 없는 추천은 마술처럼
                     보이고, 이 레슨은 그 마술을 걷어내는 것이 목적이다. */}
                 <span className="text-xs font-bold text-muted">
-                  네가 좋아한 {via.emoji} {via.label}와 닮아서
+                  네가 좋아한 <WordIcon wordId={via.id} emoji={via.emoji} size={16} /> {via.label}와 닮아서
                 </span>
               </motion.div>
             );

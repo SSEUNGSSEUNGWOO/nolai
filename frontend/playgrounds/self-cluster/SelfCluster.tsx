@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import WordIcon from "@/components/WordIcon";
 import { motion } from "motion/react";
 import type { ClustersDataset } from "@/lib/dataset-schema";
 import type { PlaygroundProps } from "../types";
@@ -77,7 +78,7 @@ export default function SelfCluster({
                   }}
                   className="inline-block whitespace-nowrap rounded-full border-[2.5px] border-ink px-2 py-0.5 text-xs font-extrabold text-ink shadow-[0_2px_0_var(--color-ink)]"
                 >
-                  {word.emoji} {word.label}
+                  <WordIcon wordId={word.id} emoji={word.emoji} /> {word.label}
                 </motion.span>
               </motion.div>
             );

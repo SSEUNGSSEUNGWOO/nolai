@@ -12,7 +12,12 @@ const seed = Number(seedArg ?? 1);
 const [W, H] = (sizeArg ?? "1024x1024").split("x").map(Number);
 
 // 앱 UI가 이미 가진 언어를 그림에도 그대로 쓴다. 모든 프롬프트 앞에 붙는다.
-const STYLE = "flat vector sticker illustration for a children's app, thick dark navy outline (#1f2430), bold simple rounded shapes, candy colors (coral red #ff6b6b, mint teal #4ecdc4, sunny yellow #ffd93d), soft cream background (#fff3d6), centered, clean, no text, no watermark";
+// ART_STYLE=natural 이면 팔레트 지시를 뺀다. 단어 칩은 아이가 "강아지"로 알아봐야
+// 하므로 민트색 강아지가 아니라 갈색 강아지여야 한다. 마스코트·배지는 캔디 팔레트.
+const NATURAL = process.env.ART_STYLE === "natural";
+const STYLE = NATURAL
+  ? "flat vector sticker illustration for a children's app, thick dark navy outline (#1f2430), bold simple rounded shapes, the subject in its natural real-life colors, bright and saturated, soft cream background (#fff3d6), centered, clean, no text, no watermark"
+  : "flat vector sticker illustration for a children's app, thick dark navy outline (#1f2430), bold simple rounded shapes, candy colors (coral red #ff6b6b, mint teal #4ecdc4, sunny yellow #ffd93d), soft cream background (#fff3d6), centered, clean, no text, no watermark";
 
 async function upload(file) {
   const form = new FormData();

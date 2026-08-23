@@ -174,6 +174,7 @@ export default function EmbeddingMap({
             >
               <WordChip
                 testId={`chip-${word.id}`}
+                wordId={word.id}
                 label={word.label}
                 emoji={word.emoji}
                 color={colorOf(word.category)}
@@ -188,6 +189,7 @@ export default function EmbeddingMap({
           <WordChip
             key={word.id}
             testId={`drawer-word-${word.id}`}
+            wordId={word.id}
             label={word.label}
             emoji={word.emoji}
             color={undecided}
@@ -212,6 +214,7 @@ export default function EmbeddingMap({
         >
           <WordChip
             testId={`ghost-${drag.wordId}`}
+            wordId={drag.wordId}
             label={wordById.get(drag.wordId)!.label}
             emoji={wordById.get(drag.wordId)!.emoji}
             color={undecided}
