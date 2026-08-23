@@ -3,11 +3,15 @@
 set -e
 cd "$(dirname "$0")/../.."
 G="node tools/art/gen.js"
-BASE=tools/art/out/owl-base-7.png
-KEEP="Keep this exact owl character, same colors and outline style, same plain cream background. Change only the expression and pose:"
 
-$G owl-curious "$KEEP curious, head tilted, one wing raised to its chin like thinking, eyes looking up, tiny question mark floating above. No text." $BASE 8
-$G owl-surprised "$KEEP surprised, eyes very wide, beak open in a small O, wings spread out to the sides, leaning back slightly. No text." $BASE 8
+# 마스코트: 로봇. 부엉이는 "지혜의 상징"이라는 뻔한 연상으로 고른 것이라 이유가 없었고
+# 듀오링고를 따라 한 인상을 줬다. 로봇은 AI 앱에 AI가 주인공이라 설명이 필요 없다.
+$G cand-robot "A cute small round robot mascot, friendly screen face with two big happy dot eyes, one little antenna with a glowing yellow ball, stubby arms and feet, coral red body with mint teal belly panel, holding a tiny toy block, full body, standing. No text." "" 21
+BASE=tools/art/out/cand-robot-21.png
+KEEP="Keep this exact robot character, same colors, same outline style, same plain cream background. Change only the expression and pose:"
+$G robot-curious "$KEEP curious, head tilted, screen face shows wide round eyes looking up and a small open mouth, one hand on chin, a small question mark floating above. No text." $BASE 22
+$G robot-happy "$KEEP very happy, screen face shows closed happy arc eyes and a big open smile, both arms raised in celebration, antenna ball glowing brightly with sparkles around. No text." $BASE 22
+$G robot-surprised "$KEEP surprised, screen face shows huge wide eyes and an O-shaped mouth, arms out to the sides, leaning back, antenna tilted. No text." $BASE 22
 
 # 배지: 둥근 메달 모양 안에 레슨의 상징. 전부 같은 틀이라 모아놓으면 한 세트로 보인다.
 B="A round badge medal icon with a thick dark navy rim and a small ribbon at the bottom, sunny yellow rim, inside the circle:"

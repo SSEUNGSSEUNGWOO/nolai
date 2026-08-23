@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import OwlBubble from "../OwlBubble";
+import MascotBubble from "../MascotBubble";
 import { popButton, choiceButton } from "./styles";
 import { ui } from "@/copy/ui";
 
@@ -23,7 +23,7 @@ export default function ChallengeStep({
 
   return (
     <div className="mx-auto w-full max-w-md flex flex-col gap-3 py-6">
-      <OwlBubble text={question} />
+      <MascotBubble text={question} />
 
       {choices.map((choice, index) => (
         <button

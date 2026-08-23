@@ -9,10 +9,10 @@ fs.mkdirSync(OUT, { recursive: true });
 
 // [out/ 파일, public/art/ 이름, 최대 변]. 마스코트는 크게 쓰일 수 있어 512, 배지는 256.
 const table = [
-  ["owl-base-7.png", "owl-base.webp", 512],
-  ["owl-curious-8.png", "owl-curious.webp", 512],
-  ["owl-happy-8.png", "owl-happy.webp", 512],
-  ["owl-surprised-8.png", "owl-surprised.webp", 512],
+  ["cand-robot-21.png", "mascot-base.webp", 512],
+  ["robot-curious-22.png", "mascot-curious.webp", 512],
+  ["robot-happy-22.png", "mascot-happy.webp", 512],
+  ["robot-surprised-22.png", "mascot-surprised.webp", 512],
   ...fs.readdirSync(path.join(__dirname, "out")).filter((f) => /^badge-.*-11.png$/.test(f)).map((f) => [f, f.replace(/-11.png$/, ".webp"), 256]),
 ];
 

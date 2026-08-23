@@ -7,7 +7,7 @@ import { randomNicknames } from "@/lib/auth/nickname";
 import { readProgress } from "@/lib/local-progress";
 import { account, ui } from "@/copy/ui";
 import { popButton } from "@/components/steps/styles";
-import OwlBubble from "@/components/OwlBubble";
+import MascotBubble from "@/components/MascotBubble";
 
 export default function JoinClient({ initial }: { initial: string[] }) {
   const router = useRouter();
@@ -97,7 +97,7 @@ export default function JoinClient({ initial }: { initial: string[] }) {
     return (
       <main className="mx-auto flex min-h-screen max-w-md flex-col gap-5 px-5 py-8">
         <h1 className="text-2xl font-black">{account.codeTitle}</h1>
-        <OwlBubble text={account.codeOwl} />
+        <MascotBubble text={account.codeOwl} />
 
         <div
           ref={cardRef}
@@ -137,7 +137,7 @@ export default function JoinClient({ initial }: { initial: string[] }) {
       </header>
 
       <h1 className="text-2xl font-black">{account.joinTitle}</h1>
-      <OwlBubble text={account.joinOwl} />
+      <MascotBubble text={account.joinOwl} />
 
       {error && (
         <p className="rounded-pop border-[2.5px] border-ink bg-candy-red px-4 py-3 text-sm font-extrabold">

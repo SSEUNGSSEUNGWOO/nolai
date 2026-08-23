@@ -11,7 +11,7 @@ import { CODE_LENGTH } from "@/lib/auth/code-format";
 import { readProgress } from "@/lib/local-progress";
 import { account, ui } from "@/copy/ui";
 import { popButton } from "@/components/steps/styles";
-import OwlBubble from "@/components/OwlBubble";
+import MascotBubble from "@/components/MascotBubble";
 
 const selectClass =
   "w-full rounded-pop border-[2.5px] border-ink bg-paper px-3 py-3 text-base font-extrabold text-ink";
@@ -63,7 +63,7 @@ export default function LoginPage() {
       </header>
 
       <h1 className="text-2xl font-black">{account.loginTitle}</h1>
-      <OwlBubble text={account.loginOwl} />
+      <MascotBubble text={account.loginOwl} />
 
       {error && (
         <p

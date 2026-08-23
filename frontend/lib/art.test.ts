@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { badgeNames } from "@/copy/ui";
-import { badgeArt, owlArt } from "./art";
+import { badgeArt, mascotArt } from "./art";
 
 const pub = (url: string) => path.join(__dirname, "../public", url);
 
@@ -16,7 +16,7 @@ describe("그림 파일", () => {
 
   it("마스코트 표정 네 개가 있다", () => {
     for (const mood of ["base", "curious", "happy", "surprised"] as const) {
-      expect(existsSync(pub(owlArt(mood))), mood).toBe(true);
+      expect(existsSync(pub(mascotArt(mood))), mood).toBe(true);
     }
   });
 });

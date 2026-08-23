@@ -5,7 +5,7 @@ import type { Lesson } from "@/lib/lesson-schema";
 import type { Dataset } from "@/lib/dataset-schema";
 import type { Artifact, PlaygroundEvent } from "@/playgrounds/types";
 import { registry } from "@/playgrounds/registry";
-import OwlBubble from "./OwlBubble";
+import MascotBubble from "./MascotBubble";
 import HookStep from "./steps/HookStep";
 import NameStep from "./steps/NameStep";
 import ChallengeStep from "./steps/ChallengeStep";
@@ -99,7 +99,7 @@ export default function LessonRunner({
         {/* 넓은 화면에서 이 둘까지 늘어나면 버튼 하나가 화면을 가로지른다.
             지도 폭에 맞춰 왼쪽에 세운다. */}
         <div className="flex flex-col gap-3 lg:max-w-3xl">
-          <OwlBubble text={line} />
+          <MascotBubble text={line} />
           {canAdvance && (
             <button type="button" className={popButton} onClick={next}>
               {ui.playDone}
