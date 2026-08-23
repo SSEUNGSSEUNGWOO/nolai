@@ -20,5 +20,7 @@
     background-color: var(--color-cream);
     color: var(--color-ink);
     font-family: var(--font-sans);
+    /* 홈 화면에 설치되면 노치·홈바 영역까지 그린다(viewport-fit: cover). 내용은 그 안쪽에. */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 }
