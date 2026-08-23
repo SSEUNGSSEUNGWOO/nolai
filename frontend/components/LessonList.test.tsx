@@ -23,7 +23,8 @@ describe("LessonList", () => {
     render(<LessonList groups={groups} />);
     expect(screen.getByText("첫 묶음")).toBeInTheDocument();
     expect(screen.getByText("둘째 묶음")).toBeInTheDocument();
-    expect(screen.getByText("3. 다")).toBeInTheDocument();
+    expect(screen.getByTestId("lesson-c")).toHaveTextContent("3");
+    expect(screen.getByTestId("lesson-c")).toHaveTextContent("다");
   });
 
   it("아무것도 안 했으면 첫 레슨이 다음이다", async () => {

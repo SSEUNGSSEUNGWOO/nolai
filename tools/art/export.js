@@ -13,13 +13,19 @@ const table = [
   ["robot-curious-22.png", "mascot-curious.webp", 512],
   ["robot-happy-22.png", "mascot-happy.webp", 512],
   ["robot-surprised-22.png", "mascot-surprised.webp", 512],
+  ["robot-wave-22.png", "mascot-wave.webp", 512],
+  ["robot-point-22.png", "mascot-point.webp", 512],
+  ["robot-think-22.png", "mascot-think.webp", 512],
+  ["empty-shelf-61.png", "empty-shelf.webp", 256],
+  // 썸네일은 그림 자체가 한 장이라 배경을 따지 않는다(keep)
+  ...fs.readdirSync(path.join(__dirname, "out")).filter((f) => /^thumb-.*-41.png$/.test(f)).map((f) => [f, f.replace(/-41.png$/, ".webp"), 320, "keep"]),
   ...fs.readdirSync(path.join(__dirname, "out")).filter((f) => /^badge-.*-11.png$/.test(f)).map((f) => [f, f.replace(/-11.png$/, ".webp"), 256]),
   // 단어 칩은 20px로 쓰이지만 고해상도 화면을 위해 128로 둔다.
   ...fs.readdirSync(path.join(__dirname, "out")).filter((f) => /^word-.*-31.png$/.test(f)).map((f) => [f, f.replace(/-31.png$/, ".webp"), 128]),
 ];
 
-for (const [src, dst, size] of table) {
+for (const [src, dst, size, mode] of table) {
   const from = path.join(__dirname, "out", src);
   if (!fs.existsSync(from)) { console.warn("없음:", src); continue; }
-  execFileSync("node", [path.join(__dirname, "cut.js"), from, path.join(OUT, dst), String(size)], { stdio: "inherit" });
+  execFileSync("node", [path.join(__dirname, "cut.js"), from, path.join(OUT, dst), String(size), ...(mode ? [mode] : [])], { stdio: "inherit" });
 }

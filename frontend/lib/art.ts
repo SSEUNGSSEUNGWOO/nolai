@@ -3,7 +3,7 @@
  * 주소를 한 곳에서 만들어야 파일 이름을 바꿀 때 화면 네 군데를 뒤지지 않는다.
  * 배지 그림이 실제로 있는지는 lib/art.test.ts가 badgeNames 전부에 대해 확인한다.
  */
-export type MascotMood = "base" | "curious" | "happy" | "surprised";
+export type MascotMood = "base" | "curious" | "happy" | "surprised" | "wave" | "point" | "think";
 
 export function mascotArt(mood: MascotMood): string {
   return `/art/mascot-${mood}.webp`;
@@ -32,3 +32,11 @@ export const ILLUSTRATED_WORDS = new Set([
 export function wordArt(wordId: string): string | null {
   return ILLUSTRATED_WORDS.has(wordId) ? `/art/word-${wordId}.webp` : null;
 }
+
+/** 첫 화면 카드의 레슨 썸네일. 모든 레슨에 있어야 한다 -- lib/art.test.ts가 본다. */
+export function lessonArt(lessonId: string): string {
+  return `/art/thumb-${lessonId}.webp`;
+}
+
+/** 내 방에 배지가 하나도 없을 때. */
+export const EMPTY_SHELF_ART = "/art/empty-shelf.webp";

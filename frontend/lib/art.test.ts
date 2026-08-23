@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { badgeNames } from "@/copy/ui";
-import { badgeArt, mascotArt, wordArt, ILLUSTRATED_WORDS } from "./art";
-import { getDataset } from "./content";
+import { badgeArt, mascotArt, wordArt, lessonArt, EMPTY_SHELF_ART, ILLUSTRATED_WORDS } from "./art";
+import { getDataset, listLessons } from "./content";
 
 const pub = (url: string) => path.join(__dirname, "../public", url);
 
@@ -15,8 +15,8 @@ describe("그림 파일", () => {
     }
   });
 
-  it("마스코트 표정 네 개가 있다", () => {
-    for (const mood of ["base", "curious", "happy", "surprised"] as const) {
+  it("마스코트 표정·포즈 일곱 개가 있다", () => {
+    for (const mood of ["base", "curious", "happy", "surprised", "wave", "point", "think"] as const) {
       expect(existsSync(pub(mascotArt(mood))), mood).toBe(true);
     }
   });
@@ -42,5 +42,13 @@ describe("그림 파일", () => {
     const d = getDataset("words-translate");
     if (d.kind !== "words") throw new Error("words");
     for (const w of d.words) expect(wordArt(w.id), w.id).toBeNull();
+  });
+
+  it("모든 레슨에 썸네일이 있다", () => {
+    // 없으면 첫 화면 카드 하나만 비어 보인다. 레슨을 더하면 extras.sh에도 더한다.
+    for (const lesson of listLessons()) {
+      expect(existsSync(pub(lessonArt(lesson.id))), lesson.id).toBe(true);
+    }
+    expect(existsSync(pub(EMPTY_SHELF_ART))).toBe(true);
   });
 });

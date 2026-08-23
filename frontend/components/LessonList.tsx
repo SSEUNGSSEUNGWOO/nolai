@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { lessonArt } from "@/lib/art";
 import { useEffect, useState } from "react";
 import { readProgress } from "@/lib/local-progress";
 import { ui } from "@/copy/ui";
@@ -52,15 +54,24 @@ export default function LessonList({ groups }: { groups: LessonGroupView[] }) {
                   data-testid={`lesson-${lesson.id}`}
                   data-done={isDone ? "true" : undefined}
                   data-next={isNext ? "true" : undefined}
-                  className={`flex items-center justify-between rounded-pop border-[2.5px] border-ink px-5 py-3 font-extrabold text-ink shadow-[0_3px_0_var(--color-ink)] ${
+                  className={`flex items-center gap-3 rounded-pop border-[2.5px] border-ink p-2 pr-4 text-left font-extrabold text-ink shadow-[0_3px_0_var(--color-ink)] ${
                     isNext ? "pulse-card bg-candy-yellow" : isDone ? "bg-paper" : "bg-candy-red"
                   }`}
                 >
-                  <span>
-                    {lesson.order}. {lesson.title}
+                  {/* 썸네일. 끝낸 레슨은 살짝 흐려서 "지나온 것"으로 읽힌다 */}
+                  <Image
+                    src={lessonArt(lesson.id)}
+                    alt=""
+                    width={64}
+                    height={64}
+                    className={`h-16 w-16 shrink-0 rounded-[10px] border-[2px] border-ink bg-cream object-cover ${isDone ? "opacity-60" : ""}`}
+                  />
+                  <span className="flex min-w-0 flex-1 flex-col">
+                    <span className="text-xs text-muted">{lesson.order}</span>
+                    <span className="leading-tight">{lesson.title}</span>
                   </span>
-                  {isDone && <span aria-label={ui.lessonDone}>✔</span>}
-                  {isNext && <span className="text-xs">{ui.lessonNext}</span>}
+                  {isDone && <span aria-label={ui.lessonDone} className="text-lg">✔</span>}
+                  {isNext && <span className="shrink-0 rounded-full bg-ink px-2 py-0.5 text-xs text-paper">{ui.lessonNext}</span>}
                 </Link>
               );
             })}
