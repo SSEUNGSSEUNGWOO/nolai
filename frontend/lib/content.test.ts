@@ -249,3 +249,34 @@ describe("첫 화면 묶음", () => {
     );
   });
 });
+
+describe("아이가 읽는 글의 길이", () => {
+  it("정답 보기가 오답보다 눈에 띄게 길지 않다", () => {
+    // 16개 중 13개에서 정답이 제일 길었다. 아이는 두세 번이면 "긴 거 고르면
+    // 돼"를 배운다. 그러면 도전 문제가 학습 확인이 아니라 길이 맞히기가 된다.
+    for (const lesson of listLessons()) {
+      for (const step of lesson.steps) {
+        if (step.type !== "challenge") continue;
+        const correct = step.choices[step.answer].length;
+        const wrong = step.choices.filter((_, i) => i !== step.answer);
+        const longestWrong = Math.max(...wrong.map((c) => c.length));
+        expect(
+          correct <= longestWrong * 1.3,
+          `${lesson.id}: 정답 ${correct}자, 가장 긴 오답 ${longestWrong}자`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("개념 설명이 한 화면을 넘기지 않는다", () => {
+    // 폰에서 10살이 읽는 글이다. 120자·5문장을 넘으면 벽이 된다.
+    for (const lesson of listLessons()) {
+      for (const step of lesson.steps) {
+        if (step.type !== "name") continue;
+        const sentences = step.body.split(/[.?!]\s/).length;
+        expect(step.body.length, `${lesson.id}: ${step.body.length}자`).toBeLessThanOrEqual(120);
+        expect(sentences, `${lesson.id}: ${sentences}문장`).toBeLessThanOrEqual(5);
+      }
+    }
+  });
+});

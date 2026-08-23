@@ -21,7 +21,7 @@ test("\"AI는 글을 이렇게 써\"를 처음부터 끝까지 완주한다", as
 
   await page.getByRole("button", { name: "알겠어!" }).click();
   await page
-    .getByRole("button", { name: "다음 말을 고르는 것뿐이라 사실인지는 확인하지 않아서" })
+    .getByRole("button", { name: "다음 말만 고를 뿐 사실인지는 확인 안 해서" })
     .click();
   await page.getByRole("button", { name: "다음으로" }).click();
 

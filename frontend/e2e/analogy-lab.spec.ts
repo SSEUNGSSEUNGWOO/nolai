@@ -17,7 +17,7 @@ test("\"뜻으로 계산하기\"를 처음부터 끝까지 완주한다", async 
 
   await page.getByRole("button", { name: "알겠어!" }).click();
   await page
-    .getByRole("button", { name: "남자에서 여자로 가는 방향이 나라 이름에는 안 맞아서" })
+    .getByRole("button", { name: "남자에서 여자로 가는 방향이 나라에는 안 맞아서" })
     .click();
   await page.getByRole("button", { name: "다음으로" }).click();
 
