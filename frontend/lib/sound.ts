@@ -123,3 +123,47 @@ export function playReward(): void {
     oscillator.stop(start + 0.3);
   });
 }
+
+/** 하나의 음을 짧게 낸다. pop·ding이 공유한다. */
+function blip(frequency: number, at: number, duration: number, peak: number, type: OscillatorType): void {
+  const oscillator = context!.createOscillator();
+  const gain = context!.createGain();
+  oscillator.type = type;
+  oscillator.frequency.setValueAtTime(frequency, at);
+  gain.gain.setValueAtTime(0.0001, at);
+  gain.gain.exponentialRampToValueAtTime(peak, at + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, at + duration);
+  oscillator.connect(gain).connect(context!.destination);
+  oscillator.start(at);
+  oscillator.stop(at + duration + 0.02);
+}
+
+/** 단어를 내려놓거나 카드를 고를 때 나는 "뿅". 짧고 낮아서 연달아 나도 안 시끄럽다. */
+export function playPop(): void {
+  if (isMuted()) return;
+  unlockAudio();
+  if (!context || context.state !== "running") return;
+  const now = context.currentTime;
+  // 음을 살짝 올리면서 끝내면 "뿅"이 된다
+  const oscillator = context.createOscillator();
+  const gain = context.createGain();
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(420, now);
+  oscillator.frequency.exponentialRampToValueAtTime(760, now + 0.08);
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.14, now + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+  oscillator.connect(gain).connect(context.destination);
+  oscillator.start(now);
+  oscillator.stop(now + 0.14);
+}
+
+/** 맞았을 때 나는 두 음 "띵동". 배지 소리보다 짧다 -- 배지는 따로 있다. */
+export function playDing(): void {
+  if (isMuted()) return;
+  unlockAudio();
+  if (!context || context.state !== "running") return;
+  const now = context.currentTime;
+  blip(784, now, 0.16, 0.16, "triangle");
+  blip(1175, now + 0.11, 0.26, 0.16, "triangle");
+}

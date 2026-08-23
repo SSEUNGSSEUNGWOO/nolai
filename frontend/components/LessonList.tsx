@@ -53,7 +53,7 @@ export default function LessonList({ groups }: { groups: LessonGroupView[] }) {
                   data-done={isDone ? "true" : undefined}
                   data-next={isNext ? "true" : undefined}
                   className={`flex items-center justify-between rounded-pop border-[2.5px] border-ink px-5 py-3 font-extrabold text-ink shadow-[0_3px_0_var(--color-ink)] ${
-                    isNext ? "bg-candy-yellow" : isDone ? "bg-paper" : "bg-candy-red"
+                    isNext ? "pulse-card bg-candy-yellow" : isDone ? "bg-paper" : "bg-candy-red"
                   }`}
                 >
                   <span>

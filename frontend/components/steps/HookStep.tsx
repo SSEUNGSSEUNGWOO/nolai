@@ -15,7 +15,7 @@ export default function HookStep({
 }) {
   return (
     <div className="mx-auto w-full max-w-md flex flex-col items-center gap-4 py-8">
-      <Image src={mascotArt("curious")} alt="" width={160} height={160} priority className="h-40 w-40" />
+      <Image src={mascotArt("curious")} alt="" width={160} height={160} priority className="bob h-40 w-40" />
       <MascotBubble text={owl} />
       <button type="button" className={popButton} onClick={onDone}>
         {ui.hookCta}

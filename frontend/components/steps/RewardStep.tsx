@@ -7,6 +7,7 @@ import { popButton } from "./styles";
 import Image from "next/image";
 import { ui, badgeNames } from "@/copy/ui";
 import { badgeArt } from "@/lib/art";
+import Confetti from "../fx/Confetti";
 
 export default function RewardStep({
   badge,
@@ -19,13 +20,14 @@ export default function RewardStep({
   useEffect(() => playReward(), []);
 
   return (
-    <div className="mx-auto w-full max-w-md flex flex-col items-center gap-3 py-10">
+    <div className="relative mx-auto w-full max-w-md flex flex-col items-center gap-3 py-10">
+      <Confetti count={36} />
       <motion.div
         className="h-44 w-44"
         aria-hidden
-        initial={{ scale: 0, rotate: -30 }}
-        animate={{ scale: 1, rotate: 0 }}
-        transition={{ type: "spring", stiffness: 200, damping: 12 }}
+        initial={{ scale: 0, rotate: -30, y: 40 }}
+        animate={{ scale: [0, 1.25, 1], rotate: [-30, 8, 0], y: 0 }}
+        transition={{ duration: 0.7, times: [0, 0.6, 1], ease: "easeOut" }}
       >
         <Image src={badgeArt(badge)} alt="" width={176} height={176} priority />
       </motion.div>

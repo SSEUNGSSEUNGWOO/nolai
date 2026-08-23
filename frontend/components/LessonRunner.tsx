@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import type { Lesson } from "@/lib/lesson-schema";
 import type { Dataset } from "@/lib/dataset-schema";
 import type { Artifact, PlaygroundEvent } from "@/playgrounds/types";
@@ -14,7 +15,7 @@ import PredictStep from "./steps/PredictStep";
 import RevealStep from "./steps/RevealStep";
 import { popButton } from "./steps/styles";
 import { ui } from "@/copy/ui";
-import { unlockAudio } from "@/lib/sound";
+import { unlockAudio, playPop } from "@/lib/sound";
 
 export interface LessonResult {
   lessonId: string;
@@ -37,6 +38,10 @@ export default function LessonRunner({
   // 예측 스텝에서 고른 보기. 확인 스텝이 돌아본다. 스키마가 순서를 지키므로
   // 확인 스텝에 닿았을 때는 항상 값이 있다.
   const [prediction, setPrediction] = useState<number | null>(null);
+  // 움직임을 줄인 기기(멀미·접근성)에서는 화면이 튕기지 않는다. E2E도 이 경로로 돈다 --
+  // 스텝마다 튕기면 클릭 전에 멈추길 기다리느라 전체가 두 배 느려진다.
+  const reducedMotion = useReducedMotion();
+  // 움직임을 줄인 기기(멀미·접근성)에서는 화면이 튕기지 않는다. E2E도 이 경로로 돈다 --
 
   // 놀이터가 만든 산출물을 받아둔다. state가 아니라 ref인 이유는
   // 값이 바뀌어도 다시 그릴 필요가 없어서다. 계획 2에서 서버에 저장한다.
@@ -74,9 +79,23 @@ export default function LessonRunner({
   function handlePlaygroundEvent(event: PlaygroundEvent) {
     if (step.type === "play" && event.type === step.goal.kind) {
       setProgressCount(Number(event.payload?.count ?? 0));
+      // 해낸 것마다 "뿅". 소리 레슨은 자기 소리를 내고 있으니 겹치지 않게 뺀다.
+      if (event.type !== "heard") playPop();
     }
   }
 
+  return (
+    <motion.div
+      key={stepIndex}
+      initial={reducedMotion ? false : { opacity: 0, y: 24, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 24 }}
+    >
+      {renderStep()}
+    </motion.div>
+  );
+
+  function renderStep() {
   if (step.type === "hook") {
     return <HookStep owl={step.owl} onDone={next} />;
   }
@@ -163,4 +182,5 @@ export default function LessonRunner({
   }
 
   return <RewardStep badge={step.badge} onDone={next} />;
+  }
 }

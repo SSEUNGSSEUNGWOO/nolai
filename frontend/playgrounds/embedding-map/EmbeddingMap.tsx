@@ -172,6 +172,15 @@ export default function EmbeddingMap({
               }}
               transition={{ type: "spring", stiffness: 260, damping: 18 }}
             >
+              {/* 내려앉는 순간 링이 퍼진다. 한 번 그리고 끝. */}
+              <motion.span
+                aria-hidden
+                className="pointer-events-none absolute left-1/2 top-1/2 h-10 w-10 rounded-full border-[3px] border-candy-teal"
+                style={{ x: "-50%", y: "-50%" }}
+                initial={{ scale: 0.4, opacity: 0.9 }}
+                animate={{ scale: 2.4, opacity: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+              />
               <WordChip
                 testId={`chip-${word.id}`}
                 wordId={word.id}

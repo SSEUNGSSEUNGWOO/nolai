@@ -16,7 +16,12 @@ export default defineConfig({
    * 테스트가 20개도 안 되므로 직렬로 돌려도 몇 분이면 끝난다.
    */
   workers: 1,
-  use: { baseURL: `http://localhost:${PORT}` },
+  use: {
+    // 애니메이션은 테스트 대상이 아니다. 켜두면 스텝마다 버튼이 멈추길 기다려 전체가 두 배
+    // 느려진다. 줄임 모드는 멀미 있는 아이가 실제로 보는 화면이기도 하다.
+    contextOptions: { reducedMotion: "reduce" },
+    baseURL: `http://localhost:${PORT}`,
+  },
   webServer: {
     command: "npm run dev",
     url: `http://localhost:${PORT}`,
