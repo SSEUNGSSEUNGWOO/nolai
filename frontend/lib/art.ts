@@ -24,8 +24,8 @@ export const ILLUSTRATED_WORDS = new Set([
   "car", "bus", "train", "bike", "airplane", "truck", "helicopter", "rocket", "balloon", "glider",
   "strawberry", "banana", "grape", "watermelon", "tangerine",
   "pizza", "tteok", "icecream", "gimbap", "chocolate", "ramen", "burger", "dumpling",
-  "soccer", "baseball", "swim", "taekwondo", "rope", "basket", "badminton", "skate",
-  "lego", "origami", "drawing", "clay", "knit", "cross", "blocks", "beads",
+  "soccer", "baseball", "swim", "taekwondo", "pingpong", "basket", "badminton", "volleyball",
+  "lego", "origami", "drawing", "clay", "knit", "puzzle", "blocks", "beads",
 ]);
 
 /** 그림이 없는 단어는 null -- 부르는 쪽이 이모지로 돌아간다. */

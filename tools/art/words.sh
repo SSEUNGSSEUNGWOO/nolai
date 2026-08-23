@@ -51,16 +51,16 @@ soccer|a soccer ball
 baseball|a baseball and bat
 swim|swimming goggles and a pool float
 taekwondo|a taekwondo uniform with a black belt
-rope|a jump rope
+pingpong|a table tennis paddle and ball
 basket|a basketball
 badminton|a badminton racket and shuttlecock
-skate|an ice skate
+volleyball|a volleyball
 lego|colorful toy building bricks
 origami|a paper crane
 drawing|a paintbrush and a palette
 clay|three colorful balls of modeling clay, red, blue and yellow, with a small clay snail made from them
 knit|a ball of yarn with knitting needles
-cross|an embroidery hoop with a small flower stitch
+puzzle|two colorful jigsaw puzzle pieces fitting together
 blocks|a stack of wooden toy blocks
 beads|a colorful bead bracelet
 LIST

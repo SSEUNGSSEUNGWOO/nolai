@@ -26,192 +26,192 @@
       "label": "피자",
       "emoji": "🍕",
       "category": "food",
-      "x": 0.2323,
-      "y": 0.7603
+      "x": 0.1928,
+      "y": 0.6911
     },
     {
       "id": "tteok",
       "label": "떡볶이",
       "emoji": "🌶️",
       "category": "food",
-      "x": 0.3575,
-      "y": 0.6957
+      "x": 0.341,
+      "y": 0.71
     },
     {
       "id": "icecream",
       "label": "아이스크림",
       "emoji": "🍦",
       "category": "food",
-      "x": 0.4669,
-      "y": 0.7898
+      "x": 0.2487,
+      "y": 0.8177
     },
     {
       "id": "gimbap",
       "label": "김밥",
       "emoji": "🍙",
       "category": "food",
-      "x": 0.5043,
-      "y": 0.92
+      "x": 0.5034,
+      "y": 0.8972
     },
     {
       "id": "chocolate",
       "label": "초콜릿",
       "emoji": "🍫",
       "category": "food",
-      "x": 0.5194,
-      "y": 0.6351
+      "x": 0.4541,
+      "y": 0.6283
     },
     {
       "id": "ramen",
       "label": "라면",
       "emoji": "🍜",
       "category": "food",
-      "x": 0.3397,
-      "y": 0.9008
+      "x": 0.3904,
+      "y": 0.92
     },
     {
       "id": "burger",
       "label": "햄버거",
       "emoji": "🍔",
       "category": "food",
-      "x": 0.6395,
-      "y": 0.7542
+      "x": 0.5589,
+      "y": 0.7565
     },
     {
       "id": "dumpling",
       "label": "만두",
       "emoji": "🥟",
       "category": "food",
-      "x": 0.7202,
-      "y": 0.8998
+      "x": 0.6917,
+      "y": 0.9145
     },
     {
       "id": "soccer",
       "label": "축구",
       "emoji": "⚽",
       "category": "sport",
-      "x": 0.848,
-      "y": 0.6214
+      "x": 0.8032,
+      "y": 0.6391
     },
     {
       "id": "baseball",
       "label": "야구",
       "emoji": "⚾",
       "category": "sport",
-      "x": 0.92,
-      "y": 0.5767
+      "x": 0.905,
+      "y": 0.65
     },
     {
       "id": "swim",
       "label": "수영",
       "emoji": "🏊",
       "category": "sport",
-      "x": 0.7272,
-      "y": 0.2941
+      "x": 0.675,
+      "y": 0.3454
     },
     {
       "id": "taekwondo",
       "label": "태권도",
       "emoji": "🥋",
       "category": "sport",
-      "x": 0.8154,
-      "y": 0.2607
+      "x": 0.7908,
+      "y": 0.2454
     },
     {
-      "id": "rope",
-      "label": "줄넘기",
-      "emoji": "🪢",
+      "id": "pingpong",
+      "label": "탁구",
+      "emoji": "🏓",
       "category": "sport",
-      "x": 0.5114,
-      "y": 0.3085
+      "x": 0.8582,
+      "y": 0.3379
     },
     {
       "id": "basket",
       "label": "농구",
       "emoji": "🏀",
       "category": "sport",
-      "x": 0.9002,
-      "y": 0.4707
+      "x": 0.9121,
+      "y": 0.5386
     },
     {
       "id": "badminton",
       "label": "배드민턴",
       "emoji": "🏸",
       "category": "sport",
-      "x": 0.9015,
-      "y": 0.3834
+      "x": 0.92,
+      "y": 0.4411
     },
     {
-      "id": "skate",
-      "label": "스케이트",
-      "emoji": "⛸️",
+      "id": "volleyball",
+      "label": "배구",
+      "emoji": "🏐",
       "category": "sport",
-      "x": 0.6324,
-      "y": 0.4829
+      "x": 0.8277,
+      "y": 0.4894
     },
     {
       "id": "lego",
       "label": "레고",
       "emoji": "🧱",
       "category": "make",
-      "x": 0.1402,
-      "y": 0.4784
+      "x": 0.08,
+      "y": 0.5327
     },
     {
       "id": "origami",
       "label": "종이접기",
       "emoji": "🦢",
       "category": "make",
-      "x": 0.1511,
-      "y": 0.2417
+      "x": 0.1524,
+      "y": 0.2456
     },
     {
       "id": "drawing",
       "label": "그림 그리기",
       "emoji": "🎨",
       "category": "make",
-      "x": 0.3704,
-      "y": 0.2993
+      "x": 0.398,
+      "y": 0.2934
     },
     {
       "id": "clay",
       "label": "찰흙놀이",
       "emoji": "🧑‍🎨",
       "category": "make",
-      "x": 0.4663,
-      "y": 0.08
+      "x": 0.5337,
+      "y": 0.0856
     },
     {
       "id": "knit",
       "label": "뜨개질",
       "emoji": "🧶",
       "category": "make",
-      "x": 0.2307,
-      "y": 0.3524
+      "x": 0.1591,
+      "y": 0.3858
     },
     {
-      "id": "cross",
-      "label": "십자수",
-      "emoji": "🪡",
+      "id": "puzzle",
+      "label": "퍼즐 맞추기",
+      "emoji": "🧩",
       "category": "make",
-      "x": 0.08,
-      "y": 0.6122
+      "x": 0.3489,
+      "y": 0.3591
     },
     {
       "id": "blocks",
       "label": "블록 쌓기",
       "emoji": "🏗️",
       "category": "make",
-      "x": 0.5535,
-      "y": 0.1422
+      "x": 0.4768,
+      "y": 0.1823
     },
     {
       "id": "beads",
       "label": "비즈 공예",
       "emoji": "📿",
       "category": "make",
-      "x": 0.2694,
-      "y": 0.0811
+      "x": 0.2645,
+      "y": 0.08
     }
   ]
 }

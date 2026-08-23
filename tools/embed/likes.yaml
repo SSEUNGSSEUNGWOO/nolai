@@ -18,19 +18,17 @@
 #   치킨 - 음식이면서 동물(닭)이라 다의어다. 규칙 1 위반.
 #   피아노·바이올린·앵무새·햄스터 - 위 7·8번 이유.
 #
-# 지금 상태: 같은 갈래 추천 27/30. 남은 셋은 2D 투영 잡음이고(십자수가 피자
-# 근처, 초콜릿이 수영 근처), 아이에겐 "가끔 엉뚱한 것도 섞인다"로 읽혀 오히려
-# 추천의 성격을 보여준다.
-
-# 검토해서 통과시킨 이웃 경고 (다시 따지지 않아도 됨):
-#   줄넘기   - 이웃이 그림 그리기·블록 쌓기로 나온다. 둘 다 "혼자 반복해서 하는"
-#              것이라 모델이 가깝게 본 듯하다. 추천에 섞여도 아이에게 이상하지 않다.
-#   십자수   - 이웃에 피자·떡볶이가 낀다. 2D 투영 잡음이다. 화면에서 추천 3개 중
-#              하나가 엉뚱하게 나오는 정도이고, 그게 추천의 성격이기도 하다.
-#   블록 쌓기 - 줄넘기·수영이 이웃이다. 위와 같은 이유.
+# 9. 2D에서 엉뚱한 이웃이 보이면 고차원부터 잰다. 투영 잡음이라고 넘기지 않는다.
+#    "피자 → 십자수 추천"을 2D 투영 잡음으로 적어두고 넘겼는데, 고차원을 재보니
+#    거기가 더 나빴다(최근접 3개 같은 갈래 56/72). 범인은 줄넘기(만들기 항목 9개와
+#    서로 최근접 -- "혼자 반복하는 것"으로 묶이는 듯)와 스케이트(아이스크림·초콜릿과
+#    가까움). 둘을 탁구·배구로 바꾸니 70/72. 피자→십자수는 이 둘이 투영을 비튼
+#    부수 효과였다. 2026-08-24.
 #
-# 셋 다 그대로 둔다. 이 레슨은 "완벽한 추천"이 아니라 "닮은 것을 골라준다"를
-# 가르치므로, 가끔 섞이는 것이 오히려 사실에 가깝다.
+#    십자수도 2D에서 아이스크림·피자를 끌어와 퍼즐 맞추기로 바꿨다(71/72).
+#
+# 지금 상태: 고차원 최근접 3개 같은 갈래 71/72. 남은 하나(레고→피자)는 더 손대면
+# 과적합이라 둔다.
 
 id: likes-kid
 categories:
@@ -50,15 +48,15 @@ words:
   - { id: baseball,  label: 야구,      emoji: "⚾", category: sport }
   - { id: swim,      label: 수영,      emoji: "🏊", category: sport }
   - { id: taekwondo, label: 태권도,    emoji: "🥋", category: sport }
-  - { id: rope,      label: 줄넘기,    emoji: "🪢", category: sport }
+  - { id: pingpong,  label: 탁구,      emoji: "🏓", category: sport }
   - { id: basket,    label: 농구,      emoji: "🏀", category: sport }
   - { id: badminton, label: 배드민턴,  emoji: "🏸", category: sport }
-  - { id: skate,     label: 스케이트,  emoji: "⛸️", category: sport }
+  - { id: volleyball, label: 배구,     emoji: "🏐", category: sport }
   - { id: lego,      label: 레고,      emoji: "🧱", category: make }
   - { id: origami,   label: 종이접기,  emoji: "🦢", category: make }
   - { id: drawing,   label: 그림 그리기, emoji: "🎨", category: make }
   - { id: clay,      label: 찰흙놀이,  emoji: "🧑‍🎨", category: make }
   - { id: knit,      label: 뜨개질,    emoji: "🧶", category: make }
-  - { id: cross,     label: 십자수,    emoji: "🪡", category: make }
+  - { id: puzzle,    label: 퍼즐 맞추기, emoji: "🧩", category: make }
   - { id: blocks,    label: 블록 쌓기, emoji: "🏗️", category: make }
   - { id: beads,     label: 비즈 공예, emoji: "📿", category: make }
