@@ -5,21 +5,20 @@ import OwlBubble from "../OwlBubble";
 import { popButton, choiceButton } from "./styles";
 import { ui } from "@/copy/ui";
 
-export default function ChallengeStep({
+/**
+ * 놀이 전에 먼저 찍어본다. 여기서는 맞고 틀림을 말하지 않는다 -- 아이가 놀이에서
+ * 직접 확인한다. 고른 것은 RevealStep이 돌아본다.
+ */
+export default function PredictStep({
   question,
   choices,
-  answer,
-  explain,
   onDone,
 }: {
   question: string;
   choices: string[];
-  answer: number;
-  explain: string;
-  onDone: () => void;
+  onDone: (picked: number) => void;
 }) {
   const [picked, setPicked] = useState<number | null>(null);
-  const isCorrect = picked === answer;
 
   return (
     <div className="mx-auto w-full max-w-md flex flex-col gap-3 py-6">
@@ -37,15 +36,9 @@ export default function ChallengeStep({
       ))}
 
       {picked !== null && (
-        <div className="flex flex-col gap-3 pt-2">
-          <p className="text-sm font-extrabold">
-            {isCorrect ? ui.challengeCorrect : ui.challengeRetry}
-          </p>
-          <p className="text-sm leading-relaxed">{explain}</p>
-          <button type="button" className={popButton} onClick={onDone}>
-            {ui.challengeNext}
-          </button>
-        </div>
+        <button type="button" className={popButton} onClick={() => onDone(picked)}>
+          {ui.predictCta}
+        </button>
       )}
     </div>
   );

@@ -4,6 +4,8 @@ import HookStep from "./HookStep";
 import NameStep from "./NameStep";
 import ChallengeStep from "./ChallengeStep";
 import RewardStep from "./RewardStep";
+import PredictStep from "./PredictStep";
+import RevealStep from "./RevealStep";
 
 describe("HookStep", () => {
   it("질문을 보여주고 버튼을 누르면 다음으로 넘어간다", () => {
@@ -64,6 +66,43 @@ describe("RewardStep", () => {
 
     expect(screen.getByText("지도 탐험가")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "좋아!" }));
+    expect(onDone).toHaveBeenCalledOnce();
+  });
+});
+
+describe("PredictStep", () => {
+  it("고르기 전에는 넘어갈 버튼이 없고, 고르면 고른 번호를 넘긴다", () => {
+    const onDone = vi.fn();
+    render(<PredictStep question="어디로 갈까?" choices={["강아지 근처", "자동차 근처"]} onDone={onDone} />);
+
+    expect(screen.queryByRole("button", { name: "직접 확인해보자!" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "자동차 근처" }));
+    fireEvent.click(screen.getByRole("button", { name: "직접 확인해보자!" }));
+    expect(onDone).toHaveBeenCalledWith(1);
+  });
+
+  it("맞고 틀림을 말하지 않는다", () => {
+    // 놀이에서 직접 확인하는 것이 이 스텝의 전부다.
+    render(<PredictStep question="어디로 갈까?" choices={["강아지 근처", "자동차 근처"]} onDone={vi.fn()} />);
+    fireEvent.click(screen.getByRole("button", { name: "자동차 근처" }));
+    expect(screen.queryByText(/맞았어|달랐네|틀렸/)).not.toBeInTheDocument();
+  });
+});
+
+describe("RevealStep", () => {
+  const props = { answer: 0, choices: ["강아지 근처", "자동차 근처"], right: "맞지!", wrong: "아니야!" };
+
+  it("맞게 찍었으면 right를 보여준다", () => {
+    render(<RevealStep {...props} picked={0} onDone={vi.fn()} />);
+    expect(screen.getByTestId("reveal-picked")).toHaveTextContent("강아지 근처");
+    expect(screen.getByText("맞지!")).toBeInTheDocument();
+  });
+
+  it("틀리게 찍었으면 wrong을 보여주고 그래도 넘어갈 수 있다", () => {
+    const onDone = vi.fn();
+    render(<RevealStep {...props} picked={1} onDone={onDone} />);
+    expect(screen.getByText("아니야!")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "다음으로" }));
     expect(onDone).toHaveBeenCalledOnce();
   });
 });

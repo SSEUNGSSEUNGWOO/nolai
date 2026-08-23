@@ -86,6 +86,24 @@ const challengeStep = z.strictObject({
   explain: z.string().min(1),
 });
 
+/**
+ * 놀이 전에 아이가 먼저 찍어보는 스텝. 맞고 틀림을 여기서 말하지 않는다 --
+ * 놀이에서 직접 확인하고 reveal에서 돌아본다. 틀린 예측이 제일 강한 학습이다.
+ */
+const predictStep = z.strictObject({
+  type: z.literal("predict"),
+  question: z.string().min(1),
+  choices: z.array(z.string().min(1)).min(2),
+  answer: z.number().int().nonnegative(),
+});
+
+/** predict에서 찍은 것을 놀이 뒤에 돌아보는 스텝. */
+const revealStep = z.strictObject({
+  type: z.literal("reveal"),
+  right: z.string().min(1),
+  wrong: z.string().min(1),
+});
+
 const rewardStep = z.strictObject({
   type: z.literal("reward"),
   badge: z.string().min(1),
@@ -96,6 +114,8 @@ export const lessonStepSchema = z.discriminatedUnion("type", [
   playStep,
   nameStep,
   challengeStep,
+  predictStep,
+  revealStep,
   rewardStep,
 ]);
 
@@ -134,8 +154,23 @@ export const lessonSchema = z
       });
     }
 
+    // 예측은 놀이 앞에, 확인은 예측 뒤에. 순서가 틀리면 러너가 없는 예측을
+    // 돌아보거나 확인할 놀이가 없다.
+    const predictIndex = lesson.steps.findIndex((step) => step.type === "predict");
+    const revealIndex = lesson.steps.findIndex((step) => step.type === "reveal");
+    const playIndex = lesson.steps.findIndex((step) => step.type === "play");
+    if (lesson.steps.filter((step) => step.type === "predict").length > 1) {
+      ctx.addIssue({ code: "custom", message: "예측(predict) 스텝은 하나만 둘 수 있습니다", path: ["steps"] });
+    }
+    if (revealIndex !== -1 && (predictIndex === -1 || predictIndex > revealIndex)) {
+      ctx.addIssue({ code: "custom", message: "확인(reveal) 스텝 앞에 예측(predict) 스텝이 있어야 합니다", path: ["steps", revealIndex] });
+    }
+    if (predictIndex !== -1 && (playIndex === -1 || playIndex < predictIndex)) {
+      ctx.addIssue({ code: "custom", message: "예측(predict) 스텝은 놀이(play) 스텝보다 앞에 있어야 합니다", path: ["steps", predictIndex] });
+    }
+
     lesson.steps.forEach((step, index) => {
-      if (step.type !== "challenge") return;
+      if (step.type !== "challenge" && step.type !== "predict") return;
 
       if (step.answer >= step.choices.length) {
         ctx.addIssue({

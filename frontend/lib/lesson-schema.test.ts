@@ -128,4 +128,28 @@ describe("lessonSchema", () => {
     // 다른 스텝 타입의 필드가 섞여 나오면 안 된다
     expect(issues).not.toMatch(/concept|badge|question/);
   });
+
+  describe("예측·확인 스텝", () => {
+    const predict = { type: "predict", question: "호랑이는 어디로?", choices: ["강아지 근처", "자동차 근처"], answer: 0 };
+    const reveal = { type: "reveal", right: "맞았어!", wrong: "아니었네!" };
+    const [hook, play, name, , reward] = validLesson.steps;
+
+    it("예측 → 놀이 → 확인 순서를 통과시킨다", () => {
+      expect(() => lessonSchema.parse({ ...validLesson, steps: [hook, predict, play, reveal, name, reward] })).not.toThrow();
+    });
+
+    it("확인 앞에 예측이 없으면 거부한다", () => {
+      // 러너가 돌아볼 예측이 없다.
+      expect(() => lessonSchema.parse({ ...validLesson, steps: [hook, play, reveal, name, reward] })).toThrow(/예측/);
+    });
+
+    it("예측이 놀이 뒤에 오면 거부한다", () => {
+      // 확인할 놀이가 이미 끝났다 -- 예측이 아니라 그냥 문제다.
+      expect(() => lessonSchema.parse({ ...validLesson, steps: [hook, play, predict, reveal, name, reward] })).toThrow(/놀이/);
+    });
+
+    it("예측의 answer가 choices 범위를 벗어나면 거부한다", () => {
+      expect(() => lessonSchema.parse({ ...validLesson, steps: [hook, { ...predict, answer: 5 }, play, reveal, name, reward] })).toThrow(/범위/);
+    });
+  });
 });

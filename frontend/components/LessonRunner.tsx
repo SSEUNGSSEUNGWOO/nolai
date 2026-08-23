@@ -10,6 +10,8 @@ import HookStep from "./steps/HookStep";
 import NameStep from "./steps/NameStep";
 import ChallengeStep from "./steps/ChallengeStep";
 import RewardStep from "./steps/RewardStep";
+import PredictStep from "./steps/PredictStep";
+import RevealStep from "./steps/RevealStep";
 import { popButton } from "./steps/styles";
 import { ui } from "@/copy/ui";
 import { unlockAudio } from "@/lib/sound";
@@ -32,6 +34,9 @@ export default function LessonRunner({
 }) {
   const [stepIndex, setStepIndex] = useState(0);
   const [progressCount, setProgressCount] = useState(0);
+  // 예측 스텝에서 고른 보기. 확인 스텝이 돌아본다. 스키마가 순서를 지키므로
+  // 확인 스텝에 닿았을 때는 항상 값이 있다.
+  const [prediction, setPrediction] = useState<number | null>(null);
 
   // 놀이터가 만든 산출물을 받아둔다. state가 아니라 ref인 이유는
   // 값이 바뀌어도 다시 그릴 필요가 없어서다. 계획 2에서 서버에 저장한다.
@@ -107,6 +112,42 @@ export default function LessonRunner({
 
   if (step.type === "name") {
     return <NameStep concept={step.concept} body={step.body} onDone={next} />;
+  }
+
+  if (step.type === "predict") {
+    return (
+      <PredictStep
+        question={step.question}
+        choices={step.choices}
+        onDone={(picked) => {
+          setPrediction(picked);
+          next();
+        }}
+      />
+    );
+  }
+
+  if (step.type === "reveal") {
+    const predict = lesson.steps.find((s) => s.type === "predict");
+    if (!predict || predict.type !== "predict" || prediction === null) {
+      // 스키마가 막으므로 닿을 수 없다. 닿았더라도 아이의 놀이를 멈추지는
+      // 않는다 -- 넘어갈 버튼만 그린다.
+      return (
+        <button type="button" className={popButton} onClick={next}>
+          {ui.challengeNext}
+        </button>
+      );
+    }
+    return (
+      <RevealStep
+        picked={prediction}
+        answer={predict.answer}
+        choices={predict.choices}
+        right={step.right}
+        wrong={step.wrong}
+        onDone={next}
+      />
+    );
   }
 
   if (step.type === "challenge") {

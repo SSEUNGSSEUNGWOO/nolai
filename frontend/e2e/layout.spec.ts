@@ -20,6 +20,9 @@ test.describe("비슷한 말끼리 모여라", () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/lesson/embedding-map");
     await page.getByRole("button", { name: "궁금해!" }).click();
+    // 예측 스텝을 지나야 놀이터가 나온다
+    await page.getByRole("button", { name: "강아지 근처" }).click();
+    await page.getByRole("button", { name: "직접 확인해보자!" }).click();
 
     const { map, drawer } = await boxes(page, "map-area", "word-drawer");
     expect(drawer.x).toBeGreaterThanOrEqual(map.x + map.width - 1);
@@ -29,6 +32,9 @@ test.describe("비슷한 말끼리 모여라", () => {
     await page.setViewportSize({ width: 390, height: 840 });
     await page.goto("/lesson/embedding-map");
     await page.getByRole("button", { name: "궁금해!" }).click();
+    // 예측 스텝을 지나야 놀이터가 나온다
+    await page.getByRole("button", { name: "강아지 근처" }).click();
+    await page.getByRole("button", { name: "직접 확인해보자!" }).click();
 
     const { map, drawer } = await boxes(page, "map-area", "word-drawer");
     expect(drawer.y).toBeGreaterThanOrEqual(map.y + map.height - 1);

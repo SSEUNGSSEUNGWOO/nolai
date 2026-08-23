@@ -1,11 +1,18 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
+
+/** 훅을 지나 예측까지 마치고 놀이터에 선다. */
+async function enterPlay(page: Page, guess = "강아지 근처") {
+  await page.getByRole("button", { name: "궁금해!" }).click();
+  await page.getByRole("button", { name: guess }).click();
+  await page.getByRole("button", { name: "직접 확인해보자!" }).click();
+}
 
 test("\"비슷한 말끼리 모여라\"를 처음부터 끝까지 완주한다", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: /비슷한 말끼리 모여라/ }).click();
 
   await expect(page.getByText(/어떻게 알아듣지/)).toBeVisible();
-  await page.getByRole("button", { name: "궁금해!" }).click();
+  await enterPlay(page, "강아지 근처");
 
   await expect(page.getByTestId("word-drawer")).toBeVisible();
 
@@ -15,11 +22,14 @@ test("\"비슷한 말끼리 모여라\"를 처음부터 끝까지 완주한다",
   }
 
   await page.getByRole("button", { name: "다 했어요" }).click();
-  await expect(page.getByText("임베딩")).toBeVisible();
 
-  await page.getByRole("button", { name: "알겠어!" }).click();
-  await page.getByRole("button", { name: "강아지 근처" }).click();
+  // 놀이 전에 찍은 것을 돌아본다. 맞게 찍었으니 맞았다고 한다.
+  await expect(page.getByTestId("reveal-picked")).toContainText("강아지 근처");
+  await expect(page.getByText(/네 말이 맞았어/)).toBeVisible();
   await page.getByRole("button", { name: "다음으로" }).click();
+
+  await expect(page.getByText("임베딩")).toBeVisible();
+  await page.getByRole("button", { name: "알겠어!" }).click();
 
   await expect(page.getByText("지도 탐험가")).toBeVisible();
   await page.getByRole("button", { name: "좋아!" }).click();
@@ -36,15 +46,16 @@ test("\"비슷한 말끼리 모여라\"를 처음부터 끝까지 완주한다",
 
 test("진도가 localStorage에 남는다", async ({ page }) => {
   await page.goto("/lesson/embedding-map");
-  await page.getByRole("button", { name: "궁금해!" }).click();
+  // 일부러 틀리게 찍는다. 틀려도 혼나지 않고 끝까지 간다.
+  await enterPlay(page, "자동차 근처");
 
   for (let i = 0; i < 9; i++) {
     await page.locator('[data-testid^="drawer-word-"]').first().click();
   }
   await page.getByRole("button", { name: "다 했어요" }).click();
-  await page.getByRole("button", { name: "알겠어!" }).click();
-  await page.getByRole("button", { name: "강아지 근처" }).click();
+  await expect(page.getByText(/달랐네/)).toBeVisible();
   await page.getByRole("button", { name: "다음으로" }).click();
+  await page.getByRole("button", { name: "알겠어!" }).click();
   await page.getByRole("button", { name: "좋아!" }).click();
 
   const stored = await page.evaluate(() =>
@@ -56,7 +67,7 @@ test("진도가 localStorage에 남는다", async ({ page }) => {
 
 test("진짜 마우스로 끌어다 놓아도 배치된다", async ({ page }) => {
   await page.goto("/lesson/embedding-map");
-  await page.getByRole("button", { name: "궁금해!" }).click();
+  await enterPlay(page);
 
   const chip = page.getByTestId("drawer-word-dog");
   const map = page.getByTestId("map-area");
@@ -90,7 +101,7 @@ for (const viewport of viewports) {
   }) => {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto("/lesson/embedding-map");
-    await page.getByRole("button", { name: "궁금해!" }).click();
+    await enterPlay(page);
 
     // 전부 놓는다 — 가장자리 좌표를 가진 단어까지 확인해야 한다
     const drawer = page.locator('[data-testid^="drawer-word-"]');
@@ -121,3 +132,25 @@ for (const viewport of viewports) {
     }
   });
 }
+
+test("예측의 정답이 지도에서도 참이다 -- 호랑이는 자동차·딸기보다 강아지에 가깝다", async ({ page }) => {
+  // 레슨이 "강아지 근처"를 정답이라고 하는데 데이터가 바뀌어 거짓이 되면
+  // 아이가 맞게 찍고도 틀렸다는 말을 듣는다.
+  await page.goto("/lesson/embedding-map");
+  await enterPlay(page);
+  for (const id of ["tiger", "dog", "car", "strawberry"]) {
+    await page.getByTestId(`drawer-word-${id}`).click();
+  }
+  const center = async (id: string) => {
+    const box = (await page.getByTestId(`placed-word-${id}`).boundingBox())!;
+    return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+  };
+  const tiger = await center("tiger");
+  const dist = async (id: string) => {
+    const c = await center(id);
+    return Math.hypot(c.x - tiger.x, c.y - tiger.y);
+  };
+  const toDog = await dist("dog");
+  expect(toDog).toBeLessThan(await dist("car"));
+  expect(toDog).toBeLessThan(await dist("strawberry"));
+});
