@@ -8,7 +8,7 @@ async function score(page: Page, a: string, b: string): Promise<number> {
   return Number(value);
 }
 
-test("레슨 13을 처음부터 끝까지 완주한다", async ({ page }) => {
+test("\"반대말인데 왜 가까워?\"를 처음부터 끝까지 완주한다", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: /반대말인데 왜 가까워/ }).click();
 

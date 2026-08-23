@@ -1,6 +1,6 @@
 {
   "id": "like-recommender",
-  "order": 5,
+  "order": 4,
   "lang": "ko",
   "title": "내 취향을 어떻게 알까",
   "playground": "LikeRecommender",
@@ -19,7 +19,10 @@
         "추천이 바뀌었지? 네가 좋아한 쪽마다 하나씩 가져와.",
         "마음에 안 들면 하트를 다시 눌러서 뺄 수도 있어."
       ],
-      "goal": { "kind": "liked", "min": 3 }
+      "goal": {
+        "kind": "liked",
+        "min": 3
+      }
     },
     {
       "type": "name",
@@ -37,6 +40,9 @@
       "answer": 0,
       "explain": "컴퓨터는 네가 고른 것 근처만 봐. 멀리 있는 건 아무리 재밌어도 안 보여줘. 그래서 새로운 걸 만나려면 가끔 딴 걸 눌러봐야 해!"
     },
-    { "type": "reward", "badge": "taste-reader" }
+    {
+      "type": "reward",
+      "badge": "taste-reader"
+    }
   ]
 }

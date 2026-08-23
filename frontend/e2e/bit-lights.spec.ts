@@ -8,7 +8,7 @@ async function makeNumber(page: Page, value: number) {
   }
 }
 
-test("레슨 16을 처음부터 끝까지 완주한다", async ({ page }) => {
+test("\"컴퓨터는 0과 1뿐이야\"를 처음부터 끝까지 완주한다", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: /컴퓨터는 0과 1뿐이야/ }).click();
 

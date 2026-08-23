@@ -1,6 +1,6 @@
 {
   "id": "pixel-coarse",
-  "order": 7,
+  "order": 14,
   "lang": "ko",
   "title": "칸이 많을수록 또렷해",
   "playground": "PixelZoom",
@@ -18,7 +18,10 @@
         "다시 늘려봐. 또렷해지지?",
         "다른 그림으로도 해봐. 어디까지 알아볼 수 있어?"
       ],
-      "goal": { "kind": "looked", "min": 3 }
+      "goal": {
+        "kind": "looked",
+        "min": 3
+      }
     },
     {
       "type": "name",
@@ -36,6 +39,9 @@
       "answer": 0,
       "explain": "칸 하나가 여러 칸을 대신하려면 색을 섞어서 하나로 만들 수밖에 없어. 그래서 뭉개지는 거야!"
     },
-    { "type": "reward", "badge": "sharp-eye" }
+    {
+      "type": "reward",
+      "badge": "sharp-eye"
+    }
   ]
 }

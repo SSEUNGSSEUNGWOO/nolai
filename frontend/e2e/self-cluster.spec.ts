@@ -4,7 +4,7 @@ async function groupOf(page: Page, id: string) {
   return page.getByTestId(`word-${id}`).getAttribute("data-group");
 }
 
-test("레슨 11을 처음부터 끝까지 완주한다", async ({ page }) => {
+test("\"안 가르쳐도 나눠\"를 처음부터 끝까지 완주한다", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: /안 가르쳐도 나눠/ }).click();
 

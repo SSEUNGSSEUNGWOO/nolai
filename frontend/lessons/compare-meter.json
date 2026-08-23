@@ -1,6 +1,6 @@
 {
   "id": "compare-meter",
-  "order": 13,
+  "order": 7,
   "lang": "ko",
   "title": "반대말인데 왜 가까워?",
   "playground": "CompareMeter",
@@ -19,7 +19,10 @@
         "크다랑 길다도 해봐. 반대말이랑 비슷하지?",
         "몇 개 더 재보면서 언제 높아지는지 찾아봐."
       ],
-      "goal": { "kind": "compared", "min": 4 }
+      "goal": {
+        "kind": "compared",
+        "min": 4
+      }
     },
     {
       "type": "name",
@@ -37,6 +40,9 @@
       "answer": 0,
       "explain": "컴퓨터는 같은 이야기를 하는 말끼리 모아둬. 반대인지 아닌지는 따로 배우지 않으면 몰라!"
     },
-    { "type": "reward", "badge": "meter-master" }
+    {
+      "type": "reward",
+      "badge": "meter-master"
+    }
   ]
 }

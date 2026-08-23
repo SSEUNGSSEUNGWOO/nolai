@@ -15,7 +15,7 @@ async function boxes(page: Page, mapId: string, drawerId: string) {
   return { map: map!, drawer: drawer! };
 }
 
-test.describe("레슨 1", () => {
+test.describe("비슷한 말끼리 모여라", () => {
   test("넓은 화면에서는 서랍이 지도 오른쪽에 선다", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/lesson/embedding-map");
@@ -35,7 +35,7 @@ test.describe("레슨 1", () => {
   });
 });
 
-test.describe("레슨 2", () => {
+test.describe("가장 가까운 걸 찾아줘", () => {
   test("넓은 화면에서는 질문이 지도 오른쪽에 서고 스크롤이 필요 없다", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/lesson/nearest-search");

@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("레슨 5를 처음부터 끝까지 완주한다", async ({ page }) => {
+test("\"내 취향을 어떻게 알까\"를 처음부터 끝까지 완주한다", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: /내 취향을 어떻게 알까/ }).click();
 

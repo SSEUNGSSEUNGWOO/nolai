@@ -19,7 +19,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-/** 레슨 2를 완주해 보상 화면까지 간다. */
+/** "가장 가까운 걸 찾아줘"를 완주해 보상 화면까지 간다. */
 async function finish(page: import("@playwright/test").Page) {
   await page.getByRole("button", { name: "궁금해!" }).click();
   for (const id of ["q01", "q08", "q20"]) await page.getByTestId(`question-${id}`).click();

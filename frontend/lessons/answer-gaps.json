@@ -1,6 +1,6 @@
 {
   "id": "answer-gaps",
-  "order": 4,
+  "order": 3,
   "lang": "ko",
   "title": "없는 건 못 찾아",
   "playground": "NearestSearch",
@@ -19,7 +19,10 @@
         "답이 없는 질문은 막대 셋이 다 짧고 길이도 비슷해.",
         "몇 개 더 눌러보면서 막대를 비교해봐."
       ],
-      "goal": { "kind": "searched", "min": 4 }
+      "goal": {
+        "kind": "searched",
+        "min": 4
+      }
     },
     {
       "type": "name",
@@ -37,6 +40,9 @@
       "answer": 0,
       "explain": "컴퓨터는 없는 답을 만들어내지 못해. 가진 것 중에서 고를 뿐이라, 답이 없으면 엉뚱한 게 1등이 돼!"
     },
-    { "type": "reward", "badge": "gap-finder" }
+    {
+      "type": "reward",
+      "badge": "gap-finder"
+    }
   ]
 }

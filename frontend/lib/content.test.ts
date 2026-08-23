@@ -194,3 +194,38 @@ describe("content 로더 — 레슨 5", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 });
+
+describe("레슨 사이의 참조", () => {
+  it("본문이 다른 레슨을 번호로 부르지 않는다", () => {
+    // 번호로 부르면 순서를 바꾸는 순간 그 문장이 거짓이 된다. 실제로
+    // self-cluster가 "1번에서 본 지도"라고 적고 있다가 걸렸다. 제목으로 부른다.
+    for (const lesson of listLessons()) {
+      for (const step of lesson.steps) {
+        const text =
+          step.type === "name"
+            ? step.body
+            : step.type === "challenge"
+              ? `${step.question} ${step.explain}`
+              : "";
+
+        expect(text, `${lesson.id}`).not.toMatch(/\d+번(에서|처럼|을|은|이|의|,|\s|$)/);
+      }
+    }
+  });
+
+  it("본문이 부르는 레슨 제목이 실제로 있다", () => {
+    const titles = listLessons().map((one) => one.title);
+
+    for (const lesson of listLessons()) {
+      const name = lesson.steps.find((step) => step.type === "name");
+      if (name?.type !== "name") continue;
+
+      // 따옴표로 감싼 것 중 레슨 제목처럼 보이는 것을 확인한다
+      for (const quoted of name.body.match(/"([^"]+)"/g) ?? []) {
+        const inner = quoted.slice(1, -1);
+        if (inner.length < 5) continue;
+        expect(titles, `${lesson.id}가 부르는 "${inner}"`).toContain(inner);
+      }
+    }
+  });
+});

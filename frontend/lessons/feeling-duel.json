@@ -1,6 +1,6 @@
 {
   "id": "feeling-duel",
-  "order": 15,
+  "order": 10,
   "lang": "ko",
   "title": "AI랑 기분 맞히기 대결",
   "playground": "FeelingDuel",
@@ -19,7 +19,10 @@
         "이번엔 '너무 슬퍼서 눈물이 나'를 해봐. AI가 뭐래?",
         "'하나도 안 무서웠어'랑 '오늘 소풍 가서 신났어'도 해봐!"
       ],
-      "goal": { "kind": "judged", "min": 5 }
+      "goal": {
+        "kind": "judged",
+        "min": 5
+      }
     },
     {
       "type": "name",
@@ -37,6 +40,9 @@
       "answer": 0,
       "explain": "숫자가 높다고 맞는 건 아니야. AI는 자기가 배운 대로 자신 있게 말할 뿐이지. 그래서 사람이 한 번 더 봐줘야 해!"
     },
-    { "type": "reward", "badge": "feeling-judge" }
+    {
+      "type": "reward",
+      "badge": "feeling-judge"
+    }
   ]
 }

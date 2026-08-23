@@ -19,7 +19,10 @@
         "여러 숫자를 만들어봐. 글자가 나오는 것도 있고 아닌 것도 있어.",
         "맨 아래를 봐. 한글은 전구 여덟 개로 모자라대."
       ],
-      "goal": { "kind": "made", "min": 4 }
+      "goal": {
+        "kind": "made",
+        "min": 4
+      }
     },
     {
       "type": "name",
@@ -37,6 +40,9 @@
       "answer": 0,
       "explain": "전구 여덟 개를 다 켜도 255가 최대야. 한글은 훨씬 큰 번호라 전구가 열여섯 개는 있어야 해!"
     },
-    { "type": "reward", "badge": "bit-master" }
+    {
+      "type": "reward",
+      "badge": "bit-master"
+    }
   ]
 }

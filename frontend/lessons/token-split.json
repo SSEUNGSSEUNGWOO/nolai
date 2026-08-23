@@ -1,6 +1,6 @@
 {
   "id": "token-split",
-  "order": 9,
+  "order": 11,
   "lang": "ko",
   "title": "AI는 글을 조각으로 읽어",
   "playground": "TokenSplit",
@@ -19,7 +19,10 @@
         "'무지개'는 어때? 왜 다를까?",
         "자주 쓰는 말일수록 적게 쪼개져."
       ],
-      "goal": { "kind": "split", "min": 4 }
+      "goal": {
+        "kind": "split",
+        "min": 4
+      }
     },
     {
       "type": "name",
@@ -37,6 +40,9 @@
       "answer": 0,
       "explain": "AI는 많이 본 덩어리를 통째로 기억해둬. 자주 안 나오는 말은 아는 조각으로 쪼개서 읽을 수밖에 없어!"
     },
-    { "type": "reward", "badge": "piece-master" }
+    {
+      "type": "reward",
+      "badge": "piece-master"
+    }
   ]
 }

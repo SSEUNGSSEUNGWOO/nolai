@@ -1,6 +1,6 @@
 {
   "id": "wave-zoom",
-  "order": 8,
+  "order": 15,
   "lang": "ko",
   "title": "소리도 숫자야",
   "playground": "WaveZoom",
@@ -19,7 +19,10 @@
         "다른 소리도 들어봐. 물결 모양이 달라져.",
         "높은 소리는 물결이 촘촘하고, 거친 소리는 울퉁불퉁해."
       ],
-      "goal": { "kind": "heard", "min": 3 }
+      "goal": {
+        "kind": "heard",
+        "min": 3
+      }
     },
     {
       "type": "name",
@@ -37,6 +40,9 @@
       "answer": 0,
       "explain": "높은 소리는 더 빨리 떨려서 같은 시간에 물결이 더 많이 들어가. 물결의 크기는 소리의 세기(크기)를 나타내지!"
     },
-    { "type": "reward", "badge": "wave-rider" }
+    {
+      "type": "reward",
+      "badge": "wave-rider"
+    }
   ]
 }

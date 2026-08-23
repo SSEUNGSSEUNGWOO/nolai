@@ -48,7 +48,7 @@ async function join(page: Page): Promise<{ nickname: string; code: string }> {
   return { nickname, code };
 }
 
-/** 레슨 2를 훅부터 배지까지 완주한다. 질문 3개면 목표가 찬다. */
+/** "가장 가까운 걸 찾아줘"를 훅부터 배지까지 완주한다. 질문 3개면 목표가 찬다. */
 async function finishLesson2(page: Page) {
   await page.goto("/lesson/nearest-search");
   await page.getByRole("button", { name: "궁금해!" }).click();

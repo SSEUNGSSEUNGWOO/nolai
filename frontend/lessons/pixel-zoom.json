@@ -1,6 +1,6 @@
 {
   "id": "pixel-zoom",
-  "order": 6,
+  "order": 13,
   "lang": "ko",
   "title": "그림도 숫자야",
   "playground": "PixelZoom",
@@ -18,7 +18,10 @@
         "다른 그림도 눌러봐. 색이 바뀌면 숫자도 바뀌어.",
         "하얀 칸이랑 까만 칸도 눌러보면 재밌어."
       ],
-      "goal": { "kind": "looked", "min": 3 }
+      "goal": {
+        "kind": "looked",
+        "min": 3
+      }
     },
     {
       "type": "name",
@@ -28,10 +31,17 @@
     {
       "type": "challenge",
       "question": "어떤 칸의 숫자가 '빨강 255 · 초록 255 · 파랑 255'였어. 무슨 색일까?",
-      "choices": ["하얀색", "빨간색", "까만색"],
+      "choices": [
+        "하얀색",
+        "빨간색",
+        "까만색"
+      ],
       "answer": 0,
       "explain": "셋을 다 꽉 채우면 하얀색이야. 반대로 셋 다 0이면 까만색이지!"
     },
-    { "type": "reward", "badge": "pixel-hunter" }
+    {
+      "type": "reward",
+      "badge": "pixel-hunter"
+    }
   ]
 }

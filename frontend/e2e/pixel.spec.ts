@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("레슨 6을 처음부터 끝까지 완주한다", async ({ page }) => {
+test("\"그림도 숫자야\"를 처음부터 끝까지 완주한다", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: /그림도 숫자야/ }).click();
 
@@ -39,7 +39,7 @@ test("칸을 누르면 그 칸의 색이 숫자로 나온다", async ({ page }) 
   await expect(page.getByTestId("pixel-readout")).toContainText("초록 107");
 });
 
-test("레슨 7에서 칸을 줄이면 격자가 굵어진다", async ({ page }) => {
+test("\"칸이 많을수록 또렷해\"에서 칸을 줄이면 격자가 굵어진다", async ({ page }) => {
   await page.goto("/lesson/pixel-coarse");
   await page.getByRole("button", { name: "궁금해!" }).click();
 

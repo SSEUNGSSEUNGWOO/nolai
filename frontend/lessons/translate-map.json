@@ -1,6 +1,6 @@
 {
   "id": "translate-map",
-  "order": 10,
+  "order": 5,
   "lang": "ko",
   "title": "말이 달라도 뜻이 같으면",
   "playground": "EmbeddingMap",
@@ -19,7 +19,10 @@
         "빨강(한국어)끼리 안 모이고 뜻이 같은 것끼리 모이지?",
         "몇 개 더 놓아봐. 다 그런지 확인해봐."
       ],
-      "goal": { "kind": "placed", "min": 8 }
+      "goal": {
+        "kind": "placed",
+        "min": 8
+      }
     },
     {
       "type": "name",
@@ -37,6 +40,9 @@
       "answer": 0,
       "explain": "글자는 하나도 안 닮았는데 자리가 같아. 컴퓨터가 글자가 아니라 뜻으로 자리를 정했기 때문이야!"
     },
-    { "type": "reward", "badge": "bridge-builder" }
+    {
+      "type": "reward",
+      "badge": "bridge-builder"
+    }
   ]
 }

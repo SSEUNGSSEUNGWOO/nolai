@@ -18,7 +18,10 @@
         "다른 질문도 눌러봐. 문장들이 자리를 바꿔.",
         "질문이랑 뜻이 가까운 문장일수록 가까이 와."
       ],
-      "goal": { "kind": "searched", "min": 3 }
+      "goal": {
+        "kind": "searched",
+        "min": 3
+      }
     },
     {
       "type": "name",
@@ -36,6 +39,9 @@
       "answer": 0,
       "explain": "낱말이 하나도 안 겹치는데 1등이 됐어. 컴퓨터가 글자가 아니라 뜻을 본 거야!"
     },
-    { "type": "reward", "badge": "path-finder" }
+    {
+      "type": "reward",
+      "badge": "path-finder"
+    }
   ]
 }

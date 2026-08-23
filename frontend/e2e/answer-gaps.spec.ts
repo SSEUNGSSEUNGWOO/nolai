@@ -8,7 +8,7 @@ async function nearness(page: Page, rank: number): Promise<number> {
   return Number(value);
 }
 
-test("레슨 4를 처음부터 끝까지 완주한다", async ({ page }) => {
+test("\"없는 건 못 찾아\"를 처음부터 끝까지 완주한다", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: /없는 건 못 찾아/ }).click();
 

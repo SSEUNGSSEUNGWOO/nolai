@@ -1,6 +1,6 @@
 {
   "id": "analogy-lab",
-  "order": 12,
+  "order": 6,
   "lang": "ko",
   "title": "뜻으로 계산하기",
   "playground": "AnalogyLab",
@@ -19,7 +19,10 @@
         "이번엔 나라 이름에 [남자 → 여자]를 써봐. 어때?",
         "관계랑 안 어울리면 엉뚱해지지? 짝을 맞춰서 더 해봐."
       ],
-      "goal": { "kind": "calculated", "min": 4 }
+      "goal": {
+        "kind": "calculated",
+        "min": 4
+      }
     },
     {
       "type": "name",
@@ -37,6 +40,9 @@
       "answer": 0,
       "explain": "컴퓨터는 방향을 따라 움직일 뿐이야. 그 방향이 그 단어에 안 어울리면 엉뚱한 곳에 도착해!"
     },
-    { "type": "reward", "badge": "word-math" }
+    {
+      "type": "reward",
+      "badge": "word-math"
+    }
   ]
 }
