@@ -6,6 +6,8 @@ import type { Lesson } from "@/lib/lesson-schema";
 import type { Dataset } from "@/lib/dataset-schema";
 import type { Artifact, PlaygroundEvent } from "@/playgrounds/types";
 import { registry } from "@/playgrounds/registry";
+import Image from "next/image";
+import { mascotArt } from "@/lib/art";
 import MascotBubble from "./MascotBubble";
 import HookStep from "./steps/HookStep";
 import NameStep from "./steps/NameStep";
@@ -120,9 +122,17 @@ export default function LessonRunner({
         <div className="flex flex-col gap-3 lg:max-w-3xl">
           <MascotBubble text={line} />
           {canAdvance && (
-            <button type="button" className={popButton} onClick={next}>
-              {ui.playDone}
-            </button>
+            <motion.div
+              className="flex items-center gap-2"
+              initial={reducedMotion ? false : { opacity: 0, x: -16 }}
+              animate={{ opacity: 1, x: 0 }}
+            >
+              {/* 목표를 채우면 마스코트가 나타나 버튼을 가리킨다 */}
+              <Image src={mascotArt("point")} alt="" width={56} height={56} className="h-14 w-14 shrink-0" />
+              <button type="button" className={`${popButton} flex-1`} onClick={next}>
+                {ui.playDone}
+              </button>
+            </motion.div>
           )}
         </div>
       </div>

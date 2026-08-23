@@ -8,7 +8,7 @@ import LogoutButton from "./LogoutButton";
 import DeleteRoomButton from "./DeleteRoomButton";
 import ArtifactCard, { type ArtifactView } from "./ArtifactCard";
 import Image from "next/image";
-import { badgeArt } from "@/lib/art";
+import { badgeArt, EMPTY_SHELF_ART } from "@/lib/art";
 
 // 세션 쿠키를 읽으므로 요청마다 그린다.
 export const dynamic = "force-dynamic";
@@ -41,7 +41,10 @@ export default async function RoomPage() {
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-extrabold">{account.roomBadges}</h2>
         {room.badges.length === 0 ? (
-          <p className="text-sm text-muted">{account.roomNoBadges}</p>
+          <div className="flex items-center gap-3">
+            <Image src={EMPTY_SHELF_ART} alt="" width={72} height={72} className="h-18 w-18" />
+            <p className="text-sm text-muted">{account.roomNoBadges}</p>
+          </div>
         ) : (
           <ul data-testid="badge-shelf" className="flex flex-wrap gap-2">
             {room.badges.map((badge) => (

@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { account } from "@/copy/ui";
 import type { Me } from "./useMe";
+import Image from "next/image";
+import { mascotArt } from "@/lib/art";
 
 const linkClass =
   "rounded-pop border-[2.5px] border-ink px-4 py-2 text-sm font-extrabold text-ink shadow-[0_3px_0_var(--color-ink)]";
@@ -11,7 +13,8 @@ export default function AccountLinks({ me, loaded }: { me: Me | null; loaded: bo
   const nickname = me?.nickname ?? null;
   // 다 불러오기 전에는 아무것도 그리지 않는다. "만들기"가 잠깐 보였다가
   // "내 방"으로 바뀌면 아이가 잘못 누른다.
-  if (!loaded) return <div className="h-9" />;
+  // 불러오는 동안은 빈 자리 대신 생각 중인 마스코트. 높이를 버튼과 맞춰 튀지 않게 한다.
+  if (!loaded) return <Image src={mascotArt("think")} alt="" width={36} height={36} className="h-9 w-9" />;
 
   if (nickname) {
     return (

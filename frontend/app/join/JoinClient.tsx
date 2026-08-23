@@ -8,6 +8,8 @@ import { readProgress } from "@/lib/local-progress";
 import { account, ui } from "@/copy/ui";
 import { popButton } from "@/components/steps/styles";
 import MascotBubble from "@/components/MascotBubble";
+import Image from "next/image";
+import { mascotArt } from "@/lib/art";
 
 export default function JoinClient({ initial }: { initial: string[] }) {
   const router = useRouter();
@@ -96,6 +98,7 @@ export default function JoinClient({ initial }: { initial: string[] }) {
   if (issued) {
     return (
       <main className="mx-auto flex min-h-screen max-w-md flex-col gap-5 px-5 py-8">
+        <Image src={mascotArt("point")} alt="" width={128} height={128} priority className="mx-auto h-32 w-32" />
         <h1 className="text-2xl font-black">{account.codeTitle}</h1>
         <MascotBubble text={account.codeOwl} />
 
@@ -136,6 +139,7 @@ export default function JoinClient({ initial }: { initial: string[] }) {
         <Link href="/">← {ui.landingTitle}</Link>
       </header>
 
+      <Image src={mascotArt("wave")} alt="" width={128} height={128} priority className="bob mx-auto h-32 w-32" />
       <h1 className="text-2xl font-black">{account.joinTitle}</h1>
       <MascotBubble text={account.joinOwl} />
 
