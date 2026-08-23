@@ -33,6 +33,10 @@ export default function EmbeddingMap({
     [dataset.words],
   );
 
+  // 서랍과 끌고 가는 중인 칩은 전부 같은 색이다. 갈래 색은 지도에 내려앉은
+  // 뒤에만 붙는다 -- 놓기 전에 색이 갈리면 "비슷한 것끼리 모인다"를 아이가
+  // 발견하기 전에 색이 답을 말해버린다.
+  const undecided = "#FFFFFF";
   const colorOf = useMemo(() => {
     const map = new Map(dataset.categories.map((c) => [c.id, c.color]));
     return (categoryId: string) => map.get(categoryId) ?? "#FFFFFF";
@@ -186,7 +190,7 @@ export default function EmbeddingMap({
             testId={`drawer-word-${word.id}`}
             label={word.label}
             emoji={word.emoji}
-            color={colorOf(word.category)}
+            color={undecided}
             onActivate={() => place(word.id)}
             onDragStart={(event) =>
               setDrag({
@@ -210,7 +214,7 @@ export default function EmbeddingMap({
             testId={`ghost-${drag.wordId}`}
             label={wordById.get(drag.wordId)!.label}
             emoji={wordById.get(drag.wordId)!.emoji}
-            color={colorOf(wordById.get(drag.wordId)!.category)}
+            color={undecided}
           />
         </div>
       )}

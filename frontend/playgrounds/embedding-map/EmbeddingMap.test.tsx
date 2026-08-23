@@ -87,6 +87,23 @@ describe("EmbeddingMap", () => {
     expect(onArtifact).toHaveBeenCalledTimes(2);
   });
 
+  it("서랍에서는 갈래 색이 보이지 않고, 지도에 놓인 뒤에만 보인다", () => {
+    // 이 레슨의 전부는 "놓아보니 비슷한 것끼리 모이네"를 아이가 발견하는 것이다.
+    // 서랍에서부터 동물은 빨강, 탈것은 청록이면 색이 답을 먼저 말해버린다.
+    setup();
+
+    const inDrawer = screen.getByTestId("drawer-word-dog");
+    const drawerColor = inDrawer.style.backgroundColor;
+    expect(drawerColor).toBe(screen.getByTestId("drawer-word-car").style.backgroundColor);
+
+    fireEvent.click(inDrawer);
+    fireEvent.click(screen.getByTestId("drawer-word-car"));
+
+    const dog = screen.getByTestId("chip-dog").style.backgroundColor;
+    const car = screen.getByTestId("chip-car").style.backgroundColor;
+    expect(dog).not.toBe(drawerColor);
+    expect(dog).not.toBe(car);
+  });
   it("배치된 칩은 초점을 받지 않는다", () => {
     setup();
     fireEvent.click(screen.getByTestId("drawer-word-dog"));
