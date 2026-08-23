@@ -116,3 +116,9 @@ export async function saveArtifact(
 
   if (error) throw error;
 }
+
+/** kids 한 행을 지운다. progress·badges·artifacts는 on delete cascade가 따라 지운다. */
+export async function deleteKid(kidId: string): Promise<void> {
+  const { error } = await serverSupabase().from("kids").delete().eq("id", kidId);
+  if (error) throw error;
+}

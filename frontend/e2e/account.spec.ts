@@ -3,7 +3,7 @@ import {
   NICKNAME_CHARACTERS,
   NICKNAME_MODIFIERS,
 } from "../lib/auth/nickname";
-import { clearAttempts, deleteKidsByNickname } from "./support/db";
+import { clearAttempts, deleteKidsByNickname, testDb } from "./support/db";
 
 /**
  * 이 파일은 실제 Supabase 프로젝트에 계정을 만든다. 만든 닉네임만 골라 지우고,
@@ -159,4 +159,36 @@ test("레슨에서 만든 작품이 내 방에 쌓인다", async ({ page }) => {
   // 놀이터에서 고른 질문 3개가 작품에 그대로 담겨 있어야 한다
   await expect(shelf).toContainText("질문 3개를 찾아봤어");
   await expect(shelf).toContainText("먹을 게 어디 있는지 친구한테 어떻게 알려줘?");
+});
+
+test("내 방을 지우면 DB에서도 사라지고 로그아웃된다", async ({ page }) => {
+  // 개인정보처리방침이 약속한 "즉시 삭제"가 실제로 일어나는지 확인한다.
+  const { nickname } = await join(page);
+  await finishLesson2(page);
+
+  await page.goto("/room");
+  await page.getByTestId("delete-room").click();
+  await expect(page.getByText(/되돌릴 수 없어/)).toBeVisible();
+  await Promise.all([
+    page.waitForResponse((r) => r.url().endsWith("/api/me") && r.request().method() === "DELETE"),
+    page.getByTestId("delete-room-confirm").click(),
+  ]);
+
+  const db = testDb();
+  const kids = await db.from("kids").select("id").eq("nickname", nickname);
+  expect(kids.data).toEqual([]);
+  // 진도·배지도 cascade로 같이 사라져야 한다 -- 고아 행은 닉네임 없는 개인정보다
+  const progress = await db.from("progress").select("kid_id");
+  expect(progress.data?.length ?? 0).toBe(0);
+
+  // 쿠키가 지워져 첫 화면은 로그아웃 상태다
+  await page.goto("/");
+  await expect(page.getByTestId("to-join")).toBeVisible();
+});
+
+test("개인정보처리방침에 첫 화면과 내 방에서 갈 수 있다", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("link", { name: "개인정보처리방침" }).click();
+  await expect(page.getByRole("heading", { name: "개인정보처리방침" })).toBeVisible();
+  await expect(page.getByText(/내 방 지우기/)).toBeVisible();
 });

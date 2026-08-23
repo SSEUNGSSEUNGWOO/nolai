@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { listLessonGroups } from "@/lib/content";
 import { ui } from "@/copy/ui";
 import LessonList from "@/components/LessonList";
@@ -16,6 +17,10 @@ export default function Home() {
       <p className="text-lg font-extrabold">{ui.landingSubtitle}</p>
       <p className="text-sm text-muted">들어가서 만져봐 👋</p>
       <LessonList groups={groups} />
+
+      <footer className="pt-6 text-xs text-muted">
+        <Link href="/privacy" className="underline">개인정보처리방침</Link>
+      </footer>
     </main>
   );
 }

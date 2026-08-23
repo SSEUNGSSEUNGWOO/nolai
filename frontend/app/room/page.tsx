@@ -5,6 +5,7 @@ import { loadRoom, type RoomArtifact } from "@/lib/room";
 import { getDataset, listLessons } from "@/lib/content";
 import { account, badgeNames, ui } from "@/copy/ui";
 import LogoutButton from "./LogoutButton";
+import DeleteRoomButton from "./DeleteRoomButton";
 import ArtifactCard, { type ArtifactView } from "./ArtifactCard";
 
 // 세션 쿠키를 읽으므로 요청마다 그린다.
@@ -87,6 +88,11 @@ export default async function RoomPage() {
           ))}
         </ul>
       </section>
+
+      <footer className="flex items-center justify-between pt-6 text-xs text-muted">
+        <Link href="/privacy" className="underline">개인정보처리방침</Link>
+        <DeleteRoomButton />
+      </footer>
     </main>
   );
 }
