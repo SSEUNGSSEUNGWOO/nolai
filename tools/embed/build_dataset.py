@@ -1,7 +1,7 @@
 """단어 목록을 임베딩해 2D 좌표 데이터셋으로 만든다.
 
 실행:  uv run python build_dataset.py [단어파일.yaml]
-       기본값은 words.yaml(레슨 1). 레슨 3은 teach.yaml을 쓴다.
+       기본값은 words.yaml. teach.yaml·translate.yaml·likes.yaml도 같은 빌더를 쓴다.
 출력:  ../../frontend/datasets/<id>.json
 
 모델은 로컬에서 돌아간다. API 키가 필요 없다.

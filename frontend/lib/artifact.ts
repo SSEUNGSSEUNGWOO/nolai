@@ -18,67 +18,67 @@ const wordsArtifact = z.strictObject({
   placedIds: z.array(z.string().min(1)).max(200),
 });
 
-/** 레슨 16 -- 어떤 숫자를 만들어봤는지. */
+/** 컴퓨터는 0과 1뿐이야 -- 어떤 숫자를 만들어봤는지. */
 const bitsArtifact = z.strictObject({
   datasetId: z.string().min(1),
   made: z.array(z.number().int().nonnegative()).max(60),
 });
 
-/** 레슨 15 -- 어떤 문장에서 AI와 대결했는지. */
+/** AI랑 기분 맞히기 대결 -- 어떤 문장에서 AI와 대결했는지. */
 const duelArtifact = z.strictObject({
   datasetId: z.string().min(1),
   judged: z.array(z.string().min(1)).max(60),
 });
 
-/** 레슨 14 -- 어떤 문장을 만들어봤는지. */
+/** AI는 글을 이렇게 써 -- 어떤 문장을 만들어봤는지. */
 const sentenceArtifact = z.strictObject({
   datasetId: z.string().min(1),
   sentences: z.array(z.array(z.string().min(1)).min(1)).max(20),
 });
 
-/** 레슨 13 -- 어떤 두 단어를 재봤는지. */
+/** 반대말인데 왜 가까워? -- 어떤 두 단어를 재봤는지. */
 const similarityArtifact = z.strictObject({
   datasetId: z.string().min(1),
   compared: z.array(z.string().min(1)).max(60),
 });
 
-/** 레슨 12 -- 어떤 식을 만들어봤는지. */
+/** 뜻으로 계산하기 -- 어떤 식을 만들어봤는지. */
 const analogyArtifact = z.strictObject({
   datasetId: z.string().min(1),
   tried: z.array(z.string().min(1)).max(60),
 });
 
-/** 레슨 11 -- 무리를 몇 개로 나눠봤는지. */
+/** 안 가르쳐도 나눠 -- 무리를 몇 개로 나눠봤는지. */
 const clustersArtifact = z.strictObject({
   datasetId: z.string().min(1),
   triedGroupings: z.array(z.number().int().positive()).max(20),
 });
 
-/** 레슨 9 -- 어떤 글을 조각내봤는지. */
+/** AI는 글을 조각으로 읽어 -- 어떤 글을 조각내봤는지. */
 const tokensArtifact = z.strictObject({
   datasetId: z.string().min(1),
   itemIds: z.array(z.string().min(1)).max(50),
 });
 
-/** 레슨 8 -- 어떤 소리를 들어봤는지. */
+/** 소리도 숫자야 -- 어떤 소리를 들어봤는지. */
 const soundsArtifact = z.strictObject({
   datasetId: z.string().min(1),
   soundIds: z.array(z.string().min(1)).max(50),
 });
 
-/** 레슨 6·9 -- 어떤 그림을 들여다봤는지. */
+/** 그림도 숫자야·칸이 많을수록 또렷해 -- 어떤 그림을 들여다봤는지. */
 const pixelsArtifact = z.strictObject({
   datasetId: z.string().min(1),
   imageIds: z.array(z.string().min(1)).max(50),
 });
 
-/** 레슨 5 -- 어떤 것에 하트를 눌렀는지. */
+/** 내 취향을 어떻게 알까 -- 어떤 것에 하트를 눌렀는지. */
 const likesArtifact = z.strictObject({
   datasetId: z.string().min(1),
   likedIds: z.array(z.string().min(1)).max(200),
 });
 
-/** 레슨 3 -- 어느 단어를 어느 상자에 넣어 가르쳤는지. */
+/** 컴퓨터에게 가르쳐주기 -- 어느 단어를 어느 상자에 넣어 가르쳤는지. */
 const teachArtifact = z.strictObject({
   datasetId: z.string().min(1),
   taught: z

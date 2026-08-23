@@ -6,7 +6,7 @@ import { getLesson, getDataset } from "@/lib/content";
 const lesson = getLesson("embedding-map");
 const rawDataset = getDataset(lesson.dataset);
 if (rawDataset.kind !== "words") {
-  throw new Error("레슨 1은 words 데이터셋이어야 합니다");
+  throw new Error("embedding-map은 words 데이터셋이어야 합니다");
 }
 const dataset = rawDataset;
 

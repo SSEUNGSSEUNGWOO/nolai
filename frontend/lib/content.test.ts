@@ -101,40 +101,40 @@ describe("assertPlayable — 목표와 데이터셋 종류", () => {
   };
 
   it("goal.kind와 데이터셋 종류가 어긋나면 거부한다", () => {
-    // 레슨 1은 goal.kind가 "placed"라 words 데이터셋이 필요하다.
+    // embedding-map은 goal.kind가 "placed"라 words 데이터셋이 필요하다.
     // passages를 물리면 아이가 무엇을 해도 진도가 안 나간다.
     const lesson = getLesson("embedding-map");
     expect(() => assertPlayable(lesson, passages)).toThrow(/passages/);
   });
 });
 
-describe("content 로더 — 레슨 2", () => {
+describe("content 로더 — 가장 가까운 걸 찾아줘", () => {
   it("nearest-search 레슨을 검증해서 읽는다", () => {
     const lesson = getLesson("nearest-search");
     expect(lesson.title).toBe("가장 가까운 걸 찾아줘");
     expect(lesson.playground).toBe("NearestSearch");
   });
 
-  it("레슨 2의 데이터셋은 문장 종류다", () => {
+  it("데이터셋은 문장 종류다", () => {
     const dataset = getDataset(getLesson("nearest-search").dataset);
     expect(dataset.kind).toBe("passages");
   });
 
-  it("레슨 2와 데이터셋 조합은 끝까지 진행 가능하다", () => {
+  it("데이터셋 조합은 끝까지 진행 가능하다", () => {
     const lesson = getLesson("nearest-search");
     expect(() =>
       assertPlayable(lesson, getDataset(lesson.dataset)),
     ).not.toThrow();
   });
 
-  it("레슨 2의 배지에도 한글 이름이 있다", () => {
+  it("배지에도 한글 이름이 있다", () => {
     expect(() =>
       assertBadgeNamesExist(getLesson("nearest-search")),
     ).not.toThrow();
   });
 });
 
-describe("content 로더 — 레슨 3", () => {
+describe("content 로더 — 컴퓨터에게 가르쳐주기", () => {
   it("teach-sorter 레슨을 검증해서 읽는다", () => {
     const lesson = getLesson("teach-sorter");
     expect(lesson.title).toBe("컴퓨터에게 가르쳐주기");
@@ -150,31 +150,31 @@ describe("content 로더 — 레슨 3", () => {
 
 });
 
-describe("content 로더 — 레슨 4", () => {
+describe("content 로더 — 없는 건 못 찾아", () => {
   it("answer-gaps 레슨을 검증해서 읽는다", () => {
     const lesson = getLesson("answer-gaps");
     expect(lesson.title).toBe("없는 건 못 찾아");
-    // 놀이터를 새로 만들지 않고 레슨 2의 것을 그대로 쓴다
+    // 놀이터를 새로 만들지 않고 가장 가까운 걸 찾아줘의 것을 그대로 쓴다
     expect(lesson.playground).toBe("NearestSearch");
   });
 
-  it("레슨 4는 레슨 2와 같은 문장 모음을 쓴다", () => {
+  it("없는 건 못 찾아는 가장 가까운 걸 찾아줘와 같은 문장 모음을 쓴다", () => {
     // 문장이 다르면 "답이 없어서 틀린 것"인지 "문장이 달라서 틀린 것"인지
     // 구별할 수 없다
-    const two = getDataset(getLesson("nearest-search").dataset);
-    const four = getDataset(getLesson("answer-gaps").dataset);
-    if (two.kind !== "passages" || four.kind !== "passages") {
+    const search = getDataset(getLesson("nearest-search").dataset);
+    const gaps = getDataset(getLesson("answer-gaps").dataset);
+    if (search.kind !== "passages" || gaps.kind !== "passages") {
       throw new Error("둘 다 passages여야 합니다");
     }
 
-    expect(four.passages.map((p) => p.text)).toEqual(
-      two.passages.map((p) => p.text),
+    expect(gaps.passages.map((p) => p.text)).toEqual(
+      search.passages.map((p) => p.text),
     );
   });
 
 });
 
-describe("content 로더 — 레슨 5", () => {
+describe("content 로더 — 내 취향을 어떻게 알까", () => {
   it("like-recommender 레슨을 검증해서 읽는다", () => {
     const lesson = getLesson("like-recommender");
     expect(lesson.title).toBe("내 취향을 어떻게 알까");

@@ -1,7 +1,7 @@
 """문장 조각과 질문 카드를 임베딩해 벡터검색 데이터셋으로 만든다.
 
 실행:  uv run python build_passages.py [파일.yaml]
-       기본값은 passages.yaml(레슨 2). 레슨 4는 gaps.yaml을 쓴다.
+       기본값은 passages.yaml. gaps.yaml도 같은 빌더를 쓴다.
        use_passages_from을 적으면 문장은 그 파일에서 가져오고 질문만 자기 것을 쓴다.
 출력:  ../../frontend/datasets/<id>.json
 
@@ -93,7 +93,7 @@ def main() -> None:
     name = sys.argv[1] if len(sys.argv) > 1 else "passages.yaml"
     source = yaml.safe_load((HERE / name).read_text(encoding="utf-8"))
 
-    # 레슨 4는 레슨 2와 **같은 문장 모음**을 써야 한다. 문장이 다르면
+    # gaps.yaml은 passages.yaml과 **같은 문장 모음**을 써야 한다. 문장이 다르면
     # "답이 없어서 틀린 것"인지 "문장이 달라서 틀린 것"인지 구별할 수 없다.
     origin = source.get("use_passages_from")
     if origin:

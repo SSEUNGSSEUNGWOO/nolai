@@ -57,7 +57,7 @@ describe("parseArtifact — 좌표형 레슨", () => {
     })).toBeNull();
   });
 
-  it("레슨 2의 모양을 레슨 1에 넣으면 거부한다", () => {
+  it("문장형 모양을 좌표형 레슨에 넣으면 거부한다", () => {
     expect(parseArtifact(lesson1, {
       datasetId: "words-animals-vehicles",
       questionIds: ["q01"],
@@ -86,7 +86,7 @@ describe("parseArtifact — 문장형 레슨", () => {
     })).toBeNull();
   });
 
-  it("레슨 1의 모양을 레슨 2에 넣으면 거부한다", () => {
+  it("좌표형 모양을 문장형 레슨에 넣으면 거부한다", () => {
     expect(parseArtifact(lesson2, {
       datasetId: "animal-facts",
       placedIds: ["dog"],
@@ -141,7 +141,7 @@ describe("parseArtifact — 가르치기 레슨", () => {
 
 describe("parseArtifact — 모든 레슨을 덮는다", () => {
   // 레슨을 늘릴 때 결과물 모양을 여기 추가하지 않으면 작품이 조용히 버려진다.
-  // 화면에도 에러가 안 뜨고 내 방만 비어 있다. 실제로 레슨 5에서 그럴 뻔했다.
+  // 화면에도 에러가 안 뜨고 내 방만 비어 있다. 실제로 내 취향을 어떻게 알까에서 그럴 뻔했다.
   const samples: Record<string, unknown> = {
     "embedding-map": {
       datasetId: "words-animals-vehicles",
