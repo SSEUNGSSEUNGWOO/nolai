@@ -25,6 +25,13 @@ test("\"비슷한 말끼리 모여라\"를 처음부터 끝까지 완주한다",
   await page.getByRole("button", { name: "좋아!" }).click();
 
   await expect(page.getByText("레슨을 끝냈어!")).toBeVisible();
+
+  // 첫 화면으로 돌아오면 끝낸 레슨에 체크가 붙고 다음 레슨이 강조된다.
+  // 계정 없이도 된다 -- 진도가 브라우저에 남기 때문이다.
+  await page.goto("/");
+  await expect(page.getByTestId("lesson-embedding-map")).toHaveAttribute("data-done", "true");
+  await expect(page.getByTestId("lesson-nearest-search")).toHaveAttribute("data-next", "true");
+  await expect(page.getByText("뜻으로 찾기")).toBeVisible();
 });
 
 test("진도가 localStorage에 남는다", async ({ page }) => {

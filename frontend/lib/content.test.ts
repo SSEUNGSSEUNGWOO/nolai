@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   getLesson,
   getDataset,
-  listLessons,
+  listLessons, lessonGroups, listLessonGroups,
   assertPlayable,
   assertPlaygroundExists,
   assertBadgeNamesExist,
@@ -227,5 +227,25 @@ describe("레슨 사이의 참조", () => {
         expect(titles, `${lesson.id}가 부르는 "${inner}"`).toContain(inner);
       }
     }
+  });
+});
+
+describe("첫 화면 묶음", () => {
+  it("모든 레슨이 정확히 한 묶음에 속한다", () => {
+    // 레슨을 추가하고 묶음에 안 넣으면 첫 화면에서 조용히 사라진다.
+    const grouped = lessonGroups.flatMap((group) => group.lessonIds);
+    const all = listLessons().map((lesson) => lesson.id);
+
+    expect([...grouped].sort()).toEqual([...all].sort());
+    expect(new Set(grouped).size).toBe(grouped.length);
+  });
+
+  it("묶음 안팎의 순서가 레슨 order와 같다", () => {
+    // 묶음을 펼친 순서가 곧 아이가 보는 순서다. order와 어긋나면 첫 화면의
+    // 번호가 1, 2, 5, 3처럼 뒤섞인다.
+    const flattened = listLessonGroups().flatMap((group) => group.lessons);
+    expect(flattened.map((lesson) => lesson.order)).toEqual(
+      flattened.map((_, index) => index + 1),
+    );
   });
 });

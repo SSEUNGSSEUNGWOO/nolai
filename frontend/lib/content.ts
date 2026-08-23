@@ -193,6 +193,38 @@ export function getLesson(id: string): Lesson {
   return lesson;
 }
 
+/**
+ * 첫 화면의 묶음. 개념이 쌓이는 순서다 -- 성공을 먼저 겪고 그 그림자를 바로 잇는다.
+ *
+ * 레슨 JSON에 넣지 않고 여기 두는 이유: 묶음은 레슨 하나의 속성이 아니라 레슨
+ * 사이의 관계다. 한 파일에서 전체를 봐야 빠진 레슨이 보인다. 모든 레슨이 정확히
+ * 한 묶음에 속하는지는 테스트가 지킨다.
+ */
+export const lessonGroups: { title: string; lessonIds: string[] }[] = [
+  {
+    title: "뜻으로 찾기",
+    lessonIds: ["embedding-map", "nearest-search", "answer-gaps", "like-recommender"],
+  },
+  {
+    title: "뜻으로 더 해보기",
+    lessonIds: ["translate-map", "analogy-lab", "compare-meter"],
+  },
+  {
+    title: "컴퓨터는 어떻게 배울까",
+    lessonIds: ["teach-sorter", "self-cluster", "feeling-duel"],
+  },
+  {
+    title: "전부 숫자야",
+    lessonIds: ["token-split", "word-weaver", "pixel-zoom", "pixel-coarse", "wave-zoom", "bit-lights"],
+  },
+];
+
+export function listLessonGroups(): { title: string; lessons: Lesson[] }[] {
+  return lessonGroups.map((group) => ({
+    title: group.title,
+    lessons: group.lessonIds.map(getLesson),
+  }));
+}
 export function listLessons(): Lesson[] {
   return Object.keys(rawLessons)
     .map(getLesson)

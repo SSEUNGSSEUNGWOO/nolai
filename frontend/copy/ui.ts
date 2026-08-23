@@ -4,6 +4,8 @@ export const ui = {
   landingTitle: "놀AI",
   landingSubtitle: "AI는 어떻게 생각할까?",
   landingCta: "시작하기",
+  lessonDone: "끝냈어",
+  lessonNext: "다음은 이거!",
   hookCta: "궁금해!",
   playDone: "다 했어요",
   nameCta: "알겠어!",
