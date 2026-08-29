@@ -21,7 +21,8 @@ export default function Home() {
       <p className="text-sm text-muted">들어가서 만져봐 👋</p>
       <LessonList groups={groups} />
 
-      <footer className="pt-6 text-xs text-muted">
+      <footer className="flex gap-4 pt-6 text-xs text-muted">
+        <Link href="/parents" className="underline">부모·선생님께</Link>
         <Link href="/privacy" className="underline">개인정보처리방침</Link>
       </footer>
     </main>

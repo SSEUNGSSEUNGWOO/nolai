@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { randomNicknames } from "@/lib/auth/nickname";
 import JoinClient from "./JoinClient";
 
@@ -11,6 +12,8 @@ import JoinClient from "./JoinClient";
  * 매 요청 새로 뽑아야 하므로 정적 생성하지 않는다.
  */
 export const dynamic = "force-dynamic";
+// 검색 결과에 나올 이유가 없는 화면. robots.ts와 같은 판단이다.
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default function JoinPage() {
   return <JoinClient initial={randomNicknames(3)} />;

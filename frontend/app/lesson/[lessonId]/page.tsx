@@ -1,6 +1,10 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLesson, getDataset, listLessons } from "@/lib/content";
 import LessonClient from "./LessonClient";
+
+// 레슨 본문은 브라우저에서 그려져 색인엔 빈 껍데기만 남는다. 검색은 /parents가 맡는다.
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export function generateStaticParams() {
   return listLessons().map((lesson) => ({ lessonId: lesson.id }));

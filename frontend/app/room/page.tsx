@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { currentKidId } from "@/lib/auth/current";
@@ -12,6 +13,8 @@ import { badgeArt, EMPTY_SHELF_ART } from "@/lib/art";
 
 // 세션 쿠키를 읽으므로 요청마다 그린다.
 export const dynamic = "force-dynamic";
+// 검색 결과에 나올 이유가 없는 화면. robots.ts와 같은 판단이다.
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function RoomPage() {
   const kidId = await currentKidId();
