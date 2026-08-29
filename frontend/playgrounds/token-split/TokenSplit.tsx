@@ -37,7 +37,7 @@ export default function TokenSplit({
       <div
         data-testid="piece-view"
         data-pieces={item ? item.pieces.length : 0}
-        className="flex min-h-32 flex-col gap-3 rounded-pop border-[3px] border-ink bg-paper p-3 shadow-[0_4px_0_var(--color-ink)]"
+        className="stage-dots flex min-h-32 flex-col gap-3 rounded-pop border-[3px] border-ink p-3 shadow-[0_4px_0_var(--color-ink)]"
       >
         {item === null ? (
           <span className="text-sm font-bold text-muted">

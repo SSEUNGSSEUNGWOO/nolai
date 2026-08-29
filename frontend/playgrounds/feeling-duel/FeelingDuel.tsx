@@ -55,7 +55,7 @@ export default function FeelingDuel({
       <div
         data-testid="duel-card"
         data-revealed={revealed ? "true" : undefined}
-        className="flex min-h-40 flex-col gap-3 rounded-pop border-[3px] border-ink bg-paper p-3 shadow-[0_4px_0_var(--color-ink)]"
+        className="stage-dots flex min-h-40 flex-col gap-3 rounded-pop border-[3px] border-ink p-3 shadow-[0_4px_0_var(--color-ink)]"
       >
         {sentence === null ? (
           <span className="text-sm font-bold text-muted">

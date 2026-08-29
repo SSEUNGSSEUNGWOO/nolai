@@ -51,7 +51,7 @@ export default function SelfCluster({
       <div
         data-testid="cluster-map"
         data-k={k ?? 0}
-        className="relative aspect-[4/3] w-full rounded-pop border-[3px] border-ink bg-paper shadow-[0_4px_0_var(--color-ink)]"
+        className="stage-grid relative aspect-[4/3] w-full overflow-hidden rounded-pop border-[3px] border-ink shadow-[0_4px_0_var(--color-ink)]"
       >
         <div className="absolute inset-x-12 inset-y-6">
           {dataset.words.map((word, index) => {

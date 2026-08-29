@@ -41,7 +41,7 @@ export default function WordWeaver({
       {/* 아이가 만든 문장. 한 단어씩 붙는 것이 보여야 "한 번에 하나씩"이 읽힌다. */}
       <div
         data-testid="sentence"
-        className="flex min-h-16 flex-wrap items-center gap-1 rounded-pop border-[3px] border-ink bg-paper p-3 text-lg font-black shadow-[0_4px_0_var(--color-ink)]"
+        className="stage-dots flex min-h-16 flex-wrap items-center gap-1 rounded-pop border-[3px] border-ink p-3 text-lg font-black shadow-[0_4px_0_var(--color-ink)]"
       >
         {words.length === 0 ? (
           <span className="text-sm font-bold text-muted">

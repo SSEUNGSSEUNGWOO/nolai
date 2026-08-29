@@ -63,7 +63,7 @@ export default function CompareMeter({
       <div
         data-testid="meter"
         data-score={score === null ? undefined : score.toFixed(3)}
-        className="flex flex-col gap-2 rounded-pop border-[3px] border-ink bg-paper p-3 shadow-[0_4px_0_var(--color-ink)]"
+        className="stage-dots flex flex-col gap-2 rounded-pop border-[3px] border-ink p-3 shadow-[0_4px_0_var(--color-ink)]"
       >
         <div className="flex items-center justify-center gap-2 text-lg font-black">
           <span data-testid="meter-left">

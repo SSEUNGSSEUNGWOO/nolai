@@ -130,8 +130,19 @@ export default function EmbeddingMap({
       <div
         ref={mapRef}
         data-testid="map-area"
-        className="relative aspect-[4/3] w-full rounded-pop border-[3px] border-ink bg-paper shadow-[0_4px_0_var(--color-ink)]"
+        className="stage-grid relative aspect-[4/3] w-full overflow-hidden rounded-pop border-[3px] border-ink shadow-[0_4px_0_var(--color-ink)]"
       >
+        {/* 아무것도 안 놓였을 때의 빈 지도. 흰 상자만 있으면 뭘 하라는 건지 모른다. */}
+        {placedIds.length === 0 && (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 flex items-center justify-center"
+          >
+            <span className="rounded-full border-[3px] border-dashed border-ink/25 px-6 py-5 text-sm font-extrabold text-ink/35">
+              여기에 놓아봐
+            </span>
+          </div>
+        )}
         {/* 좌표 레이어 — 지도 테두리보다 안쪽으로 들여놓는다.
             칩은 좌표를 중심으로 그려지므로, 가장자리 칩이 지도 밖으로
             삐져나가지 않으려면 칩 반폭만큼의 여백이 필요하다. */}

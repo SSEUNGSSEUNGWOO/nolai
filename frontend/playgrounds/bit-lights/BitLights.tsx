@@ -44,7 +44,7 @@ export default function BitLights({
       <div
         data-testid="readout"
         data-total={total}
-        className="flex flex-col items-center gap-1 rounded-pop border-[3px] border-ink bg-paper p-3 shadow-[0_4px_0_var(--color-ink)]"
+        className="stage-dots flex flex-col items-center gap-1 rounded-pop border-[3px] border-ink p-3 shadow-[0_4px_0_var(--color-ink)]"
       >
         <span className="font-mono text-4xl font-black">{total}</span>
         <span data-testid="letter" className="text-lg font-extrabold">
@@ -60,18 +60,25 @@ export default function BitLights({
             data-testid={`bit-${index}`}
             data-on={on ? "true" : "false"}
             onClick={() => toggle(index)}
-            className="flex w-9 flex-col items-center gap-1"
+            className="flex w-10 flex-col items-center gap-0.5"
           >
+            {/* 전구 모양. 켜지면 노랗게 빛이 번진다 -- "전구"라고 부르면서 흰 동그라미를
+                보여주면 아이가 전구로 안 본다. 그림 파일 없이 CSS로 그린다. */}
             <motion.span
               animate={{
                 backgroundColor: on
                   ? "var(--color-candy-yellow)"
                   : "var(--color-paper)",
+                boxShadow: on
+                  ? "0 0 18px 6px rgba(255, 217, 61, 0.75)"
+                  : "0 0 0 0 rgba(255, 217, 61, 0)",
               }}
-              className="flex h-9 w-9 items-center justify-center rounded-full border-[2.5px] border-ink text-lg shadow-[0_3px_0_var(--color-ink)]"
+              className="relative z-10 flex h-9 w-9 items-center justify-center rounded-full border-[2.5px] border-ink text-lg font-black"
             >
               {on ? "1" : "0"}
             </motion.span>
+            {/* 소켓. 유리 아래 살짝 겹치는 짧은 받침. */}
+            <span aria-hidden className="-mt-1.5 h-3 w-4 rounded-b-sm border-[2.5px] border-ink bg-ink/70" />
             {/* 자릿값을 함께 보여준다. 전구가 왜 그 숫자를 만드는지가 보여야 한다. */}
             <span className="font-mono text-[10px] font-bold text-muted">
               {values[index]}

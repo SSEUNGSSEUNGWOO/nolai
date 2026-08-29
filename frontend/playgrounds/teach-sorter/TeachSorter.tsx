@@ -75,7 +75,7 @@ export default function TeachSorter({
               data-testid={`box-${category.id}`}
               disabled={!picked}
               onClick={() => teach(category.id)}
-              className="flex min-h-40 flex-col gap-2 rounded-pop border-[3px] border-ink bg-paper p-2 text-left shadow-[0_4px_0_var(--color-ink)] disabled:cursor-default"
+              className="stage-dots flex min-h-40 flex-col gap-2 rounded-pop border-[3px] border-ink p-2 text-left shadow-[0_4px_0_var(--color-ink)] disabled:cursor-default"
               style={{ borderColor: picked ? category.color : undefined }}
             >
               <span

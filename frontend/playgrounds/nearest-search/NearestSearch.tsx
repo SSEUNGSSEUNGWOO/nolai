@@ -65,7 +65,7 @@ export default function NearestSearch({
     <div className="flex flex-col gap-3 lg:grid lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:items-start lg:gap-5">
       <div
         data-testid="search-map"
-        className="relative aspect-square w-full rounded-pop border-[3px] border-ink bg-paper shadow-[0_4px_0_var(--color-ink)]"
+        className="stage-grid relative aspect-square w-full overflow-hidden rounded-pop border-[3px] border-ink shadow-[0_4px_0_var(--color-ink)]"
       >
         {/* 좌표 레이어 — 가장 바깥 점이 테두리에 물리지 않도록 들여놓는다. */}
         <div className="absolute inset-5">

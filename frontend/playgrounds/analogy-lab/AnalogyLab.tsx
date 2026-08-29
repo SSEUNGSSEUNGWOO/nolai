@@ -55,7 +55,7 @@ export default function AnalogyLab({
           화면에서 읽혀야 한다. */}
       <div
         data-testid="formula"
-        className="flex flex-wrap items-center justify-center gap-2 rounded-pop border-[3px] border-ink bg-paper p-3 text-lg font-black shadow-[0_4px_0_var(--color-ink)]"
+        className="stage-dots flex flex-wrap items-center justify-center gap-2 rounded-pop border-[3px] border-ink p-3 text-lg font-black shadow-[0_4px_0_var(--color-ink)]"
       >
         <span data-testid="formula-subject">
           {subject ? `${subject.emoji} ${subject.label}` : "❓"}
