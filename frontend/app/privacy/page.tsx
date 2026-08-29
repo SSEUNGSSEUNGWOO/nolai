@@ -69,7 +69,7 @@ export default function PrivacyPage() {
           <li>내 방 아래쪽의 <strong>"내 방 지우기"</strong> 버튼으로 직접 지울 수 있습니다.</li>
           <li>코드를 잃어버려 들어갈 수 없거나 궁금한 점이 있으면 아래 연락처로 알려주세요. 닉네임을 알려주시면 확인 뒤 지워드립니다.</li>
         </ul>
-        <p>개인정보 보호책임자: <strong>[이름]</strong> · 연락처: <strong>[이메일]</strong></p>
+        <p>개인정보 보호책임자: <strong>놀AI 운영자</strong> · 연락처: <strong><a href="mailto:jansseung@gmail.com" className="underline">jansseung@gmail.com</a></strong></p>
       </Section>
 
       <Section title="7. 만 14세 미만 어린이">
