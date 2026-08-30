@@ -30,6 +30,9 @@ export default function LessonList({ groups }: { groups: LessonGroupView[] }) {
 
   // localStorage는 서버에 없으므로 붙은 뒤에 읽는다. 처음부터 읽으면 서버와
   // 브라우저가 다른 HTML을 그려 hydration 오류가 난다.
+  // 규칙은 "effect 안 동기 setState"를 막지만, 여기선 그게 목적이다 -- 서버 HTML과
+  // 첫 클라이언트 렌더를 일치시킨 뒤 한 번만 갱신한다.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setLocal(readProgress().completedLessons), []);
 
   const done = new Set([...local, ...(me?.completedLessons ?? [])]);

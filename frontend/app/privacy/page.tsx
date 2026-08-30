@@ -17,7 +17,7 @@ export default function PrivacyPage() {
       </header>
 
       <h1 className="text-2xl font-black">개인정보처리방침</h1>
-      <p className="text-muted">시행일 2026년 8월 23일</p>
+      <p className="text-muted">시행일 2026년 8월 30일 (2026년 8월 23일 판에 방문 수 집계 항목을 더했습니다)</p>
 
       <Section title="한 줄 요약">
         <p>
@@ -27,7 +27,7 @@ export default function PrivacyPage() {
       </Section>
 
       <Section title="1. 어떤 정보를 저장하나요">
-        <p>"내 방"을 만들면 다음만 저장합니다.</p>
+        <p>“내 방”을 만들면 다음만 저장합니다.</p>
         <ul className="list-disc pl-5">
           <li><strong>닉네임</strong> — 정해진 수식어와 캐릭터 목록에서 고른 조합(예: 번개 토끼). 사람 이름이 만들어지지 않도록 목록에 성씨를 넣지 않았습니다.</li>
           <li><strong>입장 코드</strong> — 원문은 저장하지 않고 복원할 수 없는 형태(해시)로만 저장합니다. 잃어버리면 저희도 알려드릴 수 없습니다.</li>
@@ -44,7 +44,10 @@ export default function PrivacyPage() {
           <li><strong>쿠키</strong> — <code>nolai_session</code> 하나. 내 방에 들어간 상태를 기억하며 1년 뒤 만료됩니다. 광고·추적 쿠키는 없습니다.</li>
           <li><strong>브라우저 저장소</strong> — <code>nolai:progress</code>(진도), <code>nolai:muted</code>(음소거 설정). 기기 밖으로 나가지 않습니다.</li>
         </ul>
-        <p>방문 분석 도구, 광고, 소셜 로그인을 쓰지 않습니다.</p>
+        <p>
+          <strong>방문 수 집계</strong> — 어느 페이지가 몇 번 열렸는지만 셉니다(Vercel Web Analytics). 쿠키를 쓰지 않고, 기기나 사람을
+          식별하는 값을 만들지 않으며, 집계는 한 달만 보관됩니다. 광고, 소셜 로그인은 쓰지 않습니다.
+        </p>
       </Section>
 
       <Section title="3. 왜 저장하나요">
@@ -55,7 +58,7 @@ export default function PrivacyPage() {
         <p>저장과 운영을 위해 두 회사의 서비스를 씁니다. 이들은 저희 대신 데이터를 보관할 뿐 다른 용도로 쓰지 않습니다.</p>
         <ul className="list-disc pl-5">
           <li><strong>Supabase</strong> — 데이터베이스. 서버는 서울(ap-northeast-2)에 있습니다.</li>
-          <li><strong>Vercel</strong> — 웹 호스팅.</li>
+          <li><strong>Vercel</strong> — 웹 호스팅과 방문 수 집계.</li>
         </ul>
         <p>그 밖의 누구에게도 정보를 제공하거나 팔지 않습니다.</p>
       </Section>
@@ -66,7 +69,7 @@ export default function PrivacyPage() {
 
       <Section title="6. 지우거나 물어보려면">
         <ul className="list-disc pl-5">
-          <li>내 방 아래쪽의 <strong>"내 방 지우기"</strong> 버튼으로 직접 지울 수 있습니다.</li>
+          <li>내 방 아래쪽의 <strong>“내 방 지우기”</strong> 버튼으로 직접 지울 수 있습니다.</li>
           <li>코드를 잃어버려 들어갈 수 없거나 궁금한 점이 있으면 아래 연락처로 알려주세요. 닉네임을 알려주시면 확인 뒤 지워드립니다.</li>
         </ul>
         <p>개인정보 보호책임자: <strong>놀AI 운영자</strong> · 연락처: <strong><a href="mailto:jansseung@gmail.com" className="underline">jansseung@gmail.com</a></strong></p>

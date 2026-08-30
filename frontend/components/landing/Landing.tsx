@@ -130,7 +130,8 @@ export default function Landing({
             <p className="max-w-[60ch] text-lg font-bold">
               컴퓨터는 말을 숫자 묶음으로 바꿔서 뜻이 비슷한 것끼리 가까이 둡니다. 화면의 자리는 저희가 그린 게 아니라 한국어
               임베딩 모델 <code className="rounded bg-ink px-1.5 py-0.5 text-paper">nlpai-lab/KURE-v1</code>이 계산한 값입니다. 아이가 커서 확인해도
-              거짓이 아니어야 하니까요.
+              거짓이 아니어야 하니까요.{" "}
+              <Link href="/making" className="underline underline-offset-4">어떻게 계산했는지 보기</Link>
             </p>
           </div>
         </div>
@@ -158,7 +159,7 @@ export default function Landing({
             <h2 className="text-3xl font-black leading-tight lg:text-4xl">아이가 누구인지 묻지 않습니다</h2>
             <ul className="flex max-w-[60ch] list-disc flex-col gap-1 pl-5 text-lg font-bold">
               <li>이름·이메일·전화번호·사진을 받지 않습니다. 닉네임은 목록에서 고르기만 합니다.</li>
-              <li>회원가입 없이 16개 전부 할 수 있습니다. 광고·분석 도구도 없습니다.</li>
+              <li>회원가입 없이 16개 전부 할 수 있습니다. 광고가 없고, 방문 수는 쿠키 없이 페이지 단위로만 셉니다.</li>
               <li>“내 방”을 만들면 진도와 배지만 남고, 입장 코드는 복원 불가 형태로만 저장합니다.</li>
             </ul>
             <Link href="/privacy" className="self-start text-base font-extrabold underline underline-offset-4">
@@ -275,6 +276,7 @@ export default function Landing({
           </Link>
         </div>
         <footer className="mx-auto flex max-w-6xl gap-4 px-5 pb-6 text-xs font-bold text-paper/60">
+          <Link href="/making" className="underline underline-offset-2">이렇게 만들었습니다</Link>
           <Link href="/privacy" className="underline underline-offset-2">개인정보처리방침</Link>
         </footer>
       </section>

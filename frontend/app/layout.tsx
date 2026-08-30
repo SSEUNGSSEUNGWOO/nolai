@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -40,6 +41,8 @@ FORM: 노리가 안내하는 대화형 스크롤 — 후보 7 중 3번, seed f4f
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
 -->` }} />
         {children}
+        {/* 방문 수 집계. 쿠키·식별자 없음 -- 개인정보처리방침 2절이 이 한 줄을 설명한다. */}
+        <Analytics />
       </body>
     </html>
   );
