@@ -16,8 +16,8 @@ test("\"비슷한 말끼리 모여라\"를 처음부터 끝까지 완주한다",
 
   await expect(page.getByTestId("word-drawer")).toBeVisible();
 
-  // 서랍에 남아 있는 첫 칩을 9번 누른다
-  for (let i = 0; i < 9; i++) {
+  // 서랍에 남아 있는 첫 칩을 12번 누른다
+  for (let i = 0; i < 12; i++) {
     await page.locator('[data-testid^="drawer-word-"]').first().click();
   }
 
@@ -30,6 +30,10 @@ test("\"비슷한 말끼리 모여라\"를 처음부터 끝까지 완주한다",
 
   await expect(page.getByText("임베딩")).toBeVisible();
   await page.getByRole("button", { name: "알겠어!" }).click();
+
+  // 도전 문제: 고양이 옆에는 토끼가 붙는다
+  await page.getByRole("button", { name: "토끼", exact: true }).click();
+  await page.getByRole("button", { name: "다음으로" }).click();
 
   await expect(page.getByText("지도 탐험가")).toBeVisible();
   await page.getByRole("button", { name: "좋아!" }).click();
@@ -49,13 +53,15 @@ test("진도가 localStorage에 남는다", async ({ page }) => {
   // 일부러 틀리게 찍는다. 틀려도 혼나지 않고 끝까지 간다.
   await enterPlay(page, "자동차 근처");
 
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 12; i++) {
     await page.locator('[data-testid^="drawer-word-"]').first().click();
   }
   await page.getByRole("button", { name: "다 했어요" }).click();
   await expect(page.getByText(/달랐네/)).toBeVisible();
   await page.getByRole("button", { name: "다음으로" }).click();
   await page.getByRole("button", { name: "알겠어!" }).click();
+  await page.getByRole("button", { name: "토끼", exact: true }).click();
+  await page.getByRole("button", { name: "다음으로" }).click();
   await page.getByRole("button", { name: "좋아!" }).click();
 
   const stored = await page.evaluate(() =>

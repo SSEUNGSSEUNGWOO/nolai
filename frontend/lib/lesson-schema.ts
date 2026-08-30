@@ -32,6 +32,11 @@ const goal = z.discriminatedUnion("kind", [
     kind: z.literal("looked"),
     min: z.number().int().positive(),
   }),
+  // 칸 크기를 바꿔본 횟수(처음 크기 제외). 그림 보기(looked)와 같은 놀이터, 다른 조작.
+  z.strictObject({
+    kind: z.literal("resized"),
+    min: z.number().int().positive(),
+  }),
   z.strictObject({
     kind: z.literal("heard"),
     min: z.number().int().positive(),

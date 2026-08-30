@@ -38,7 +38,7 @@ npm run build                            # 콘텐츠 검증도 여기서 터진�
 
 **레슨 = JSON, 놀이터 = 코드.** `frontend/lessons/*.json`(16개)이 `lib/lesson-schema.ts`의 zod 스키마로 검증되고, 각 레슨은 `hook → play → name → challenge → predict → reveal → reward` 스텝을 갖는다. `components/LessonRunner.tsx`가 스텝을 넘기고, `components/steps/`가 각 화면을 그린다.
 
-**놀이터는 레슨을 모른다.** `playgrounds/types.ts`의 `PlaygroundProps { data, onEvent, onArtifact }`만 안다. 놀이터가 `onEvent({type: "placed"})` 같은 이벤트를 올리면 `LessonRunner`가 레슨 JSON의 `goal.kind`(`placed`·`searched`·`taught`… 13종)와 맞춰 세어 다음 스텝으로 넘긴다. 새 놀이터는 `playgrounds/registry.ts`에 등록해야 레슨이 부를 수 있다.
+**놀이터는 레슨을 모른다.** `playgrounds/types.ts`의 `PlaygroundProps { data, onEvent, onArtifact }`만 안다. 놀이터가 `onEvent({type: "placed"})` 같은 이벤트를 올리면 `LessonRunner`가 레슨 JSON의 `goal.kind`(`placed`·`searched`·`taught`… 14종)와 맞춰 세어 다음 스텝으로 넘긴다. 새 놀이터는 `playgrounds/registry.ts`에 등록해야 레슨이 부를 수 있다.
 
 **콘텐츠 오류는 빌드가 막는다.** `lib/content.ts`의 `assertPlayable`·`assertPlaygroundExists`·`assertBadgeNamesExist`가 로드 시점에 던진다 — 없는 놀이터, 한글 이름 없는 배지, 데이터셋보다 큰 `goal.min`, 데이터셋 종류와 안 맞는 `goal.kind`. `lib/content.test.ts`는 아이가 보는 문장에 레슨 번호가 들어가는 것도 막는다. **레슨은 제목으로 부른다** — 순서(`lessonGroups`)는 바뀐다.
 

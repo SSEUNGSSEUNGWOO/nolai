@@ -19,12 +19,17 @@ test("\"반대말인데 왜 가까워?\"를 처음부터 끝까지 완주한다"
   await score(page, "hot", "cold");
   await score(page, "big", "pencil");
   await score(page, "bright", "car");
+  await score(page, "hot", "pencil");
+  await score(page, "cold", "warm");
 
   await page.getByRole("button", { name: "다 했어요" }).click();
   await expect(page.getByText("주제가 먼저")).toBeVisible();
 
   await page.getByRole("button", { name: "알겠어!" }).click();
   await page.getByRole("button", { name: "둘 다 온도에 대한 말이라서" }).click();
+  await page.getByRole("button", { name: "다음으로" }).click();
+  // 두 번째 도전: 온도 말은 연필과 전부 멀다
+  await page.getByRole("button", { name: "셋 다 낮다", exact: true }).click();
   await page.getByRole("button", { name: "다음으로" }).click();
 
   await expect(page.getByText("저울 박사")).toBeVisible();

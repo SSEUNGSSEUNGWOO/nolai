@@ -24,6 +24,9 @@ export default function PixelZoom({
   const [picked, setPicked] = useState<{ x: number; y: number } | null>(null);
   const seenRef = useRef<string[]>([dataset.images[0].id]);
   const [seen, setSeen] = useState<string[]>([dataset.images[0].id]);
+  // 써본 칸 크기. "칸이 많을수록 또렷해"는 그림을 바꾼 게 아니라 칸을 줄여본 횟수를 센다 --
+  // 처음 크기(1)는 안 센다. 그림 바꾸기만 세면 칸을 한 번도 안 줄이고 통과할 수 있다.
+  const stepsRef = useRef<number[]>([]);
 
   const image = dataset.images.find((one) => one.id === imageId)!;
   const colors = useMemo(
@@ -125,6 +128,10 @@ export default function PixelZoom({
               onClick={() => {
                 setStep(one);
                 setPicked(null);
+                if (one !== 1 && !stepsRef.current.includes(one)) {
+                  stepsRef.current = [...stepsRef.current, one];
+                }
+                onEvent({ type: "resized", payload: { step: one, count: stepsRef.current.length } });
               }}
               className="rounded-full border-[2.5px] border-ink px-3 py-1 text-sm font-extrabold text-ink shadow-[0_3px_0_var(--color-ink)]"
               style={{

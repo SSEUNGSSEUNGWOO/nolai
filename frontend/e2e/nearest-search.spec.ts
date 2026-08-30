@@ -14,6 +14,8 @@ test("\"가장 가까운 걸 찾아줘\"를 처음부터 끝까지 완주한다"
   await page.getByTestId("question-q01").click();
   await page.getByTestId("question-q08").click();
   await page.getByTestId("question-q20").click();
+  await page.getByTestId("question-q07").click();
+  await page.getByTestId("question-q12").click();
 
   await page.getByRole("button", { name: "다 했어요" }).click();
   await expect(page.getByText("벡터검색")).toBeVisible();
@@ -21,6 +23,11 @@ test("\"가장 가까운 걸 찾아줘\"를 처음부터 끝까지 완주한다"
   await page.getByRole("button", { name: "알겠어!" }).click();
   await page
     .getByRole("button", { name: "먹을 게 어디 있는지 친구한테 어떻게 알려줘?" })
+    .click();
+  await page.getByRole("button", { name: "다음으로" }).click();
+  // 두 번째 도전: q07의 1등은 펭귄 문장(p09)이다
+  await page
+    .getByRole("button", { name: "펭귄은 헤엄은 치지만 날지 못한다" })
     .click();
   await page.getByRole("button", { name: "다음으로" }).click();
 
@@ -53,10 +60,17 @@ test("진도가 localStorage에 남는다", async ({ page }) => {
   await page.getByTestId("question-q01").click();
   await page.getByTestId("question-q08").click();
   await page.getByTestId("question-q20").click();
+  await page.getByTestId("question-q07").click();
+  await page.getByTestId("question-q12").click();
   await page.getByRole("button", { name: "다 했어요" }).click();
   await page.getByRole("button", { name: "알겠어!" }).click();
   await page
     .getByRole("button", { name: "먹을 게 어디 있는지 친구한테 어떻게 알려줘?" })
+    .click();
+  await page.getByRole("button", { name: "다음으로" }).click();
+  // 두 번째 도전: q07의 1등은 펭귄 문장(p09)이다
+  await page
+    .getByRole("button", { name: "펭귄은 헤엄은 치지만 날지 못한다" })
     .click();
   await page.getByRole("button", { name: "다음으로" }).click();
   await page.getByRole("button", { name: "좋아!" }).click();

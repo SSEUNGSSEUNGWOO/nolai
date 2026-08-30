@@ -11,7 +11,7 @@ test("\"안 가르쳐도 나눠\"를 처음부터 끝까지 완주한다", async
   await expect(page.getByText(/스스로 나눌 수 있을까/)).toBeVisible();
   await page.getByRole("button", { name: "궁금해!" }).click();
 
-  for (const k of [3, 2, 4]) {
+  for (const k of [3, 2, 4, 5]) {
     await page.getByTestId(`k-${k}`).click();
   }
 
@@ -21,6 +21,11 @@ test("\"안 가르쳐도 나눠\"를 처음부터 끝까지 완주한다", async
   await page.getByRole("button", { name: "알겠어!" }).click();
   await page
     .getByRole("button", { name: "무리가 2개뿐이라 어디든 하나에 넣어야 해서" })
+    .click();
+  await page.getByRole("button", { name: "다음으로" }).click();
+  // 두 번째 도전: 4개로 나누면 호랑이·펭귄·피자가 억지로 한 무리가 된다
+  await page
+    .getByRole("button", { name: "4개로 억지로 나누다 남는 것끼리 묶여서" })
     .click();
   await page.getByRole("button", { name: "다음으로" }).click();
 

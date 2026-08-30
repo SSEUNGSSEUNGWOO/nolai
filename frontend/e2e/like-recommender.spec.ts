@@ -22,6 +22,8 @@ test("\"내 취향을 어떻게 알까\"를 처음부터 끝까지 완주한다"
   await page.getByRole("button", { name: "알겠어!" }).click();
   await page.getByRole("button", { name: "축구는 피자와 닮지 않아서" }).click();
   await page.getByRole("button", { name: "다음으로" }).click();
+  await page.getByRole("button", { name: "지도에서 피자가 레고 바로 옆에 있어서" }).click();
+  await page.getByRole("button", { name: "다음으로" }).click();
 
   await expect(page.getByText("취향 탐정")).toBeVisible();
   await page.getByRole("button", { name: "좋아!" }).click();

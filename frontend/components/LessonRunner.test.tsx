@@ -4,6 +4,8 @@ import LessonRunner from "./LessonRunner";
 import { getLesson, getDataset } from "@/lib/content";
 
 const lesson = getLesson("embedding-map");
+const playStep = lesson.steps.find((step) => step.type === "play")!;
+const minPlaced = playStep.goal.min;
 const rawDataset = getDataset(lesson.dataset);
 if (rawDataset.kind !== "words") {
   throw new Error("embedding-map은 words 데이터셋이어야 합니다");
@@ -59,7 +61,7 @@ describe("LessonRunner", () => {
     renderRunner();
     enterPlay();
 
-    const minPlaced = 9;
+    // 목표 횟수는 레슨 JSON이 정한다. 숫자를 여기 적어두면 콘텐츠를 고칠 때마다 깨진다.
     dataset.words.slice(0, minPlaced).forEach((word) => {
       fireEvent.click(screen.getByTestId(`drawer-word-${word.id}`));
     });
@@ -75,7 +77,7 @@ describe("LessonRunner", () => {
     const { onComplete } = renderRunner();
     enterPlay("자동차 근처");
 
-    dataset.words.slice(0, 9).forEach((word) => {
+    dataset.words.slice(0, minPlaced).forEach((word) => {
       fireEvent.click(screen.getByTestId(`drawer-word-${word.id}`));
     });
     fireEvent.click(screen.getByRole("button", { name: "다 했어요" }));
@@ -83,6 +85,9 @@ describe("LessonRunner", () => {
     expect(screen.getByText(/달랐네/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "다음으로" }));
     fireEvent.click(screen.getByRole("button", { name: "알겠어!" }));
+    // 확인 문제: 고양이 옆은 토끼
+    fireEvent.click(screen.getByRole("button", { name: "토끼" }));
+    fireEvent.click(screen.getByRole("button", { name: "다음으로" }));
     fireEvent.click(screen.getByRole("button", { name: "좋아!" }));
 
     expect(onComplete).toHaveBeenCalledWith({
@@ -93,7 +98,7 @@ describe("LessonRunner", () => {
         kind: "embedding-map",
         payload: {
           datasetId: dataset.id,
-          placedIds: dataset.words.slice(0, 9).map((word) => word.id),
+          placedIds: dataset.words.slice(0, minPlaced).map((word) => word.id),
         },
       },
     });

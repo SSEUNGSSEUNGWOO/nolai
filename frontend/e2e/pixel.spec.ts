@@ -16,7 +16,7 @@ test("\"그림도 숫자야\"를 처음부터 끝까지 완주한다", async ({ 
   await expect(page.getByText("이미지 데이터")).toBeVisible();
 
   await page.getByRole("button", { name: "알겠어!" }).click();
-  await page.getByRole("button", { name: "하얀색" }).click();
+  await page.getByRole("button", { name: "똑같아" }).click();
   await page.getByRole("button", { name: "다음으로" }).click();
 
   await expect(page.getByText("픽셀 사냥꾼")).toBeVisible();

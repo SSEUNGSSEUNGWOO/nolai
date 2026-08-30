@@ -19,7 +19,7 @@
         "다른 그림으로도 해봐. 어디까지 알아볼 수 있어?"
       ],
       "goal": {
-        "kind": "looked",
+        "kind": "resized",
         "min": 3
       }
     },

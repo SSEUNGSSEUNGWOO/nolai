@@ -8,7 +8,7 @@ test("\"AI는 글을 조각으로 읽어\"를 처음부터 끝까지 완주한�
   await page.getByRole("button", { name: "궁금해!" }).click();
 
   await expect(page.getByTestId("piece-view")).toContainText("눌러봐");
-  for (const id of ["t01", "t05", "t08", "t03"]) {
+  for (const id of ["t01", "t05", "t08", "t03", "t09", "t12"]) {
     await page.getByTestId(`text-${id}`).click();
   }
 
@@ -19,6 +19,9 @@ test("\"AI는 글을 조각으로 읽어\"를 처음부터 끝까지 완주한�
   await page
     .getByRole("button", { name: "'안녕하세요'가 훨씬 자주 쓰이는 말이라서" })
     .click();
+  await page.getByRole("button", { name: "다음으로" }).click();
+  // 두 번째 도전: 떡볶이(t09)와 떡국(t12)은 '떡' 조각의 번호가 같다
+  await page.getByRole("button", { name: "떡", exact: true }).click();
   await page.getByRole("button", { name: "다음으로" }).click();
 
   await expect(page.getByText("조각 박사")).toBeVisible();

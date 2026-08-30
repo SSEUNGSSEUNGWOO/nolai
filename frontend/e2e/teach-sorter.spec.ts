@@ -19,6 +19,7 @@ test("\"컴퓨터에게 가르쳐주기\"를 처음부터 끝까지 완주한다
     ["whale", "animal"],
     ["car", "vehicle"],
     ["airplane", "vehicle"],
+    ["cat", "animal"],
   ] as const) {
     await teach(page, word, box);
   }
@@ -29,6 +30,10 @@ test("\"컴퓨터에게 가르쳐주기\"를 처음부터 끝까지 완주한다
   await page.getByRole("button", { name: "알겠어!" }).click();
   await page
     .getByRole("button", { name: "가르쳐준 예시가 강아지 하나뿐이라서" })
+    .click();
+  await page.getByRole("button", { name: "다음으로" }).click();
+  await page
+    .getByRole("button", { name: "고래가 지도에서 자동차보다 강아지랑 훨씬 가까워서" })
     .click();
   await page.getByRole("button", { name: "다음으로" }).click();
 

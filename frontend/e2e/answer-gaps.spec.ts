@@ -15,7 +15,7 @@ test("\"없는 건 못 찾아\"를 처음부터 끝까지 완주한다", async (
   await expect(page.getByText(/답을 모르는 걸 물어보면/)).toBeVisible();
   await page.getByRole("button", { name: "궁금해!" }).click();
 
-  for (const id of ["g01", "g07", "g08", "g12"]) {
+  for (const id of ["g01", "g07", "g08", "g12", "g11", "g04"]) {
     await page.getByTestId(`question-${id}`).click();
   }
 
@@ -25,6 +25,11 @@ test("\"없는 건 못 찾아\"를 처음부터 끝까지 완주한다", async (
   await page.getByRole("button", { name: "알겠어!" }).click();
   await page
     .getByRole("button", { name: "컴퓨터가 가진 문장에 축구 이야기가 없다는 것" })
+    .click();
+  await page.getByRole("button", { name: "다음으로" }).click();
+  // 두 번째 도전: 화산(g11)은 답이 없어 세 막대가 고만고만하다
+  await page
+    .getByRole("button", { name: "답이 없어서 셋 다 비슷하게 먼 것" })
     .click();
   await page.getByRole("button", { name: "다음으로" }).click();
 

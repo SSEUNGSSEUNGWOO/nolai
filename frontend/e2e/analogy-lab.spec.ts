@@ -8,9 +8,12 @@ test("\"뜻으로 계산하기\"를 처음부터 끝까지 완주한다", async 
   await page.getByRole("button", { name: "궁금해!" }).click();
 
   await page.getByTestId("relation-gender").click();
-  for (const id of ["king", "dad", "son", "brother"]) {
+  for (const id of ["king", "dad", "son", "brother", "grandpa"]) {
     await page.getByTestId(`subject-${id}`).click();
   }
+  // 조합이 달라야 세어진다 -- 관계를 바꿔 하나 더
+  await page.getByTestId("relation-capital").click();
+  await page.getByTestId("subject-france").click();
 
   await page.getByRole("button", { name: "다 했어요" }).click();
   await expect(page.getByText("뜻 계산")).toBeVisible();
@@ -19,6 +22,9 @@ test("\"뜻으로 계산하기\"를 처음부터 끝까지 완주한다", async 
   await page
     .getByRole("button", { name: "남자에서 여자로 가는 방향이 나라에는 안 맞아서" })
     .click();
+  await page.getByRole("button", { name: "다음으로" }).click();
+  // 두 번째 도전: 프랑스에 [나라 → 수도]는 파리
+  await page.getByRole("button", { name: "파리", exact: true }).click();
   await page.getByRole("button", { name: "다음으로" }).click();
 
   await expect(page.getByText("말 수학자")).toBeVisible();

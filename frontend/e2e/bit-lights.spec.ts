@@ -15,7 +15,7 @@ test("\"컴퓨터는 0과 1뿐이야\"를 처음부터 끝까지 완주한다", 
   await expect(page.getByText(/0과 1밖에 없을까/)).toBeVisible();
   await page.getByRole("button", { name: "궁금해!" }).click();
 
-  for (const n of [65, 97, 48, 33]) await makeNumber(page, n);
+  for (const n of [65, 97, 48, 33, 66, 63]) await makeNumber(page, n);
 
   await page.getByRole("button", { name: "다 했어요" }).click();
   await expect(page.getByText("0과 1", { exact: true })).toBeVisible();
@@ -24,6 +24,9 @@ test("\"컴퓨터는 0과 1뿐이야\"를 처음부터 끝까지 완주한다", 
   await page
     .getByRole("button", { name: "못 만든다. 여덟 개로는 255까지가 끝이라서" })
     .click();
+  await page.getByRole("button", { name: "다음으로" }).click();
+  // 두 번째 도전: 65에 32 전구를 더 켜면 97 = a
+  await page.getByRole("button", { name: "a", exact: true }).click();
   await page.getByRole("button", { name: "다음으로" }).click();
 
   await expect(page.getByText("0과 1 마법사")).toBeVisible();

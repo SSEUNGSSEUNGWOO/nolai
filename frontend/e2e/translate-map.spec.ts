@@ -7,7 +7,7 @@ test("\"말이 달라도 뜻이 같으면\"를 처음부터 끝까지 완주한�
   await expect(page.getByText(/어떻게 짝지어 줄까/)).toBeVisible();
   await page.getByRole("button", { name: "궁금해!" }).click();
 
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 10; i++) {
     await page.locator('[data-testid^="drawer-word-"]').first().click();
   }
 
@@ -18,6 +18,9 @@ test("\"말이 달라도 뜻이 같으면\"를 처음부터 끝까지 완주한�
   await page
     .getByRole("button", { name: "컴퓨터에게는 둘이 거의 같은 뜻이라는 것" })
     .click();
+  await page.getByRole("button", { name: "다음으로" }).click();
+  // 두 번째 도전: '책' 옆에는 book이 붙는다
+  await page.getByRole("button", { name: "book", exact: true }).click();
   await page.getByRole("button", { name: "다음으로" }).click();
 
   await expect(page.getByText("다리 놓는 아이")).toBeVisible();

@@ -8,7 +8,7 @@ test("\"소리도 숫자야\"를 처음부터 끝까지 완주한다", async ({ 
   await page.getByRole("button", { name: "궁금해!" }).click();
 
   await expect(page.getByTestId("wave-view")).toBeVisible();
-  for (const id of ["do", "sol", "high"]) {
+  for (const id of ["do", "sol", "high", "rough"]) {
     await page.getByTestId(`sound-${id}`).click();
   }
 
@@ -17,6 +17,9 @@ test("\"소리도 숫자야\"를 처음부터 끝까지 완주한다", async ({ 
 
   await page.getByRole("button", { name: "알겠어!" }).click();
   await page.getByRole("button", { name: "높은 소리일수록 물결이 촘촘하다" }).click();
+  await page.getByRole("button", { name: "다음으로" }).click();
+  // 두 번째 도전: 낮은 도와 거친 도는 물결 수가 같고 울퉁불퉁함만 다르다
+  await page.getByRole("button", { name: "울퉁불퉁함", exact: true }).click();
   await page.getByRole("button", { name: "다음으로" }).click();
 
   await expect(page.getByText("소리 파도타기")).toBeVisible();

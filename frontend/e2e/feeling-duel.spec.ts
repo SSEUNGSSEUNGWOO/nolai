@@ -13,6 +13,9 @@ test("\"AI랑 기분 맞히기 대결\"를 처음부터 끝까지 완주한다",
     ["f11", "bad"],
     ["f12", "good"],
     ["f10", "good"],
+    ["f02", "good"],
+    ["f07", "bad"],
+    ["f03", "good"],
   ] as const) {
     await page.getByTestId(`sentence-${id}`).click();
     await page.getByTestId(`guess-${side}`).click();
@@ -24,6 +27,11 @@ test("\"AI랑 기분 맞히기 대결\"를 처음부터 끝까지 완주한다",
   await page.getByRole("button", { name: "알겠어!" }).click();
   await page
     .getByRole("button", { name: "AI는 확신에 차 있어도 틀릴 수 있다는 것" })
+    .click();
+  await page.getByRole("button", { name: "다음으로" }).click();
+  // 두 번째 도전: 61%로 맞히고 97%로 틀린다 -- 확신과 정답은 별개
+  await page
+    .getByRole("button", { name: "확신 숫자와 맞고 틀림은 별개야" })
     .click();
   await page.getByRole("button", { name: "다음으로" }).click();
 

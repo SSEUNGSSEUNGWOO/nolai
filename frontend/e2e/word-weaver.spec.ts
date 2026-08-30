@@ -7,8 +7,8 @@ test("\"AI는 글을 이렇게 써\"를 처음부터 끝까지 완주한다", as
   await expect(page.getByText(/술술 쓰는 걸까/)).toBeVisible();
   await page.getByRole("button", { name: "궁금해!" }).click();
 
-  // 문장 두 개를 만든다
-  for (let i = 0; i < 2; i++) {
+  // 문장 세 개를 만든다
+  for (let i = 0; i < 3; i++) {
     await page.getByTestId("start-나는").click();
     while ((await page.getByTestId("ended").count()) === 0) {
       await page.locator('button[data-testid^="next-"]').first().click();
@@ -22,6 +22,11 @@ test("\"AI는 글을 이렇게 써\"를 처음부터 끝까지 완주한다", as
   await page.getByRole("button", { name: "알겠어!" }).click();
   await page
     .getByRole("button", { name: "다음 말만 고를 뿐 사실인지는 확인 안 해서" })
+    .click();
+  await page.getByRole("button", { name: "다음으로" }).click();
+  // 두 번째 도전: '옛날' 뒤에는 늘 '옛날에'만 왔다
+  await page
+    .getByRole("button", { name: "배운 문장에서 '옛날' 뒤엔 늘 같은 말이라서" })
     .click();
   await page.getByRole("button", { name: "다음으로" }).click();
 

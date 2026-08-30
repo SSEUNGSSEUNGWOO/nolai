@@ -79,6 +79,7 @@ const goalDatasetKind = {
   taught: "words",
   liked: "words",
   looked: "pixels",
+  resized: "pixels",
   heard: "sounds",
   split: "tokens",
   grouped: "clusters",
