@@ -40,3 +40,9 @@ export function lessonArt(lessonId: string): string {
 
 /** 내 방에 배지가 하나도 없을 때. */
 export const EMPTY_SHELF_ART = "/art/empty-shelf.webp";
+
+/** 놀이터 빈 무대의 소품. 조작 전 흰 상자에 "뭘 하는 곳인지"를 그림으로 둔다. */
+export type PropName = "box-open" | "scale" | "faces" | "scissors" | "typewriter";
+export function propArt(name: PropName): string {
+  return `/art/prop-${name}.webp`;
+}

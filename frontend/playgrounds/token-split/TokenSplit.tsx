@@ -4,6 +4,8 @@ import { useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { TokensDataset } from "@/lib/dataset-schema";
 import type { PlaygroundProps } from "../types";
+import Image from "next/image";
+import { propArt } from "@/lib/art";
 
 export default function TokenSplit({
   data,
@@ -40,7 +42,8 @@ export default function TokenSplit({
         className="stage-dots flex min-h-32 flex-col gap-3 rounded-pop border-[3px] border-ink p-3 shadow-[0_4px_0_var(--color-ink)]"
       >
         {item === null ? (
-          <span className="text-sm font-bold text-muted">
+          <span className="flex flex-col items-center gap-1 text-sm font-bold text-muted">
+            <Image src={propArt("scissors")} alt="" width={112} height={112} className="h-24 w-24" />
             아래에서 글을 하나 눌러봐!
           </span>
         ) : (

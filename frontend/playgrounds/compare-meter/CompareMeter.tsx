@@ -4,6 +4,8 @@ import { useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { SimilarityDataset } from "@/lib/dataset-schema";
 import type { PlaygroundProps } from "../types";
+import Image from "next/image";
+import { propArt } from "@/lib/art";
 
 /** 막대를 그릴 때 쓰는 눈금. 데이터셋 전체의 최소·최대에서 뽑는다. */
 function range(sims: Record<string, number>): { min: number; max: number } {
@@ -84,9 +86,13 @@ export default function CompareMeter({
           />
         </div>
 
-        <span className="text-center font-mono text-sm font-extrabold">
+        <span className="flex flex-col items-center gap-1 text-center font-mono text-sm font-extrabold">
           {score === null ? (
-            <span className="font-sans text-muted">단어 두 개를 골라봐!</span>
+            <>
+              {/* 아직 잰 게 없을 때는 저울 그림. 이 무대가 "재는 곳"임을 먼저 보여준다. */}
+              <Image src={propArt("scale")} alt="" width={96} height={96} className="h-20 w-20" />
+              <span className="font-sans text-muted">단어 두 개를 골라봐!</span>
+            </>
           ) : (
             `닮은 정도 ${score.toFixed(2)}`
           )}

@@ -4,6 +4,8 @@ import { useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { NextWordDataset } from "@/lib/dataset-schema";
 import type { PlaygroundProps } from "../types";
+import Image from "next/image";
+import { propArt } from "@/lib/art";
 
 export default function WordWeaver({
   data,
@@ -44,7 +46,8 @@ export default function WordWeaver({
         className="stage-dots flex min-h-16 flex-wrap items-center gap-1 rounded-pop border-[3px] border-ink p-3 text-lg font-black shadow-[0_4px_0_var(--color-ink)]"
       >
         {words.length === 0 ? (
-          <span className="text-sm font-bold text-muted">
+          <span className="flex w-full flex-col items-center gap-1 text-sm font-bold text-muted">
+            <Image src={propArt("typewriter")} alt="" width={112} height={112} className="h-24 w-24" />
             아래에서 첫 말을 골라봐!
           </span>
         ) : (

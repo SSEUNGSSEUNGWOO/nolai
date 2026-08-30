@@ -17,6 +17,8 @@ const table = [
   ["robot-point-22.png", "mascot-point.webp", 512],
   ["robot-think-22.png", "mascot-think.webp", 512],
   ["empty-shelf-61.png", "empty-shelf.webp", 256],
+  // 놀이터 빈 무대의 소품. 조작 전 흰 상자에 "뭘 하는 곳인지"를 그림으로 둔다.
+  ...fs.readdirSync(path.join(__dirname, "out")).filter((f) => /^prop-.*-71.png$/.test(f)).map((f) => [f, f.replace(/-71.png$/, ".webp"), 256]),
   // 썸네일은 그림 자체가 한 장이라 배경을 따지 않는다(keep)
   ...fs.readdirSync(path.join(__dirname, "out")).filter((f) => /^thumb-.*-41.png$/.test(f)).map((f) => [f, f.replace(/-41.png$/, ".webp"), 320, "keep"]),
   ...fs.readdirSync(path.join(__dirname, "out")).filter((f) => /^badge-.*-11.png$/.test(f)).map((f) => [f, f.replace(/-11.png$/, ".webp"), 256]),

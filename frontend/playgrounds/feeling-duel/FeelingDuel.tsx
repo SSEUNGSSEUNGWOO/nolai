@@ -4,6 +4,8 @@ import { useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { SentimentDataset } from "@/lib/dataset-schema";
 import type { PlaygroundProps } from "../types";
+import Image from "next/image";
+import { propArt } from "@/lib/art";
 
 type Side = "good" | "bad";
 
@@ -58,7 +60,8 @@ export default function FeelingDuel({
         className="stage-dots flex min-h-40 flex-col gap-3 rounded-pop border-[3px] border-ink p-3 shadow-[0_4px_0_var(--color-ink)]"
       >
         {sentence === null ? (
-          <span className="text-sm font-bold text-muted">
+          <span className="flex flex-col items-center gap-1 text-sm font-bold text-muted">
+            <Image src={propArt("faces")} alt="" width={112} height={112} className="h-24 w-24" />
             아래에서 문장을 하나 골라봐!
           </span>
         ) : (

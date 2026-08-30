@@ -6,6 +6,8 @@ import { motion } from "motion/react";
 import type { WordsDataset } from "@/lib/dataset-schema";
 import type { PlaygroundProps } from "../types";
 import { guessAll, type Example } from "./geometry";
+import Image from "next/image";
+import { propArt } from "@/lib/art";
 
 export default function TeachSorter({
   data,
@@ -85,6 +87,10 @@ export default function TeachSorter({
                 {category.label}
               </span>
 
+              {/* 아직 아무것도 안 넣은 상자는 열린 빈 상자 그림. 흰 칸이 아니라 "넣는 곳"으로 읽힌다. */}
+              {mine.length === 0 && guessed.length === 0 && (
+                <Image src={propArt("box-open")} alt="" width={96} height={96} className="h-20 w-20 self-center opacity-80" />
+              )}
               <span className="flex flex-wrap gap-1">
                 {mine.map((t) => (
                   <span
