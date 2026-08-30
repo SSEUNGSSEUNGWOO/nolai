@@ -4,3 +4,6 @@
 
 # probe.py가 만드는 결과 파일
 tools/embed/probe-result.txt
+
+# impeccable 디자인 검토 캡처 (재생성되는 산출물)
+frontend/.impeccable/review/

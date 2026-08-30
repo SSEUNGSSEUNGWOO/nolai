@@ -1,30 +1,42 @@
-import Link from "next/link";
-import { listLessonGroups } from "@/lib/content";
-import { ui } from "@/copy/ui";
-import Image from "next/image";
-import LessonList from "@/components/LessonList";
-import { mascotArt } from "@/lib/art";
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { currentKidId } from "@/lib/auth/current";
+import { getDataset, listLessonGroups, listLessons } from "@/lib/content";
+import Landing from "@/components/landing/Landing";
+import ProgressRedirect from "@/components/landing/ProgressRedirect";
 
-export default function Home() {
-  // 클라이언트로 넘기는 것은 화면에 필요한 세 값뿐이다. Lesson 전체를 넘기면
-  // 16개 레슨의 본문이 HTML에 통째로 실린다.
+/**
+ * 첫 방문자(부모·교사·아이)가 보는 랜딩. SEO 대상은 이 페이지뿐이다(설계 문서 3장).
+ *
+ * 설명 대신 첫 레슨의 놀이터를 그대로 박아 넣는다 -- 원칙 1 "설명보다 조작이 먼저"는
+ * 랜딩에도 적용된다. 성취기준 표 같은 어른용 정보는 맨 아래에만 둔다.
+ *
+ * 이미 노는 아이는 이 페이지를 볼 이유가 없다. 세션이 있으면 서버에서, 기기에 진도가
+ * 있으면 브라우저에서 /play로 보낸다(설계 문서 3장 "재방문은 바로 내 방").
+ */
+export const metadata: Metadata = {
+  title: "초등 인공지능 교육 놀이터 놀AI — 무료, 회원가입 없음",
+  description:
+    "초등 5~6학년이 AI 작동 원리를 손으로 만져보는 무료 레슨 16개. 회원가입·개인정보 없음. 실과 성취기준 6실05-04·05 대응. 브라우저에서 바로 시작.",
+  alternates: { canonical: "/" },
+};
+
+export const dynamic = "force-dynamic";
+
+export default async function LandingPage() {
+  if (await currentKidId()) redirect("/play");
+
   const groups = listLessonGroups().map((group) => ({
     title: group.title,
-    lessons: group.lessons.map(({ id, order, title }) => ({ id, order, title })),
+    lessons: group.lessons.map(({ id, title }) => ({ id, title })),
   }));
+  const titles = Object.fromEntries(listLessons().map((lesson) => [lesson.id, lesson.title]));
+  const dataset = getDataset("words-animals-vehicles");
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-6 px-5 text-center">
-      <Image src={mascotArt("base")} alt="" width={144} height={144} priority className="bob h-36 w-36" />
-      <h1 className="text-5xl font-black">{ui.landingTitle}</h1>
-      <p className="text-lg font-extrabold">{ui.landingSubtitle}</p>
-      <p className="text-sm text-muted">들어가서 만져봐 👋</p>
-      <LessonList groups={groups} />
-
-      <footer className="flex gap-4 pt-6 text-xs text-muted">
-        <Link href="/parents" className="underline">부모·선생님께</Link>
-        <Link href="/privacy" className="underline">개인정보처리방침</Link>
-      </footer>
+    <main>
+      <ProgressRedirect />
+      <Landing dataset={dataset} groups={groups} titles={titles} />
     </main>
   );
 }

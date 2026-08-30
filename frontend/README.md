@@ -34,7 +34,7 @@ Route Handler가 한다. `service_role` 키는 `lib/supabase.ts`에서만 읽으
 
 | 폴더 | 역할 |
 |---|---|
-| `app/` | 라우트. `/`는 랜딩, `/lesson/[lessonId]`는 레슨 |
+| `app/` | 라우트. `/`는 부모·교사·첫 방문자용 랜딩(실제 놀이터 내장), `/play`는 아이의 레슨 목록, `/lesson/[lessonId]`는 레슨 |
 | `components/` | `LessonRunner`가 레슨 스텝을 진행하고, `steps/`가 각 화면을 그린다 |
 | `playgrounds/` | 놀이터. 레슨을 모르고 이벤트만 올려보낸다 |
 | `lib/` | zod 스키마, 콘텐츠 로더, 진도 저장 |

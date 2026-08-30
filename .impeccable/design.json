@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-30T00:00:00+09:00",
+  "title": "Design System: 놀AI",
+  "extensions": {
+    "colorMeta": {
+      "ink": { "role": "neutral", "displayName": "잉크(남색)", "canonical": "#1f2430", "tonalRamp": ["oklch(15% 0.02 270)", "oklch(25% 0.025 270)", "oklch(35% 0.025 270)", "oklch(45% 0.025 270)", "oklch(58% 0.02 270)", "oklch(72% 0.015 270)", "oklch(85% 0.01 270)", "oklch(95% 0.005 270)"] },
+      "cream": { "role": "neutral", "displayName": "크림", "canonical": "#fff3d6", "tonalRamp": ["oklch(15% 0.03 85)", "oklch(28% 0.04 85)", "oklch(42% 0.05 85)", "oklch(56% 0.06 85)", "oklch(70% 0.06 85)", "oklch(82% 0.05 85)", "oklch(91% 0.04 85)", "oklch(96.5% 0.035 85)"] },
+      "paper": { "role": "neutral", "displayName": "페이퍼", "canonical": "#fffdf6", "tonalRamp": ["oklch(15% 0.01 95)", "oklch(28% 0.01 95)", "oklch(42% 0.01 95)", "oklch(56% 0.01 95)", "oklch(70% 0.01 95)", "oklch(84% 0.01 95)", "oklch(93% 0.01 95)", "oklch(99% 0.008 95)"] },
+      "candy-red": { "role": "primary", "displayName": "캔디 레드(코랄)", "canonical": "#ff6b6b", "tonalRamp": ["oklch(20% 0.08 22)", "oklch(32% 0.12 22)", "oklch(44% 0.16 22)", "oklch(56% 0.19 22)", "oklch(69% 0.19 22)", "oklch(78% 0.14 22)", "oklch(87% 0.08 22)", "oklch(95% 0.03 22)"] },
+      "candy-teal": { "role": "secondary", "displayName": "캔디 틸(민트)", "canonical": "#4ecdc4", "tonalRamp": ["oklch(20% 0.05 185)", "oklch(32% 0.07 185)", "oklch(44% 0.09 185)", "oklch(56% 0.11 185)", "oklch(68% 0.12 185)", "oklch(78% 0.12 185)", "oklch(88% 0.07 185)", "oklch(95% 0.03 185)"] },
+      "candy-yellow": { "role": "secondary", "displayName": "캔디 옐로", "canonical": "#ffd93d", "tonalRamp": ["oklch(20% 0.05 95)", "oklch(32% 0.08 95)", "oklch(44% 0.11 95)", "oklch(56% 0.14 95)", "oklch(70% 0.17 95)", "oklch(82% 0.18 95)", "oklch(89% 0.17 95)", "oklch(96% 0.06 95)"] },
+      "muted": { "role": "neutral", "displayName": "뮤티드", "canonical": "#736b5a", "tonalRamp": ["oklch(15% 0.015 80)", "oklch(26% 0.02 80)", "oklch(37% 0.025 80)", "oklch(50% 0.025 80)", "oklch(62% 0.02 80)", "oklch(74% 0.015 80)", "oklch(85% 0.01 80)", "oklch(95% 0.005 80)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "랜딩 h1과 아이 첫 화면 h1에만." },
+      "headline": { "displayName": "Headline", "purpose": "랜딩 섹션 h2. 강조는 6px 밑줄." },
+      "title": { "displayName": "Title", "purpose": "묶음 알약, 배지 이름, 레슨 카드 제목." },
+      "body": { "displayName": "Body", "purpose": "설명문. 최대 60ch. 보조 톤은 ink/80." },
+      "label": { "displayName": "Label", "purpose": "칩, nav, 말풍선, 묶음 제목." },
+      "mono": { "displayName": "Mono", "purpose": "놀이터의 숫자 읽기(전구 총합·자릿값)에만." }
+    },
+    "shadows": [
+      { "name": "sticker-sm", "value": "0 3px 0 var(--color-ink)", "purpose": "기본. 버튼·칩·레슨 카드·아이 화면 말풍선." },
+      { "name": "sticker-md", "value": "0 4px 0 var(--color-ink)", "purpose": "놀이터 무대·읽기판·랜딩 말풍선·CTA." },
+      { "name": "sticker-lg", "value": "0 5px 0 var(--color-ink)", "purpose": "랜딩 레슨 묶음 카드." },
+      { "name": "glow-next", "value": "0 3px 0 var(--color-ink), 0 0 0 10px rgba(255,217,61,0) (애니메이션 .pulse-card)", "purpose": "다음 레슨 카드·첫 칩. 크기 변화 없이 링만 번진다." },
+      { "name": "glow-bulb", "value": "0 0 18px 6px rgba(255,217,61,0.75)", "purpose": "켜진 전구. 시스템 유일의 블러 그림자, '빛'을 뜻할 때만." }
+    ],
+    "motion": [
+      { "name": "spring-pop", "value": "spring stiffness 260 damping 14", "purpose": "노리 포즈 전환, 정답 리빌, 칩 착지." },
+      { "name": "spring-rise", "value": "spring stiffness 120 damping 18, y 28→0, whileInView once", "purpose": "랜딩 섹션이 한 번 떠오름. 투명도는 건드리지 않는다." },
+      { "name": "spring-step", "value": "spring stiffness 300 damping 24", "purpose": "레슨 스텝 전환(LessonRunner)." },
+      { "name": "bob", "value": "2.4s ease-in-out infinite, translateY 0→-6px", "purpose": "대기 중인 노리." },
+      { "name": "pulse-card", "value": "1.6s ease-out infinite", "purpose": "다음 것 강조." },
+      { "name": "press", "value": ":active translateY(3px) + box-shadow none", "purpose": "모든 button·a[href]. 전역." },
+      { "name": "reduced-motion", "value": "prefers-reduced-motion: bob·pulse-card 정지, 스프링은 useReducedMotion으로 생략", "purpose": "움직임 줄임." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "스텝 화면의 기본 버튼(popButton). 코랄 스티커.",
+      "html": "<button class=\"ds-btn-primary\">다음</button>",
+      "css": ".ds-btn-primary { background: var(--color-candy-red, #ff6b6b); color: var(--color-ink, #1f2430); border: 2.5px solid var(--color-ink, #1f2430); border-radius: 14px; padding: 8px 20px; font-family: 'Pretendard Variable', system-ui, sans-serif; font-weight: 800; font-size: 1rem; box-shadow: 0 3px 0 var(--color-ink, #1f2430); cursor: pointer; } .ds-btn-primary:active { transform: translateY(3px); box-shadow: none; } .ds-btn-primary:focus-visible { outline: 3px solid var(--color-ink, #1f2430); outline-offset: 3px; }"
+    },
+    {
+      "name": "CTA Button",
+      "kind": "button",
+      "refersTo": "button-cta",
+      "description": "랜딩 시작하기. 더 굵은 선, 더 큰 글자.",
+      "html": "<a class=\"ds-btn-cta\" href=\"#\">시작하기</a>",
+      "css": ".ds-btn-cta { display: inline-flex; align-items: center; background: var(--color-candy-red, #ff6b6b); color: var(--color-ink, #1f2430); border: 3px solid var(--color-ink, #1f2430); border-radius: 14px; padding: 12px 24px; font-family: 'Pretendard Variable', system-ui, sans-serif; font-weight: 900; font-size: 1.125rem; text-decoration: none; box-shadow: 0 4px 0 var(--color-ink, #1f2430); } .ds-btn-cta:active { transform: translateY(3px); box-shadow: none; } .ds-btn-cta:focus-visible { outline: 3px solid var(--color-ink, #1f2430); outline-offset: 3px; }"
+    },
+    {
+      "name": "Choice Button",
+      "kind": "button",
+      "refersTo": "button-choice",
+      "description": "도전·예측의 보기. 고르면 민트.",
+      "html": "<div style=\"display:flex;gap:8px\"><button class=\"ds-btn-choice\">강아지</button><button class=\"ds-btn-choice ds-selected\">고양이</button></div>",
+      "css": ".ds-btn-choice { background: var(--color-paper, #fffdf6); color: var(--color-ink, #1f2430); border: 2.5px solid var(--color-ink, #1f2430); border-radius: 14px; padding: 8px 16px; font-family: 'Pretendard Variable', system-ui, sans-serif; font-weight: 800; box-shadow: 0 3px 0 var(--color-ink, #1f2430); cursor: pointer; } .ds-btn-choice.ds-selected { background: var(--color-candy-teal, #4ecdc4); } .ds-btn-choice:active { transform: translateY(3px); box-shadow: none; } .ds-btn-choice:focus-visible { outline: 3px solid var(--color-ink, #1f2430); outline-offset: 3px; }"
+    },
+    {
+      "name": "Word Chip",
+      "kind": "chip",
+      "refersTo": "word-chip",
+      "description": "놀이터의 단어 칩. 알약 스티커, 앞에 단어 그림.",
+      "html": "<button class=\"ds-chip\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><circle cx=\"10\" cy=\"10\" r=\"8\" fill=\"#ffd93d\" stroke=\"#1f2430\" stroke-width=\"2\"/></svg> 강아지</button>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; background: #ffffff; color: var(--color-ink, #1f2430); border: 2.5px solid var(--color-ink, #1f2430); border-radius: 9999px; padding: 4px 12px; font-family: 'Pretendard Variable', system-ui, sans-serif; font-weight: 800; font-size: 0.875rem; box-shadow: 0 3px 0 var(--color-ink, #1f2430); cursor: grab; } .ds-chip:active { transform: translateY(3px); box-shadow: none; } .ds-chip:focus-visible { outline: 3px solid var(--color-ink, #1f2430); outline-offset: 3px; }"
+    },
+    {
+      "name": "Lesson Card",
+      "kind": "card",
+      "refersTo": "card-lesson",
+      "description": "아이 첫 화면의 레슨 카드. 색이 상태(코랄 아직 / 노랑 다음 / 페이퍼 끝냄).",
+      "html": "<a class=\"ds-lesson ds-next\" href=\"#\"><span class=\"ds-lesson-thumb\"></span><span class=\"ds-lesson-body\"><span class=\"ds-lesson-num\">1</span><span>뜻으로 찾기</span></span><span class=\"ds-lesson-badge\">다음</span></a>",
+      "css": ".ds-lesson { display: flex; align-items: center; gap: 12px; background: var(--color-candy-red, #ff6b6b); color: var(--color-ink, #1f2430); border: 2.5px solid var(--color-ink, #1f2430); border-radius: 14px; padding: 8px 16px 8px 8px; font-family: 'Pretendard Variable', system-ui, sans-serif; font-weight: 800; text-decoration: none; box-shadow: 0 3px 0 var(--color-ink, #1f2430); } .ds-lesson.ds-next { background: var(--color-candy-yellow, #ffd93d); } .ds-lesson.ds-done { background: var(--color-paper, #fffdf6); } .ds-lesson-thumb { width: 64px; height: 64px; flex-shrink: 0; border-radius: 10px; border: 2px solid var(--color-ink, #1f2430); background: var(--color-cream, #fff3d6); } .ds-lesson-body { display: flex; flex-direction: column; flex: 1; min-width: 0; line-height: 1.25; } .ds-lesson-num { font-size: 0.75rem; color: var(--color-muted, #736b5a); } .ds-lesson-badge { flex-shrink: 0; background: var(--color-ink, #1f2430); color: var(--color-paper, #fffdf6); border-radius: 9999px; padding: 2px 8px; font-size: 0.75rem; } .ds-lesson:active { transform: translateY(3px); box-shadow: none; } .ds-lesson:focus-visible { outline: 3px solid var(--color-ink, #1f2430); outline-offset: 3px; }"
+    },
+    {
+      "name": "Speech Bubble",
+      "kind": "custom",
+      "refersTo": "speech-bubble",
+      "description": "노리의 말풍선(랜딩형, 꼬리 있음). 노리는 언제나 반말.",
+      "html": "<p class=\"ds-speech\"><span class=\"ds-speech-tail\" aria-hidden=\"true\"></span>빛나는 단어를 지도 아무 데나 놓아봐. 어디로 갈까?</p>",
+      "css": ".ds-speech { position: relative; display: inline-block; background: var(--color-paper, #fffdf6); color: var(--color-ink, #1f2430); border: 3px solid var(--color-ink, #1f2430); border-radius: 14px; padding: 12px 16px; margin-left: 8px; font-family: 'Pretendard Variable', system-ui, sans-serif; font-weight: 800; font-size: 1rem; box-shadow: 0 4px 0 var(--color-ink, #1f2430); } .ds-speech-tail { position: absolute; left: -8px; bottom: 16px; width: 16px; height: 16px; transform: rotate(45deg); background: var(--color-paper, #fffdf6); border-left: 3px solid var(--color-ink, #1f2430); border-bottom: 3px solid var(--color-ink, #1f2430); }"
+    },
+    {
+      "name": "Stage (grid)",
+      "kind": "card",
+      "refersTo": "stage",
+      "description": "놀이터 무대. 모눈종이 위 빈 상태 문구.",
+      "html": "<div class=\"ds-stage\"><span class=\"ds-stage-empty\">여기에 놓아봐</span></div>",
+      "css": ".ds-stage { position: relative; aspect-ratio: 4 / 3; width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid var(--color-ink, #1f2430); border-radius: 14px; box-shadow: 0 4px 0 var(--color-ink, #1f2430); background-color: var(--color-paper, #fffdf6); background-image: linear-gradient(rgba(31,36,48,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(31,36,48,0.08) 1px, transparent 1px); background-size: 24px 24px; } .ds-stage-empty { border: 3px dashed rgba(31,36,48,0.3); border-radius: 9999px; padding: 24px 32px; font-family: 'Pretendard Variable', system-ui, sans-serif; font-weight: 900; font-size: 1.125rem; color: rgba(31,36,48,0.4); }"
+    },
+    {
+      "name": "Top Bar",
+      "kind": "nav",
+      "refersTo": "button-nav-start",
+      "description": "랜딩 상단 바. 크림 바탕, 3px 하단 선, 노랑 시작하기.",
+      "html": "<header class=\"ds-topbar\"><span class=\"ds-topbar-logo\">놀AI</span><nav class=\"ds-topbar-nav\"><a href=\"#\">부모·선생님께</a><a class=\"ds-topbar-start\" href=\"#\">시작하기</a></nav></header>",
+      "css": ".ds-topbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: var(--color-cream, #fff3d6); border-bottom: 3px solid var(--color-ink, #1f2430); font-family: 'Pretendard Variable', system-ui, sans-serif; color: var(--color-ink, #1f2430); } .ds-topbar-logo { font-size: 1.5rem; font-weight: 900; } .ds-topbar-nav { display: flex; align-items: center; gap: 8px; font-size: 0.875rem; font-weight: 800; } .ds-topbar-nav a { color: inherit; text-decoration: none; padding: 8px 12px; } .ds-topbar-start { background: var(--color-candy-yellow, #ffd93d); border: 2.5px solid var(--color-ink, #1f2430); border-radius: 14px; padding: 8px 16px !important; box-shadow: 0 3px 0 var(--color-ink, #1f2430); } .ds-topbar-start:active { transform: translateY(3px); box-shadow: none; } .ds-topbar-nav a:focus-visible { outline: 3px solid var(--color-ink, #1f2430); outline-offset: 3px; border-radius: 6px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "팝 캔디 — 스티커 판 위의 로봇 노리",
+    "overview": "모든 면은 종이(크림·페이퍼)이고, 그 위에 남색 굵은 선으로 그린 스티커가 붙어 있다. 스티커는 아래로 딱 떨어지는 단색 그림자를 갖고, 손가락으로 누르면 그림자만큼 내려가 판에 붙는다. 색은 코랄·민트·노랑 셋뿐이고, 랜딩에서는 이 셋이 섹션 전체를 칠하는 색면이 된다. 로봇 노리(포즈 7종)가 모든 화면의 내레이터다 — 글을 지워도 무슨 화면인지 알아본다.\n\n두 목소리가 공존한다(의도). 아이 화면은 노리가 반말로 말한다. 랜딩은 부모·교사에게 존댓말로 쓰지만, 말풍선 속 노리는 여전히 반말이다. 어른용 정보(성취기준 표)는 랜딩 맨 아래에만 있고 아이 화면에는 없다.",
+    "keyCharacteristics": [
+      "남색(ink) 2.5~3px 실선 외곽선 + 0 3px/4px 0 ink 오프셋 그림자. 블러 없음.",
+      "종이 질감: body는 18px 점무늬, 놀이터 무대는 24px 모눈(.stage-grid) 또는 14px 점(.stage-dots).",
+      "Pretendard Variable 단일 서체, 굵기는 700/800/900만. 가늘거나 보통 굵기 없음.",
+      "아이콘은 이모지가 아니라 그림 파일(webp, ComfyUI 제작). 노리 포즈 7, 배지 16, 레슨 썸네일 16, 단어 그림 52.",
+      "모션은 스프링 팝 한 종류. 움직임 줄임이면 정지.",
+      "다크 모드 없음. 런타임 LLM·분석 도구 없음."
+    ],
+    "rules": [
+      { "name": "The Ink Line Rule", "body": "선과 그림자는 오직 ink다. 회색 테두리, 반투명 검정 그림자는 없다. 얇은 구분선만 ink/15, ink/30으로 옅어진다.", "section": "colors" },
+      { "name": "The Three Candies Rule", "body": "유채색은 코랄·민트·노랑 셋뿐이다. 데이터셋 갈래 색만 예외로 놀이터 안에서 쓰인다 — 그마저 단어를 놓기 전에는 흰색이고 놓은 뒤에만 색이 붙는다.", "section": "colors" },
+      { "name": "The Color Means State Rule", "body": "같은 모양의 카드가 색으로 상태를 말한다: 코랄 = 아직, 노랑 = 다음, 페이퍼 = 끝냄. 보기 버튼은 페이퍼 = 안 고름, 민트 = 고름.", "section": "colors" },
+      { "name": "The Heavy Only Rule", "body": "font-black(900)·font-extrabold(800)·font-bold(700) 외의 굵기는 쓰지 않는다.", "section": "typography" },
+      { "name": "The Big Number Rule", "body": "놀이터의 숫자는 font-mono text-4xl font-black으로 크게, 자릿값 같은 부연은 font-mono text-[10px] muted로 작게.", "section": "typography" },
+      { "name": "The Press-Down Rule", "body": "누를 수 있는 것은 전부 sticker 그림자를 갖고, :active에서 3px 내려가며 그림자를 잃는다. 호버 상태는 따로 없다 — 손가락 앱이다.", "section": "elevation" },
+      { "name": "The Flat Band Rule", "body": "섹션·헤더 같은 큰 면은 그림자 없이 3px 선으로만 구분한다.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do 누를 수 있는 것에는 rounded-pop border-[2.5px] border-ink shadow-[0_3px_0_var(--color-ink)]를 준다. 전역 :active가 눌림을 처리한다.",
+      "Do 아이콘은 components/WordIcon.tsx·lib/art.ts의 그림 파일로. 새 단어·배지·레슨은 public/art/에 webp를 만들고 lib/art.test.ts가 존재를 확인하게 한다.",
+      "Do 놀이터 무대는 .stage-grid/.stage-dots 위에 팝 모서리·3px 선·sticker-md. 빈 상태에는 \"여기에 놓아봐\"류 문구를 무대 안에 크게.",
+      "Do 상태는 색으로 말한다: 코랄(아직)·노랑(다음/켜짐)·민트(고름)·페이퍼(끝냄/안 고름).",
+      "Do 노리를 화면의 화자로 쓰고, 노리 대사는 어느 화면이든 반말로. 어른에게 하는 지문은 존댓말(랜딩·/parents·/privacy).",
+      "Do 굵기는 700/800/900만, 서체는 Pretendard Variable만. 한글 제목에 break-keep·text-balance."
+    ],
+    "donts": [
+      "Don't 블러 그림자·회색 테두리·그라데이션 면을 쓰지 않는다. 예외는 전구의 \"빛\"뿐.",
+      "Don't 이모지를 아이콘으로 쓰지 않는다. 남은 이모지(app/room/ArtifactCard.tsx, playgrounds/analogy-lab/AnalogyLab.tsx, playgrounds/compare-meter/CompareMeter.tsx의 라벨, app/play/page.tsx의 \"👋\", LessonList.tsx의 \"✔\")는 레거시다 — 시스템 규칙이 아니며, 그림이 없는 형용사 단어만 이모지 폴백이 의도적이다.",
+      "Don't 다크 모드를 만들지 않는다. themeColor·바탕은 크림 하나다.",
+      "Don't 호버 전용 상태를 설계하지 않는다. 손가락 앱이다 — 반응은 :active와 :focus-visible로.",
+      "Don't 아이 화면에 성취기준 코드·표·존댓말 설명을 넣지 않는다.",
+      "Don't 랜딩의 기울임(rotate)과 색면 섹션을 아이 화면으로 가져오지 않는다. 아이 화면은 크림 점무늬 위 세로 스택이다.",
+      "Don't 런타임 LLM 호출·분석 스크립트를 넣지 않는다(제품 결정, PRODUCT.md)."
+    ]
+  }
+}

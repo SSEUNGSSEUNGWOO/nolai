@@ -29,7 +29,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        {/* 랜딩(/) 방향 계약 — impeccable 절차. 빌드 산출물에 남아야 하므로 HTML 주석으로 낸다. */}
+        <div hidden dangerouslySetInnerHTML={{ __html: `<!--
+THESIS: 랜딩이 설명하지 않고 첫 레슨의 첫 90초를 그대로 시킨다. 헤드라인+기능 카드+CTA의 기본 배열을 거부한다.
+OWN-WORLD: 팝 캔디 — 남색(#1f2430) 3px 외곽선과 입체 그림자, 코랄·민트·노랑이 섹션 전체를 칠하는 색면, Pretendard 900, 로봇 노리 포즈 7종이 섹션 내레이터. 글을 지워도 알아본다.
+STORY: 방문자가 지도에 단어를 놓는다 → 자리가 정해져 있음을 본다 → "방금 한 게 임베딩" 이름을 얻는다 → 코딩이 아님·정보 안 받음·레슨 16·FAQ·교육과정 → 시작하기.
+FIRST VIEWPORT: 상단 바(놀AI · 부모·선생님께 · 시작하기). 데스크톱은 헤드라인 줄(좌 h1, 우 노리+말풍선) 아래에 실제 EmbeddingMap을 전폭(최대 5xl, 살짝 기울임)으로 — 지도가 4:3이라 옆에 두면 접힘 안에 못 들어와 위아래로 쌓았다. 모바일은 헤드라인 → 말풍선 → 지도. 첫 칩이 맥동하고 지도 안 "여기에 놓아봐"가 크게. 놓은 단어 수가 노리 대사·포즈를 바꾸고, 4개째에 색종이가 터지며 다음 섹션 제목에 그 수가 박힌다(시그니처 상호작용).
+FORM: 노리가 안내하는 대화형 스크롤 — 후보 7 중 3번, seed f4ff6c07. 모션 문법: 섹션마다 한 번 스프링으로 떠오름, 노리 포즈 전환은 스프링 팝, reduced-motion이면 정지.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+-->` }} />
+        {children}
+      </body>
     </html>
   );
 }

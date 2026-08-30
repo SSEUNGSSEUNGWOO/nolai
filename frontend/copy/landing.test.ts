@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { listLessons, lessonGroups } from "@/lib/content";
-import { curriculum, lessonBlurbs } from "./parents";
+import { curriculum, lessonBlurbs } from "./landing";
 
 describe("부모·교사 랜딩 문구", () => {
   it("모든 레슨에 설명이 있고, 없는 레슨을 설명하지 않는다", () => {

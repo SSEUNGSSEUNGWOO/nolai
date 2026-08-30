@@ -9,7 +9,7 @@ async function makeNumber(page: Page, value: number) {
 }
 
 test("\"컴퓨터는 0과 1뿐이야\"를 처음부터 끝까지 완주한다", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/play");
   await page.getByRole("link", { name: /컴퓨터는 0과 1뿐이야/ }).click();
 
   await expect(page.getByText(/0과 1밖에 없을까/)).toBeVisible();

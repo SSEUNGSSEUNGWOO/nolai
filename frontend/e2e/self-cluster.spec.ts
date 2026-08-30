@@ -5,7 +5,7 @@ async function groupOf(page: Page, id: string) {
 }
 
 test("\"안 가르쳐도 나눠\"를 처음부터 끝까지 완주한다", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/play");
   await page.getByRole("link", { name: /안 가르쳐도 나눠/ }).click();
 
   await expect(page.getByText(/스스로 나눌 수 있을까/)).toBeVisible();

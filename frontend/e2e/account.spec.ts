@@ -182,12 +182,12 @@ test("내 방을 지우면 DB에서도 사라지고 로그아웃된다", async (
   expect(progress.data?.length ?? 0).toBe(0);
 
   // 쿠키가 지워져 첫 화면은 로그아웃 상태다
-  await page.goto("/");
+  await page.goto("/play");
   await expect(page.getByTestId("to-join")).toBeVisible();
 });
 
 test("개인정보처리방침에 첫 화면과 내 방에서 갈 수 있다", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/play");
   await page.getByRole("link", { name: "개인정보처리방침" }).click();
   await expect(page.getByRole("heading", { name: "개인정보처리방침" })).toBeVisible();
   await expect(page.getByText(/내 방 지우기/)).toBeVisible();

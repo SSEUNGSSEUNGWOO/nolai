@@ -9,6 +9,8 @@ interface WordChipProps {
   emoji: string;
   color: string;
   testId: string;
+  /** 처음 놓을 칩을 빛나게 한다. "어느 걸 집어야 하지"를 없앤다. */
+  highlight?: boolean;
   onActivate?: () => void;
   onDragStart?: (event: ReactPointerEvent) => void;
 }
@@ -22,6 +24,7 @@ export default function WordChip({
   emoji,
   color,
   testId,
+  highlight = false,
   onActivate,
   onDragStart,
 }: WordChipProps) {
@@ -42,7 +45,7 @@ export default function WordChip({
       onClick={onActivate}
       onPointerDown={onDragStart}
       style={{ backgroundColor: color, touchAction: "none" }}
-      className={chipClassName}
+      className={`${chipClassName} ${highlight ? "pulse-card" : ""}`}
     >
       <WordIcon wordId={wordId} emoji={emoji} /> {label}
     </button>

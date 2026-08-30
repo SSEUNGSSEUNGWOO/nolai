@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test("\"AI랑 기분 맞히기 대결\"를 처음부터 끝까지 완주한다", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/play");
   await page.getByRole("link", { name: /AI랑 기분 맞히기 대결/ }).click();
 
   await expect(page.getByText(/알아맞힐 수 있을까/)).toBeVisible();

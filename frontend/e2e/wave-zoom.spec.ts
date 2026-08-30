@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test("\"소리도 숫자야\"를 처음부터 끝까지 완주한다", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/play");
   await page.getByRole("link", { name: /소리도 숫자야/ }).click();
 
   await expect(page.getByText(/어떻게 기억할까/)).toBeVisible();

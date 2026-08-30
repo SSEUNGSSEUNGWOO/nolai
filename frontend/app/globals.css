@@ -28,6 +28,23 @@
   }
 }
 
+@layer base {
+  /* 브라우저가 그리는 부분도 같은 팔레트로. 선택 영역·포커스 링·스크롤바. */
+  ::selection {
+    background-color: var(--color-candy-yellow);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-ink);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  * {
+    scrollbar-color: var(--color-ink) var(--color-cream);
+    scrollbar-width: thin;
+  }
+}
+
 @layer components {
   /* 놀이터의 무대. 조작 전에도 빈 흰 상자가 아니라 "뭔가 놓을 자리"로 읽혀야 한다.
      지도류는 모눈종이, 글·숫자류는 점무늬. */

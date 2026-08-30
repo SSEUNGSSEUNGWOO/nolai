@@ -9,7 +9,7 @@ async function nearness(page: Page, rank: number): Promise<number> {
 }
 
 test("\"없는 건 못 찾아\"를 처음부터 끝까지 완주한다", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/play");
   await page.getByRole("link", { name: /없는 건 못 찾아/ }).click();
 
   await expect(page.getByText(/답을 모르는 걸 물어보면/)).toBeVisible();

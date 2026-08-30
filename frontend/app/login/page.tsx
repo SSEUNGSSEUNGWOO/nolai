@@ -61,7 +61,7 @@ export default function LoginPage() {
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col gap-5 px-5 py-8">
       <header className="flex items-center justify-between text-sm font-extrabold">
-        <Link href="/">← {ui.landingTitle}</Link>
+        <Link href="/play">← {ui.landingTitle}</Link>
       </header>
 
       <Image src={mascotArt("wave")} alt="" width={128} height={128} priority className="bob mx-auto h-32 w-32" />

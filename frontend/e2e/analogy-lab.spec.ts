@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test("\"뜻으로 계산하기\"를 처음부터 끝까지 완주한다", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/play");
   await page.getByRole("link", { name: /뜻으로 계산하기/ }).click();
 
   await expect(page.getByText(/더하고 뺄 수 있을까/)).toBeVisible();

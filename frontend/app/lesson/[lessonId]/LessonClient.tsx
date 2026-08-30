@@ -41,7 +41,7 @@ export default function LessonClient({
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col gap-4 px-5 py-6 lg:max-w-5xl">
       <header className="flex items-center justify-between text-sm font-extrabold">
-        <Link href="/">← 놀AI</Link>
+        <Link href="/play">← 놀AI</Link>
         <span className="flex items-center gap-2">
           {lesson.title}
           <MuteButton />
@@ -52,7 +52,7 @@ export default function LessonClient({
         <div className="flex flex-col items-center gap-4 py-16">
           <p className="text-xl font-black">{ui.lessonComplete}</p>
           <Link
-            href="/"
+            href="/play"
             className="rounded-pop border-[2.5px] border-ink bg-candy-teal px-5 py-2 font-extrabold text-ink shadow-[0_3px_0_var(--color-ink)]"
           >
             처음으로

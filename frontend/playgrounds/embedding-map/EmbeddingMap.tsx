@@ -138,7 +138,7 @@ export default function EmbeddingMap({
             aria-hidden
             className="pointer-events-none absolute inset-0 flex items-center justify-center"
           >
-            <span className="rounded-full border-[3px] border-dashed border-ink/25 px-6 py-5 text-sm font-extrabold text-ink/35">
+            <span className="rounded-full border-[3px] border-dashed border-ink/30 px-8 py-6 text-lg font-black text-ink/40 lg:text-2xl">
               여기에 놓아봐
             </span>
           </div>
@@ -205,7 +205,7 @@ export default function EmbeddingMap({
       </div>
 
       <div data-testid="word-drawer" className="flex flex-wrap gap-2">
-        {drawerWords.map((word) => (
+        {drawerWords.map((word, index) => (
           <WordChip
             key={word.id}
             testId={`drawer-word-${word.id}`}
@@ -213,6 +213,8 @@ export default function EmbeddingMap({
             label={word.label}
             emoji={word.emoji}
             color={undecided}
+            // 아직 아무것도 안 놓았으면 첫 칩이 빛난다. 어느 걸 집어야 할지 정해준다.
+            highlight={placedIds.length === 0 && index === 0}
             onActivate={() => place(word.id)}
             onDragStart={(event) =>
               setDrag({

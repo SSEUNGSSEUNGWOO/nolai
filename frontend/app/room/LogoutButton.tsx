@@ -13,7 +13,7 @@ export default function LogoutButton() {
       className="text-sm font-extrabold text-muted underline"
       onClick={async () => {
         await fetch("/api/logout", { method: "POST" });
-        router.push("/");
+        router.push("/play");
         router.refresh();
       }}
     >

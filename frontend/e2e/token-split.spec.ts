@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test("\"AI는 글을 조각으로 읽어\"를 처음부터 끝까지 완주한다", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/play");
   await page.getByRole("link", { name: /AI는 글을 조각으로 읽어/ }).click();
 
   await expect(page.getByText(/한 글자씩 읽을까/)).toBeVisible();

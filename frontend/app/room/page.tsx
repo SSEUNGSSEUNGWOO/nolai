@@ -33,7 +33,7 @@ export default async function RoomPage() {
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col gap-6 px-5 py-8 lg:max-w-4xl">
       <header className="flex items-center justify-between text-sm font-extrabold">
-        <Link href="/">← {ui.landingTitle}</Link>
+        <Link href="/play">← {ui.landingTitle}</Link>
         <LogoutButton />
       </header>
 

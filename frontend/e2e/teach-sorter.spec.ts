@@ -7,7 +7,7 @@ async function teach(page: Page, wordId: string, boxId: string) {
 }
 
 test("\"컴퓨터에게 가르쳐주기\"를 처음부터 끝까지 완주한다", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/play");
   await page.getByRole("link", { name: /컴퓨터에게 가르쳐주기/ }).click();
 
   await expect(page.getByText(/어떻게 알려주지/)).toBeVisible();

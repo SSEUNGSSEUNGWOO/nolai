@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test("\"가장 가까운 걸 찾아줘\"를 처음부터 끝까지 완주한다", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/play");
   await page.getByRole("link", { name: /가장 가까운 걸 찾아줘/ }).click();
 
   await expect(page.getByText(/어디서 답을 찾아올까/)).toBeVisible();

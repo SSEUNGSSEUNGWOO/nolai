@@ -35,7 +35,7 @@ export default function DeleteRoomButton() {
           className="rounded-pop border-[2.5px] border-ink bg-candy-red px-3 py-1 font-extrabold shadow-[0_3px_0_var(--color-ink)]"
           onClick={async () => {
             await fetch("/api/me", { method: "DELETE" });
-            router.push("/");
+            router.push("/play");
             router.refresh();
           }}
         >

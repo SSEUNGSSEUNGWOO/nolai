@@ -15,7 +15,7 @@ describe("PWA manifest", () => {
 
   it("설치에 필요한 것이 다 있다", () => {
     expect(m.display).toBe("standalone");
-    expect(m.start_url).toBe("/");
+    expect(m.start_url).toBe("/play");
     expect(m.icons?.some((i) => i.sizes === "512x512")).toBe(true);
     expect(m.icons?.some((i) => i.purpose === "maskable")).toBe(true);
   });

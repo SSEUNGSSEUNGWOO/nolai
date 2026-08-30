@@ -8,7 +8,7 @@ async function enterPlay(page: Page, guess = "강아지 근처") {
 }
 
 test("\"비슷한 말끼리 모여라\"를 처음부터 끝까지 완주한다", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/play");
   await page.getByRole("link", { name: /비슷한 말끼리 모여라/ }).click();
 
   await expect(page.getByText(/어떻게 알아듣지/)).toBeVisible();
@@ -38,7 +38,7 @@ test("\"비슷한 말끼리 모여라\"를 처음부터 끝까지 완주한다",
 
   // 첫 화면으로 돌아오면 끝낸 레슨에 체크가 붙고 다음 레슨이 강조된다.
   // 계정 없이도 된다 -- 진도가 브라우저에 남기 때문이다.
-  await page.goto("/");
+  await page.goto("/play");
   await expect(page.getByTestId("lesson-embedding-map")).toHaveAttribute("data-done", "true");
   await expect(page.getByTestId("lesson-nearest-search")).toHaveAttribute("data-next", "true");
   await expect(page.getByText("뜻으로 찾기")).toBeVisible();
