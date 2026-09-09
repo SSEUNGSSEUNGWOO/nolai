@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `supabase/migrations/` | DB 스키마 (`0001_init` → 순번). `0003`이 E2E 전용 `test` 스키마를 만든다 |
 | `tools/embed/` | 파이썬(uv) 임베딩 사전 계산. `*.yaml` 소스 → `frontend/datasets/*.json` |
 | `tools/art/` | 로컬 ComfyUI(:8188)로 마스코트·배지·단어 그림 생성. `batch.sh`가 전체 재생성 |
-| `tools/icons/` | PWA 아이콘 생성 (`frontend/`에서 `node ../tools/icons/make.js`) |
+| `tools/icons/` | PWA 아이콘·OG 이미지 생성 (`frontend/`에서 `node ../tools/icons/make.js`) |
 | `docs/superpowers/` | 설계 문서와 구현 계획 |
 
 `frontend/AGENTS.md`는 `next dev`가 자동으로 넣는 블록이다. **이 Next.js는 학습 데이터와 다르다** — API를 쓰기 전에 `frontend/node_modules/next/dist/docs/`를 읽는다.
@@ -33,6 +33,8 @@ npm run build                            # 콘텐츠 검증도 여기서 터진�
 - E2E는 `reuseExistingServer: false`, `workers: 1`이 의도다. 이미 떠 있는 3000 서버를 빌리면 운영(`public`) 데이터를 지울 수 있어서 막아둔 것이니 고치지 않는다.
 - E2E는 `frontend/.env.local`을 직접 읽는다. `SUPABASE_SERVICE_ROLE_KEY`, `SESSION_SECRET`, `NEXT_PUBLIC_SUPABASE_URL`이 필요하다.
 - 데이터셋 재생성: `tools/embed/`에서 `uv run python build_dataset.py [words.yaml]` 등. 모델(`nlpai-lab/KURE-v1`)은 로컬 GPU에서 돈다. 빌더↔yaml↔레슨 대응표는 `frontend/README.md`.
+- 그림 재생성: `tools/art/*.sh`는 bash 스크립트라 Windows에선 Git Bash로 돌린다. ComfyUI가 켜져 있어야 하고 결과는 `tools/art/out/`에 떨어진다.
+- DB 마이그레이션은 Supabase CLI가 아니라 **MCP로 운영 DB에 직접 적용**하고, `supabase/migrations/` 파일은 그 기록이다(`0004` 머리말 참고). `test` 스키마를 건드리면 `0003` 머리말의 PostgREST reload 두 줄을 같이 보내야 한다.
 
 ## 큰 그림
 
@@ -40,15 +42,21 @@ npm run build                            # 콘텐츠 검증도 여기서 터진�
 
 **놀이터는 레슨을 모른다.** `playgrounds/types.ts`의 `PlaygroundProps { data, onEvent, onArtifact }`만 안다. 놀이터가 `onEvent({type: "placed"})` 같은 이벤트를 올리면 `LessonRunner`가 레슨 JSON의 `goal.kind`(`placed`·`searched`·`taught`… 14종)와 맞춰 세어 다음 스텝으로 넘긴다. 새 놀이터는 `playgrounds/registry.ts`에 등록해야 레슨이 부를 수 있다.
 
+**작품(artifact) 흐름.** 놀이터가 `onArtifact`로 올린 결과물은 `LessonRunner`가 들고 있다가 레슨 완료 시 `POST /api/progress`에 실어 보낸다. 서버의 `lib/artifact.ts`가 **데이터셋에 실제로 있는 id 목록만** 받아 `artifacts` 테이블에 넣고, `/room`(내 방)이 진도·배지와 함께 보여준다.
+
+**자유 텍스트 입력이 없다 — 지켜야 할 불변식.** 타겟이 전원 만 14세 미만이라 실명 한 글자가 들어오면 개인정보 수집이 된다. 닉네임은 `lib/auth/nickname.ts`의 수식어+캐릭터 목록에서 고르기만 하고(성씨 글자 제외), 작품 payload는 id만 받는다. 새 기능에 텍스트 입력란을 두려면 설계 문서부터 고친다.
+
 **콘텐츠 오류는 빌드가 막는다.** `lib/content.ts`의 `assertPlayable`·`assertPlaygroundExists`·`assertBadgeNamesExist`가 로드 시점에 던진다 — 없는 놀이터, 한글 이름 없는 배지, 데이터셋보다 큰 `goal.min`, 데이터셋 종류와 안 맞는 `goal.kind`. `lib/content.test.ts`는 아이가 보는 문장에 레슨 번호가 들어가는 것도 막는다. **레슨은 제목으로 부른다** — 순서(`lessonGroups`)는 바뀐다.
 
-**모든 숫자는 진짜다.** `frontend/datasets/`의 좌표·유사도는 실제 임베딩 모델 출력이므로 손으로 고치지 않는다. 예외는 `pixel-art.json`·`sounds-simple.json`·`bits-basic.json`(모델이 안 만듦).
+**모든 숫자는 진짜다.** `frontend/datasets/`의 좌표·유사도는 실제 임베딩 모델 출력이므로 손으로 고치지 않는다. 예외는 `pixel-art.json`·`sounds-simple.json`·`bits-basic.json`(모델이 안 만듦). 런타임 LLM 호출은 없다(의도).
 
-**인증·진도.** 정식 회원가입 없이 닉네임 + 비밀코드. 세션은 HMAC 서명된 무상태 쿠키(`lib/auth/session.ts`, 1년). 로그인 전 진도는 `localStorage`(`lib/local-progress.ts`)에 쌓이고, 가입·로그인 시 `POST /api/sync`로 서버에 합친다. 브라우저는 Supabase에 직접 붙지 않는다 — `app/api/*` Route Handler만 `lib/supabase.ts`(service_role, `server-only`)를 쓰고, 테이블은 RLS가 켜져 있지만 정책이 없다(anon 차단이 의도).
+**인증·진도.** 정식 회원가입 없이 닉네임 + 비밀코드(분실 시 복구 불가, 설계). 세션은 HMAC 서명된 무상태 쿠키(`lib/auth/session.ts`, 1년). 로그인 전 진도는 `localStorage`(`lib/local-progress.ts`)에 쌓이고, 가입·로그인 시 `POST /api/sync`로 서버에 합친다. 로그인·가입 시도 제한은 DB 함수 `consume_attempt`(`auth_attempts` 테이블, IP당·닉네임당)로 센다 — Vercel 서버리스라 메모리 카운터는 안 된다. 브라우저는 Supabase에 직접 붙지 않는다 — `app/api/*` Route Handler만 `lib/supabase.ts`(service_role, `server-only`)를 쓰고, 테이블은 RLS가 켜져 있지만 정책이 없다(anon 차단이 의도).
+
+**라우트.** `/` 랜딩(부모·교사용, 실제 EmbeddingMap 내장, 세션·진도 있으면 `/play`로) · `/play` 아이의 레슨 목록 · `/lesson/[lessonId]` · `/room` 내 방 · `/join`·`/login` · `/parents`·`/making`·`/privacy` 어른용 설명. 절대 URL은 `lib/site.ts`의 `SITE_URL` 한곳에서 나온다 — 도메인(nolai.kr)이 아직 없어 `nolai.vercel.app`이 기본값이다.
 
 ## 작업 규칙
 
 - `main`에서 직접 작업하며 PR이 없다. **push가 곧 배포**이니 push 전에 확인받는다.
 - 테스트가 다 통과해도 폰에서 막힌 적이 있다. UI 변경은 실제 브라우저(Playwright MCP 또는 폰)로 눈으로 본다.
 - 아트 톤: 두꺼운 남색(#1f2430) 외곽선 + 캔디 팔레트(코랄 #ff6b6b·민트 #4ecdc4·노랑 #ffd93d·크림 #fff3d6). 단어 그림은 `ART_STYLE=natural`(실제 색). 마스코트는 로봇 "노리" — 문서 앞부분의 "부엉이"는 옛 표현이다.
-- 성취기준 코드(6실05-04 등)는 아이 화면에 띄우지 않는다. 랜딩(`/`)에만 쓴다. `/`는 랜딩(실제 EmbeddingMap 내장, 세션·진도 있으면 `/play`로), `/play`가 아이의 레슨 목록이다. 디자인 시스템은 `DESIGN.md`, 제품 사실은 `PRODUCT.md`.
+- 아이 화면은 반말, 부모·교사 화면은 존댓말. 성취기준 코드(6실05-04 등)는 아이 화면에 띄우지 않고 랜딩(`/`)·어른용 화면에만 쓴다. 디자인 시스템은 `DESIGN.md`, 제품 사실은 `PRODUCT.md`.
