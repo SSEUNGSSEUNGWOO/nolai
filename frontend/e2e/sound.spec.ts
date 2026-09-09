@@ -22,12 +22,14 @@ test.beforeEach(async ({ page }) => {
 /** "가장 가까운 걸 찾아줘"를 완주해 보상 화면까지 간다. */
 async function finish(page: import("@playwright/test").Page) {
   await page.getByRole("button", { name: "궁금해!" }).click();
-  for (const id of ["q01", "q08", "q20"]) await page.getByTestId(`question-${id}`).click();
+  for (const id of ["q01", "q05", "q08", "q13", "q20"]) await page.getByTestId(`question-${id}`).click();
   await page.getByRole("button", { name: "다 했어요" }).click();
   await page.getByRole("button", { name: "알겠어!" }).click();
   await page
     .getByRole("button", { name: "먹을 게 어디 있는지 친구한테 어떻게 알려줘?" })
     .click();
+  await page.getByRole("button", { name: "다음으로" }).click();
+  await page.getByRole("button", { name: "펭귄은 헤엄은 치지만 날지 못한다" }).click();
   await page.getByRole("button", { name: "다음으로" }).click();
 }
 

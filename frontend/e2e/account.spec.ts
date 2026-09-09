@@ -48,11 +48,11 @@ async function join(page: Page): Promise<{ nickname: string; code: string }> {
   return { nickname, code };
 }
 
-/** "가장 가까운 걸 찾아줘"를 훅부터 배지까지 완주한다. 질문 3개면 목표가 찬다. */
+/** "가장 가까운 걸 찾아줘"를 훅부터 배지까지 완주한다. 질문 5개면 목표가 찬다. */
 async function finishLesson2(page: Page) {
   await page.goto("/lesson/nearest-search");
   await page.getByRole("button", { name: "궁금해!" }).click();
-  for (const id of ["q01", "q08", "q20"]) {
+  for (const id of ["q01", "q05", "q08", "q13", "q20"]) {
     await page.getByTestId(`question-${id}`).click();
   }
   await page.getByRole("button", { name: "다 했어요" }).click();
@@ -60,6 +60,8 @@ async function finishLesson2(page: Page) {
   await page
     .getByRole("button", { name: "먹을 게 어디 있는지 친구한테 어떻게 알려줘?" })
     .click();
+  await page.getByRole("button", { name: "다음으로" }).click();
+  await page.getByRole("button", { name: "펭귄은 헤엄은 치지만 날지 못한다" }).click();
   await page.getByRole("button", { name: "다음으로" }).click();
   // 진도 저장 응답을 기다린다. keepalive는 요청이 도착하는 것만 보장하지
   // 서버가 DB에 쓰기를 마친 것까지 보장하지 않는다. 안 기다리면 바로 뒤에
@@ -156,8 +158,8 @@ test("레슨에서 만든 작품이 내 방에 쌓인다", async ({ page }) => {
 
   const shelf = page.getByTestId("artifact-shelf");
   await expect(shelf).toBeVisible();
-  // 놀이터에서 고른 질문 3개가 작품에 그대로 담겨 있어야 한다
-  await expect(shelf).toContainText("질문 3개를 찾아봤어");
+  // 놀이터에서 고른 질문 5개가 작품에 그대로 담겨 있어야 한다
+  await expect(shelf).toContainText("질문 5개를 찾아봤어");
   await expect(shelf).toContainText("먹을 게 어디 있는지 친구한테 어떻게 알려줘?");
 });
 
