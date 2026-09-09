@@ -14,13 +14,14 @@ const html = `<html><head><link rel="stylesheet" href="${font}"></head>
   </div>
   <div style="display:flex;flex-direction:column;gap:20px">
     <!-- components/Logo.tsx의 복사본. 로고 모양을 바꾸면 여기도 같이 바꾼다. -->
-    <svg viewBox="-6 -28 206 138" style="height:150px;overflow:visible;font-weight:900;letter-spacing:-0.03em">
-      <g font-size="100" stroke-width="10" stroke-linejoin="round" style="paint-order:stroke fill">
-        <text x="0" y="100" transform="translate(0,7)" fill="#1f2430" stroke="#1f2430">놀AI</text>
-        <text x="0" y="100" stroke="#1f2430"><tspan fill="#ff6b6b">놀</tspan><tspan fill="#4ecdc4">AI</tspan></text>
+    <svg viewBox="-2 -120 228 140" style="height:150px;overflow:visible;font-weight:900">
+      <g stroke="#1f2430" stroke-width="10" stroke-linejoin="round" style="paint-order:stroke fill">
+        <g fill="#1f2430" transform="translate(0,7)"><text x="0" y="0" font-size="100">놀</text><text x="101" y="7" font-size="126" letter-spacing="-0.03em">AI</text></g>
+        <text x="0" y="0" font-size="100" fill="#ff6b6b">놀</text>
+        <text x="101" y="7" font-size="126" letter-spacing="-0.03em" fill="#4ecdc4">AI</text>
       </g>
-      <line x1="177" y1="30" x2="177" y2="6" stroke="#1f2430" stroke-width="9" stroke-linecap="round"/>
-      <circle cx="177" cy="-6" r="13" fill="#ffd93d" stroke="#1f2430" stroke-width="5"/>
+      <line x1="206" y1="-80" x2="206" y2="-98" stroke="#1f2430" stroke-width="9" stroke-linecap="round"/>
+      <circle cx="206" cy="-106" r="11" fill="#ffd93d" stroke="#1f2430" stroke-width="5"/>
     </svg>
     <div style="font-size:44px;font-weight:800">AI는 어떻게 생각할까?</div>
     <div style="font-size:30px;font-weight:600;color:#736b5a">10~13세가 손으로 만져서 배우는 AI 원리</div>
