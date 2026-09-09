@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { account } from "@/copy/ui";
+import { clearProgress } from "@/lib/local-progress";
 
 /**
  * 내 방을 통째로 지운다. 되돌릴 수 없으므로 두 번 누르게 한다 -- 브라우저
@@ -34,7 +35,15 @@ export default function DeleteRoomButton() {
           data-testid="delete-room-confirm"
           className="rounded-pop border-[2.5px] border-ink bg-candy-red px-3 py-1 font-extrabold shadow-[0_3px_0_var(--color-ink)]"
           onClick={async () => {
-            await fetch("/api/me", { method: "DELETE" });
+            const response = await fetch("/api/me", { method: "DELETE" }).catch(
+              () => null,
+            );
+            // 실패했는데 화면만 옮기면 아이는 방이 지워진 줄 안다.
+            if (!response?.ok) {
+              setConfirming(false);
+              return;
+            }
+            clearProgress();
             router.push("/play");
             router.refresh();
           }}

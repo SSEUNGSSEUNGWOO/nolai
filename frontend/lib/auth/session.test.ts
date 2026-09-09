@@ -33,6 +33,14 @@ describe("signSession / verifySession", () => {
     expect(verifySession(stretched, SECRET, NOW)).toBeNull();
   });
 
+  it("비ASCII 글자가 섞인 서명은 던지지 않고 거부한다", () => {
+    const [kid, expiresAt, sig] = signSession(KID, SECRET, NOW).split(".");
+    // 글자 수는 같지만 바이트 수가 다르다.
+    const garbled = `${kid}.${expiresAt}.${"한".repeat(sig.length)}`;
+
+    expect(verifySession(garbled, SECRET, NOW)).toBeNull();
+  });
+
   it("다른 열쇠로 서명한 세션을 거부한다", () => {
     const token = signSession(KID, "b".repeat(64), NOW);
 

@@ -24,25 +24,27 @@ export default function JoinClient({ initial }: { initial: string[] }) {
     setBusy(true);
     setError(null);
 
+    // 연결이 끊기면 fetch가 던진다. 잡지 않으면 버튼이 영영 비활성으로 남는다.
     const response = await fetch("/api/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nickname }),
-    });
-    const data = await response.json();
+    }).catch(() => null);
+    const data = (await response?.json().catch(() => ({}))) ?? {};
 
-    if (!response.ok) {
+    if (!response?.ok) {
       setBusy(false);
       // 오류를 뭉뚱그리면 "이름이 찼다"와 "너무 많이 시도했다"가 구별되지 않아
       // 아이가 다른 이름을 골라도 계속 같은 말을 듣는다.
       setError(
         data.error === "nickname_full"
           ? account.nicknameFull
-          : response.status === 429
+          : response?.status === 429
             ? account.loginThrottled
             : account.signupFailed,
       );
-      // 이름이 찼을 때만 다시 뽑는다. 시도 제한이면 같은 이름으로 재시도해야 한다.      if (data.error === "nickname_full") setCandidates(randomNicknames(3));
+      // 이름이 찼을 때만 다시 뽑는다. 시도 제한이면 같은 이름으로 재시도해야 한다.
+      if (data.error === "nickname_full") setCandidates(randomNicknames(3));
       return;
     }
 

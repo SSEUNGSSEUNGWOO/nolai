@@ -50,11 +50,11 @@ export function verifySession(
   const [kidId, expiresAtRaw, signature] = parts;
   const expected = sign(`${kidId}.${expiresAtRaw}`, secret);
 
-  // 길이가 다르면 timingSafeEqual이 예외를 던진다. 먼저 걸러낸다.
-  if (signature.length !== expected.length) return null;
-  if (
-    !timingSafeEqual(Buffer.from(signature), Buffer.from(expected))
-  ) {
+  // 바이트 길이가 다르면 timingSafeEqual이 예외를 던진다. 문자열 길이로 재면
+  // 비ASCII 글자가 섞인 서명이 통과해 던지므로 Buffer로 잰다.
+  const given = Buffer.from(signature);
+  const wanted = Buffer.from(expected);
+  if (given.length !== wanted.length || !timingSafeEqual(given, wanted)) {
     return null;
   }
 

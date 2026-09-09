@@ -4,8 +4,11 @@ import { createKid, consumeAttempt } from "@/lib/auth/account";
 import { clientIp, issuedSessionCookie } from "@/lib/auth/request";
 import { requireSessionSecret, signSession } from "@/lib/auth/session";
 
-/** 한 곳에서 계정을 대량으로 찍어내지 못하게 한다. */
-const SIGNUPS_PER_HOUR = 10;
+/**
+ * 한 곳에서 계정을 대량으로 찍어내지 못하게 한다. 교실은 공인 IP 하나로
+ * 25명이 한 시간 안에 방을 만들므로 그보다 넉넉하다(설계 문서 14장, 2026-09-10).
+ */
+const SIGNUPS_PER_HOUR = 40;
 
 const body = z.strictObject({ nickname: z.string().min(1) });
 

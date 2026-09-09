@@ -1,5 +1,10 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import { readProgress, completeLesson, isCompleted } from "./local-progress";
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import {
+  readProgress,
+  completeLesson,
+  isCompleted,
+  clearProgress,
+} from "./local-progress";
 
 beforeEach(() => {
   localStorage.clear();
@@ -26,5 +31,20 @@ describe("local-progress", () => {
   it("저장값이 깨져 있으면 빈 진도로 되돌린다", () => {
     localStorage.setItem("nolai:progress", "{{{ 망가진 JSON");
     expect(readProgress().completedLessons).toEqual([]);
+  });
+
+  it("clearProgress는 기록을 통째로 지운다", () => {
+    completeLesson("embedding-map", "map-explorer");
+    clearProgress();
+    expect(readProgress().completedLessons).toEqual([]);
+    expect(readProgress().badges).toEqual([]);
+  });
+
+  it("저장소가 쓰기를 거부해도 던지지 않는다", () => {
+    const spy = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("QuotaExceededError");
+    });
+    expect(() => completeLesson("embedding-map", "map-explorer")).not.toThrow();
+    spy.mockRestore();
   });
 });

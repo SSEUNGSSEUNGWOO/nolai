@@ -32,11 +32,18 @@ export default function LoginPage() {
     setBusy(true);
     setError(null);
 
+    // 연결이 끊기면 fetch가 던진다. 잡지 않으면 버튼이 영영 비활성으로 남는다.
     const response = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nickname: `${modifier}${character}`, code }),
-    });
+    }).catch(() => null);
+
+    if (!response) {
+      setBusy(false);
+      setError(account.loginFailed);
+      return;
+    }
 
     if (!response.ok) {
       setBusy(false);

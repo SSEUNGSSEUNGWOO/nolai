@@ -42,7 +42,7 @@ export default function PrivacyPage() {
         <ul className="list-disc pl-5">
           <li><strong>접속 주소(IP)</strong> — 방 만들기·들어가기를 너무 많이 시도하는 것을 막는 데만 씁니다. IP 자체는 저장하지 않고 되돌릴 수 없는 해시만 저장합니다. 호스팅 서비스(Vercel)의 서버 기록에는 통상적인 접속 기록이 짧게 남을 수 있습니다.</li>
           <li><strong>쿠키</strong> — <code>nolai_session</code> 하나. 내 방에 들어간 상태를 기억하며 1년 뒤 만료됩니다. 광고·추적 쿠키는 없습니다.</li>
-          <li><strong>브라우저 저장소</strong> — <code>nolai:progress</code>(진도), <code>nolai:muted</code>(음소거 설정). 기기 밖으로 나가지 않습니다.</li>
+          <li><strong>브라우저 저장소</strong> — <code>nolai:progress</code>(진도), <code>nolai:muted</code>(음소거 설정). 내 방을 만들거나 들어갈 때 완료한 레슨 목록만 서버로 옮기고, 그 외에는 기기 밖으로 나가지 않습니다. 나가기·방 삭제 때 기기의 진도도 함께 지웁니다.</li>
         </ul>
         <p>
           <strong>방문 수 집계</strong> — 어느 페이지가 몇 번 열렸는지만 셉니다(Vercel Web Analytics). 쿠키를 쓰지 않고, 기기나 사람을
