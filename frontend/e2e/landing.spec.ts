@@ -9,7 +9,7 @@ test("랜딩에서 단어를 놓으면 노리의 말이 바뀌고, 시작하기�
   await expect(page.getByRole("heading", { level: 1 })).toContainText("엔트리 다음은");
 
   const line = page.getByTestId("hero-line");
-  await expect(line).toContainText("호랑이는 어디로 갈까");
+  await expect(line).toContainText("지도 아무 데나 놓아봐");
   await page.getByTestId("drawer-word-tiger").click();
   await expect(line).toContainText("하나 더");
   await expect(page.getByTestId("chip-tiger")).toBeVisible();
