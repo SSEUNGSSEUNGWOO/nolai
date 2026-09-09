@@ -1,4 +1,4 @@
-// 생성된 그림의 바깥 배경만 투명하게 만든다. 실행: node tools/art/cut.js <in.png> <out.png|.webp> [최대변] [keep]
+// 생성된 그림의 바깥 배경만 투명하게 만들고 정사각형으로 맞춘다. 실행: node tools/art/cut.js <in.png> <out.png|.webp> [최대변] [keep]
 // 넷째 인자가 keep이면 배경을 따지 않고 줄이기만 한다 -- 썸네일처럼 그림 자체가 한 장인 경우.
 // rembg 같은 모델은 안쪽 크림색(얼굴·배)도 배경으로 봐서 구멍을 낸다. 대신 네
 // 모서리에서 출발하는 flood fill로 배경색과 비슷한 픽셀만 지운다 -- 먹선으로 닫힌
@@ -47,12 +47,14 @@ const mime = output.endsWith(".webp") ? "image/webp" : "image/png";
     for (let p = 0; p < W * H; p++) if (a(p) === 255) { const x = p % W; if ((x > 0 && a(p - 1) === 0) || (x < W - 1 && a(p + 1) === 0) || (p >= W && a(p - W) === 0) || (p < W * (H - 1) && a(p + W) === 0)) edge.push(p); }
     for (const p of edge) px[p * 4 + 3] = 140;
     ctx.putImageData(d, 0, 0);
-    // 투명 여백을 잘라낸다
+    // 투명 여백을 잘라낸 뒤 정사각형 캔버스 가운데에 놓는다. 화면은 전부 정사각형
+    // 상자(h-36 w-36 등)에 그리므로, 파일이 정사각형이 아니면 옆으로 늘어난다.
     let minX = W, minY = H, maxX = 0, maxY = 0;
     for (let p = 0; p < W * H; p++) if (a(p)) { const x = p % W, y = (p - x) / W; if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y; }
-    const pad = 8; const o = document.createElement("canvas");
-    o.width = maxX - minX + 1 + pad * 2; o.height = maxY - minY + 1 + pad * 2;
-    o.getContext("2d").drawImage(c, minX - pad, minY - pad, o.width, o.height, 0, 0, o.width, o.height);
+    const pad = 8; const bw = maxX - minX + 1 + pad * 2, bh = maxY - minY + 1 + pad * 2;
+    const side = Math.max(bw, bh); const o = document.createElement("canvas");
+    o.width = side; o.height = side;
+    o.getContext("2d").drawImage(c, minX - pad, minY - pad, bw, bh, Math.floor((side - bw) / 2), Math.floor((side - bh) / 2), bw, bh);
     if (!maxSide || Math.max(o.width, o.height) <= maxSide) return o.toDataURL(mime, 0.9);
     const k = maxSide / Math.max(o.width, o.height);
     const r = document.createElement("canvas"); r.width = Math.round(o.width * k); r.height = Math.round(o.height * k);
