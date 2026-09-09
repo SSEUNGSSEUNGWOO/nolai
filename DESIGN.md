@@ -221,7 +221,7 @@ components:
 - **Group card** (랜딩): 페이퍼, 3px 선, sticker-lg, `p-4 lg:p-5`, 안쪽 목록은 `divide-y-[2px] divide-ink/15`.
 
 ### Navigation
-- 랜딩 상단 바: `sticky top-0`, 크림 바탕, 하단 3px 잉크 선, 로고 `text-2xl` 900 + 텍스트 링크(sm 이상) + 노랑 시작하기. 아이 화면은 상단 바 없음 — 푸터의 `text-xs muted underline` 링크 두 개뿐.
+- 랜딩 상단 바: `sticky top-0`, 크림 바탕, 하단 3px 잉크 선, 로고(`components/Logo.tsx` 워드마크, `h-8`) + 텍스트 링크(sm 이상) + 노랑 시작하기. 아이 화면은 상단 바 없음 — 푸터의 `text-xs muted underline` 링크 두 개뿐.
 
 ### 노리 (Signature)
 - 포즈 7종 `base·curious·happy·surprised·wave·point·think`(`lib/art.ts` `mascotArt`). 대기 상태는 `.bob`(2.4s, -6px). 포즈 전환은 `scale 0.7, rotate -8 → 1, 0` 스프링(stiffness 260, damping 14)(`Landing.tsx`). 아이 화면 크기 144~160px, 말풍선 안은 32px, 랜딩 섹션은 80~208px.

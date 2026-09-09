@@ -12,7 +12,8 @@ export const metadata: Metadata = {
   // 카톡·메신저에 링크를 붙였을 때의 미리보기. 이미지는 app/opengraph-image.png.
   openGraph: { type: "website", siteName: "놀AI", locale: "ko_KR" },
   manifest: "/manifest.webmanifest",
-  icons: { apple: "/apple-touch-icon.png" },
+  // 아이콘은 여기 적지 않는다. icons를 적으면 Next가 파일 규칙(app/icon.png,
+  // app/apple-icon.png)을 통째로 무시한다. 둘 다 tools/icons/make.js가 만든다.
   // iOS는 manifest의 display를 안 보고 이 메타 태그로 전체화면 여부를 정한다.
   appleWebApp: { capable: true, statusBarStyle: "default", title: "놀AI" },
 };

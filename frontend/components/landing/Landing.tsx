@@ -6,6 +6,7 @@ import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
 import EmbeddingMap from "@/playgrounds/embedding-map/EmbeddingMap";
 import Confetti from "@/components/fx/Confetti";
+import Logo from "@/components/Logo";
 import type { PlaygroundEvent } from "@/playgrounds/types";
 import { lessonArt, mascotArt, type MascotMood } from "@/lib/art";
 import { curriculum, lessonBlurbs } from "@/copy/landing";
@@ -62,7 +63,7 @@ export default function Landing({
     <div className="flex flex-col break-keep">
       <header className="sticky top-0 z-40 border-b-[3px] border-ink bg-cream">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
-          <span className="text-2xl font-black">놀AI</span>
+          <Logo className="h-8" />
           <nav className="flex items-center gap-2 text-sm font-extrabold">
             <a href="#adults" className="hidden px-3 py-2 sm:inline">부모·선생님께</a>
             <Link

@@ -13,7 +13,15 @@ const html = `<html><head><link rel="stylesheet" href="${font}"></head>
     <img src="${mascot}" style="width:260px;height:260px;object-fit:contain">
   </div>
   <div style="display:flex;flex-direction:column;gap:20px">
-    <div style="font-size:120px;font-weight:900;line-height:1">놀AI</div>
+    <!-- components/Logo.tsx의 복사본. 로고 모양을 바꾸면 여기도 같이 바꾼다. -->
+    <svg viewBox="-6 -28 206 138" style="height:150px;overflow:visible;font-weight:900;letter-spacing:-0.03em">
+      <g font-size="100" stroke-width="10" stroke-linejoin="round" style="paint-order:stroke fill">
+        <text x="0" y="100" transform="translate(0,7)" fill="#1f2430" stroke="#1f2430">놀AI</text>
+        <text x="0" y="100" stroke="#1f2430"><tspan fill="#ff6b6b">놀</tspan><tspan fill="#4ecdc4">AI</tspan></text>
+      </g>
+      <line x1="177" y1="30" x2="177" y2="6" stroke="#1f2430" stroke-width="9" stroke-linecap="round"/>
+      <circle cx="177" cy="-6" r="13" fill="#ffd93d" stroke="#1f2430" stroke-width="5"/>
+    </svg>
     <div style="font-size:44px;font-weight:800">AI는 어떻게 생각할까?</div>
     <div style="font-size:30px;font-weight:600;color:#736b5a">10~13세가 손으로 만져서 배우는 AI 원리</div>
   </div>
