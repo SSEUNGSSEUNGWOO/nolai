@@ -72,4 +72,16 @@ Route Handler가 한다. `service_role` 키는 `lib/supabase.ts`에서만 읽으
 
 레슨 JSON의 오타, 등록되지 않은 놀이터 이름, 한글 이름 없는 배지, 데이터셋 항목 수보다 큰 `goal.min`, 데이터셋 종류와 어긋난 `goal.kind`, `passages` 수와 길이가 다른 `sims`는 전부 **빌드가 막는다.** 아이에게 도달하지 않는다.
 
+## 단어 실험실 (`/lab`)
+
+레슨이 아니다. 사전 `datasets/dictionary.json`(id·표기만)을 클라이언트가 통째로 들고 자동완성을 기기 안에서 하고, 서버에는 단어 id만 보낸다. 유사도는 Supabase `words` 테이블(pgvector)의 `nearest_words()`·`word_similarity()`가 계산한다.
+
+| 파일 | 역할 |
+|---|---|
+| `lib/dictionary.ts` | 사전 로드, `isWordId`·`wordOf`·`searchWords` |
+| `lib/words.ts` | rpc 래퍼와 IP당 시도 제한(분당 120회) |
+| `app/api/words/near`·`compare`·`save` | 가까운 20개 · 두 단어 유사도 · 발견 저장(로그인 필요) |
+| `components/lab/` | `WordPicker`(자동완성), `LabClient`(화면) |
+| `lib/artifact.ts`의 `parseLabArtifact` | 작품은 사전 id 쌍만. `artifacts.lesson_id = "word-lab"` |
+
 설계 문서: `../docs/superpowers/specs/2026-08-21-nolai-design.md`

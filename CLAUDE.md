@@ -52,7 +52,7 @@ npm run build                            # 콘텐츠 검증도 여기서 터진�
 
 **인증·진도.** 정식 회원가입 없이 닉네임 + 비밀코드(분실 시 복구 불가, 설계). 세션은 HMAC 서명된 무상태 쿠키(`lib/auth/session.ts`, 1년). 로그인 전 진도는 `localStorage`(`lib/local-progress.ts`)에 쌓이고, 가입·로그인 시 `POST /api/sync`로 서버에 합친다. 로그인·가입 시도 제한은 DB 함수 `consume_attempt`(`auth_attempts` 테이블, IP당·닉네임당)로 센다 — Vercel 서버리스라 메모리 카운터는 안 된다. 브라우저는 Supabase에 직접 붙지 않는다 — `app/api/*` Route Handler만 `lib/supabase.ts`(service_role, `server-only`)를 쓰고, 테이블은 RLS가 켜져 있지만 정책이 없다(anon 차단이 의도).
 
-**라우트.** `/` 랜딩(부모·교사용, 실제 EmbeddingMap 내장, 세션·진도 있으면 `/play`로) · `/play` 아이의 레슨 목록 · `/lesson/[lessonId]` · `/room` 내 방 · `/join`·`/login` · `/parents`·`/making`·`/privacy` 어른용 설명. 절대 URL은 `lib/site.ts`의 `SITE_URL` 한곳에서 나온다 — 도메인(nolai.kr)이 아직 없어 `nolai.vercel.app`이 기본값이다.
+**라우트.** `/` 랜딩(부모·교사용, 실제 EmbeddingMap 내장, 세션·진도 있으면 `/play`로) · `/play` 아이의 레슨 목록 · `/lesson/[lessonId]` · `/room` 내 방 · `/lab` 단어 실험실(레슨이 아니다, 설계 문서 17장. `components/lab/`, `app/api/words/*`) · `/join`·`/login` · `/parents`·`/making`·`/privacy` 어른용 설명. 절대 URL은 `lib/site.ts`의 `SITE_URL` 한곳에서 나온다 — 도메인(nolai.kr)이 아직 없어 `nolai.vercel.app`이 기본값이다.
 
 ## 작업 규칙
 
