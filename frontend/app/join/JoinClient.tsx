@@ -83,7 +83,7 @@ export default function JoinClient({ initial }: { initial: string[] }) {
     context.fillStyle = "#1F2430";
     context.textAlign = "center";
     context.font = "bold 40px sans-serif";
-    context.fillText("놀AI 비밀코드", canvas.width / 2, 110);
+    context.fillText("AI쏙 비밀코드", canvas.width / 2, 110);
     context.font = "bold 44px sans-serif";
     context.fillText(issued.nickname, canvas.width / 2, 195);
     context.font = "bold 96px monospace";
@@ -92,7 +92,7 @@ export default function JoinClient({ initial }: { initial: string[] }) {
     context.fillText("이 코드가 있어야 다른 기기에서 들어올 수 있어요", canvas.width / 2, 360);
 
     const link = document.createElement("a");
-    link.download = `놀AI-${issued.nickname}.png`;
+    link.download = `AI쏙-${issued.nickname}.png`;
     link.href = canvas.toDataURL("image/png");
     link.click();
   }

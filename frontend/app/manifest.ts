@@ -10,7 +10,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: `${ui.landingTitle} — ${ui.landingSubtitle}`,
     short_name: ui.landingTitle,
-    description: "AI의 작동 원리를 손으로 만져서 배우는 놀이터",
+    description: "만지면서 이해하는 AI. 작동 원리를 손으로 만져서 배우는 놀이터",
     start_url: "/play",
     display: "standalone",
     orientation: "portrait",

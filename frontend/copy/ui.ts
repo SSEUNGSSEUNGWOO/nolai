@@ -1,7 +1,7 @@
 /** 화면에 나오는 고정 문구를 한곳에 모은다. 말투 일관성을 위해서다. */
 export const ui = {
   owlName: "노리",
-  landingTitle: "놀AI",
+  landingTitle: "AI쏙",
   landingSubtitle: "AI는 어떻게 생각할까?",
   landingCta: "시작하기",
   lessonDone: "끝냈어",

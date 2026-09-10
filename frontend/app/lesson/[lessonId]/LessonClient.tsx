@@ -41,7 +41,7 @@ export default function LessonClient({
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col gap-4 px-5 py-6 lg:max-w-5xl">
       <header className="flex items-center justify-between text-sm font-extrabold">
-        <Link href="/play">← 놀AI</Link>
+        <Link href="/play">← {ui.landingTitle}</Link>
         <span className="flex items-center gap-2">
           {lesson.title}
           <MuteButton />

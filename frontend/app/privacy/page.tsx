@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ui } from "@/copy/ui";
 
-export const metadata: Metadata = { title: "개인정보처리방침 — 놀AI" };
+export const metadata: Metadata = { title: "개인정보처리방침 — AI쏙" };
 
 /**
  * 이 문서는 코드가 실제로 하는 일을 적은 것이다. 수집 항목·보관 기간·삭제
@@ -21,7 +21,7 @@ export default function PrivacyPage() {
 
       <Section title="한 줄 요약">
         <p>
-          놀AI는 <strong>아이가 누구인지 알 수 있는 정보를 받지 않습니다.</strong> 이름·생년월일·이메일·전화번호·사진·위치를
+          AI쏙은 <strong>아이가 누구인지 알 수 있는 정보를 받지 않습니다.</strong> 이름·생년월일·이메일·전화번호·사진·위치를
           묻지 않고, 아이가 글을 직접 입력하는 칸이 없습니다. 닉네임은 목록에서 고르기만 합니다.
         </p>
       </Section>
@@ -72,13 +72,13 @@ export default function PrivacyPage() {
           <li>내 방 아래쪽의 <strong>“내 방 지우기”</strong> 버튼으로 직접 지울 수 있습니다.</li>
           <li>코드를 잃어버려 들어갈 수 없거나 궁금한 점이 있으면 아래 연락처로 알려주세요. 닉네임을 알려주시면 확인 뒤 지워드립니다.</li>
         </ul>
-        <p>개인정보 보호책임자: <strong>놀AI 운영자</strong> · 연락처: <strong><a href="mailto:jansseung@gmail.com" className="underline">jansseung@gmail.com</a></strong></p>
+        <p>개인정보 보호책임자: <strong>AI쏙 운영자</strong> · 연락처: <strong><a href="mailto:jansseung@gmail.com" className="underline">jansseung@gmail.com</a></strong></p>
       </Section>
 
       <Section title="7. 만 14세 미만 어린이">
         <p>
-          놀AI는 10~13세를 위해 만들어졌습니다. 개인정보 보호법은 만 14세 미만 어린이의 개인정보를 수집할 때 법정대리인의 동의를
-          요구합니다. 놀AI는 <strong>개인을 알아볼 수 있는 정보를 받지 않는 방식으로 설계</strong>하여 그런 정보 자체를 수집하지 않습니다.
+          AI쏙은 10~13세를 위해 만들어졌습니다. 개인정보 보호법은 만 14세 미만 어린이의 개인정보를 수집할 때 법정대리인의 동의를
+          요구합니다. AI쏙은 <strong>개인을 알아볼 수 있는 정보를 받지 않는 방식으로 설계</strong>하여 그런 정보 자체를 수집하지 않습니다.
           보호자께서 아이의 이용을 원하지 않으시면 위 연락처로 알려주시거나 내 방을 지워주세요.
         </p>
       </Section>

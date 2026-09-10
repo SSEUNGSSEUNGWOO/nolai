@@ -148,7 +148,7 @@ export default function Landing({
             </div>
             <h2 className="text-3xl font-black leading-tight lg:text-4xl">코딩이 아니라, AI가 생각하는 방식</h2>
             <p className="max-w-[60ch] text-lg font-bold">
-              블록으로 명령하는 법은 엔트리가 잘 가르칩니다. 놀AI는 그 컴퓨터가 <em>어떻게 아는지</em>를 다룹니다 — 임베딩, 벡터검색,
+              블록으로 명령하는 법은 엔트리가 잘 가르칩니다. AI쏙은 그 컴퓨터가 <em>어떻게 아는지</em>를 다룹니다 — 임베딩, 벡터검색,
               학습 데이터, 토큰, 픽셀, 소리, 0과 1. 레슨 16개, 전부 손으로.
             </p>
           </div>

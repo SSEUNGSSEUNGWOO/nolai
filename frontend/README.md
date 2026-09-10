@@ -1,4 +1,4 @@
-# 놀AI frontend
+# AI쏙 frontend
 
 10~13세 어린이가 AI 작동 원리를 손으로 만져서 배우는 놀이터.
 

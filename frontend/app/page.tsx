@@ -15,7 +15,7 @@ import ProgressRedirect from "@/components/landing/ProgressRedirect";
  * 있으면 브라우저에서 /play로 보낸다(설계 문서 3장 "재방문은 바로 내 방").
  */
 export const metadata: Metadata = {
-  title: "초등 인공지능 교육 놀이터 놀AI — 무료, 회원가입 없음",
+  title: "초등 인공지능 교육 놀이터 AI쏙 — 무료, 회원가입 없음",
   description:
     "초등 5~6학년이 AI 작동 원리를 손으로 만져보는 무료 레슨 16개. 회원가입·개인정보 없음. 실과 성취기준 6실05-04·05 대응. 브라우저에서 바로 시작.",
   alternates: { canonical: "/" },

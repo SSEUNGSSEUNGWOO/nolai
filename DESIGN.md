@@ -1,5 +1,5 @@
 ---
-name: 놀AI
+name: AI쏙
 description: 10~13세가 AI 작동 원리를 손으로 만지는 놀이터 — 팝 캔디 톤의 디자인 시스템(빌드 기준 기록)
 colors:
   ink: "#1f2430"
@@ -102,7 +102,7 @@ components:
     rounded: "{rounded.pop}"
 ---
 
-# Design System: 놀AI
+# Design System: AI쏙
 
 <!-- 빌드된 코드에서 추출한 기록(2026-08-30). 의도가 아니라 실제 값. 기준 파일: frontend/app/globals.css -->
 

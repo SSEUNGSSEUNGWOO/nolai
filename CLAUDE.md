@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-놀AI — 10~13세 어린이가 AI 작동 원리(임베딩·벡터검색·학습 데이터·토큰·픽셀·비트 등)를 손으로 만져서 배우는 웹 놀이터. 설계 문서 `docs/superpowers/specs/2026-08-21-nolai-design.md`가 모든 결정의 근거이며, 14장(결정 기록)·16장(열린 질문)에 이유가 적혀 있다. 새 결정을 내리면 그 문서에 날짜와 함께 덧붙인다.
+AI쏙(옛 이름 놀AI, 2026-09-10 개명) — 10~13세 어린이가 AI 작동 원리(임베딩·벡터검색·학습 데이터·토큰·픽셀·비트 등)를 손으로 만져서 배우는 웹 놀이터. 설계 문서 `docs/superpowers/specs/2026-08-21-nolai-design.md`가 모든 결정의 근거이며, 14장(결정 기록)·16장(열린 질문)에 이유가 적혀 있다. 새 결정을 내리면 그 문서에 날짜와 함께 덧붙인다.
 
 ## 저장소 구성
 

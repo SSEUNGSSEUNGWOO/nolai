@@ -4,14 +4,14 @@ import Image from "next/image";
 import { mascotArt, propArt } from "@/lib/art";
 
 /**
- * 놀AI를 어떻게 만들었나. 부모·교사·심사위원이 "AI가 어디까지 관여했나"를 물을 때
+ * AI쏙을 어떻게 만들었나. 부모·교사·심사위원이 "AI가 어디까지 관여했나"를 물을 때
  * 링크 하나로 답하는 페이지다. 여기 적은 것은 전부 저장소에서 확인할 수 있다 --
  * 파일 이름을 그대로 적는 이유다. 하지 않은 것도 적는다.
  */
 export const metadata: Metadata = {
-  title: "놀AI는 이렇게 만들었습니다 — 만든 과정",
+  title: "AI쏙은 이렇게 만들었습니다 — 만든 과정",
   description:
-    "임베딩 모델로 미리 계산한 진짜 숫자, 빌드가 막는 콘텐츠 검증, 로컬 GPU로 그린 그림, AI 에이전트와 함께 쓴 글. 놀AI를 만든 과정과 일부러 하지 않은 것.",
+    "임베딩 모델로 미리 계산한 진짜 숫자, 빌드가 막는 콘텐츠 검증, 로컬 GPU로 그린 그림, AI 에이전트와 함께 쓴 글. AI쏙을 만든 과정과 일부러 하지 않은 것.",
   alternates: { canonical: "/making" },
 };
 
@@ -19,12 +19,12 @@ export default function MakingPage() {
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col gap-10 px-5 py-8 leading-relaxed break-keep lg:max-w-2xl">
       <header className="text-sm font-extrabold">
-        <Link href="/">← 놀AI</Link>
+        <Link href="/">← AI쏙</Link>
       </header>
 
       <section className="flex flex-col gap-4">
         <Image src={mascotArt("think")} alt="" width={112} height={112} className="h-28 w-28" />
-        <h1 className="text-3xl font-black leading-tight lg:text-4xl">놀AI는 이렇게 만들었습니다</h1>
+        <h1 className="text-3xl font-black leading-tight lg:text-4xl">AI쏙은 이렇게 만들었습니다</h1>
         <p className="text-lg font-bold">
           한 사람이 AI 도구와 함께 만들었습니다. 어디에 AI를 썼고, 어디에 <em>일부러 안 썼는지</em>를 적습니다. 아래 파일 이름은 전부
           저장소에 그대로 있습니다.
@@ -90,7 +90,7 @@ export default function MakingPage() {
           <li><strong>아이 화면에서 LLM 호출</strong> — 답이 매번 달라지면 “진짜 숫자”가 아니게 됩니다.</li>
           <li><strong>회원가입·이름·이메일</strong> — 닉네임은 목록에서 고르고, 입장 코드는 복원 불가 형태로만 저장합니다.</li>
           <li><strong>부모 대시보드·점수·경쟁</strong> — 놀이터가 학습지가 되는 순간 아이가 만지기를 멈춥니다.</li>
-          <li><strong>코딩 가르치기</strong> — 그건 엔트리가 이미 잘합니다. 놀AI는 그 다음에 옵니다.</li>
+          <li><strong>코딩 가르치기</strong> — 그건 엔트리가 이미 잘합니다. AI쏙은 그 다음에 옵니다.</li>
         </ul>
       </Section>
 

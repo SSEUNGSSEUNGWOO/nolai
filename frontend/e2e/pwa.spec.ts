@@ -8,7 +8,7 @@ test("manifest와 아이콘이 실제로 내려온다", async ({ page, request }
   const manifest = await request.get(href!);
   expect(manifest.ok()).toBe(true);
   const json = await manifest.json();
-  expect(json.short_name).toBe("놀AI");
+  expect(json.short_name).toBe("AI쏙");
 
   for (const icon of json.icons) {
     const res = await request.get(icon.src);
