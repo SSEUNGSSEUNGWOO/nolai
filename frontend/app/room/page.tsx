@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { currentKidId } from "@/lib/auth/current";
 import { loadRoom, type RoomArtifact } from "@/lib/room";
 import { getDataset, listLessons } from "@/lib/content";
-import { account, badgeNames, lab, ui } from "@/copy/ui";
+import { account, badgeNames, daily, lab, ui } from "@/copy/ui";
 import { LAB_ID, wordOf } from "@/lib/dictionary";
 import LogoutButton from "./LogoutButton";
 import DeleteRoomButton from "./DeleteRoomButton";
@@ -47,6 +47,14 @@ export default async function RoomPage() {
       <h1 className="text-3xl font-black">
         {room.nickname}의 {account.roomTitle}
       </h1>
+
+      {(room.dailyStreak > 0 || room.dailyBest !== null) && (
+        <p data-testid="daily-record" className="text-sm font-extrabold">
+          🎯 {room.dailyStreak > 0 && daily.roomStreak(room.dailyStreak)}
+          {room.dailyStreak > 0 && room.dailyBest !== null && " · "}
+          {room.dailyBest !== null && daily.roomBest(room.dailyBest)}
+        </p>
+      )}
 
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-extrabold">{account.roomBadges}</h2>

@@ -2,6 +2,8 @@ import "server-only";
 
 import { serverSupabase } from "@/lib/supabase";
 import type { ArtifactPayload } from "./artifact";
+import { bestTriesOf, streakOf, todayKst } from "./daily";
+import { dailyHistory } from "./daily-server";
 
 export interface RoomArtifact {
   id: string;
@@ -15,6 +17,9 @@ export interface Room {
   completedLessons: string[];
   badges: string[];
   artifacts: RoomArtifact[];
+  /** 오늘의 단어. 오늘(또는 어제)부터 이어진 참여 일수와, 맞힌 날 중 가장 적은 시도. */
+  dailyStreak: number;
+  dailyBest: number | null;
 }
 
 /** 계정이 지워졌거나 id가 엉뚱하면 null. 화면은 로그아웃 상태로 그린다. */
@@ -30,7 +35,7 @@ export async function loadRoom(kidId: string): Promise<Room | null> {
   if (kidError) throw kidError;
   if (!kid) return null;
 
-  const [progress, badges, artifacts] = await Promise.all([
+  const [progress, badges, artifacts, days] = await Promise.all([
     db.from("progress").select("lesson_id").eq("kid_id", kidId).eq("status", "done"),
     db.from("badges").select("badge_id").eq("kid_id", kidId).order("earned_at"),
     // 작품은 최신 것부터. 한 레슨을 여러 번 하면 여러 개가 쌓인다.
@@ -40,6 +45,7 @@ export async function loadRoom(kidId: string): Promise<Room | null> {
       .eq("kid_id", kidId)
       .order("created_at", { ascending: false })
       .limit(20),
+    dailyHistory(kidId),
   ]);
 
   if (progress.error) throw progress.error;
@@ -56,6 +62,8 @@ export async function loadRoom(kidId: string): Promise<Room | null> {
       payload: row.payload as ArtifactPayload,
       createdAt: row.created_at as string,
     })),
+    dailyStreak: streakOf(days, todayKst()),
+    dailyBest: bestTriesOf(days),
   };
 }
 

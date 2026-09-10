@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { listLessonGroups } from "@/lib/content";
-import { lab, ui } from "@/copy/ui";
+import { daily, lab, ui } from "@/copy/ui";
 import Image from "next/image";
 import LessonList from "@/components/LessonList";
 import Logo from "@/components/Logo";
@@ -27,6 +27,18 @@ export default function Home() {
       <p className="text-lg font-extrabold">{ui.landingSubtitle}</p>
       <p className="text-sm text-muted">들어가서 만져봐 👋</p>
       <LessonList groups={groups} />
+
+      <Link
+        href="/daily"
+        data-testid="daily-door"
+        className="flex w-full items-center gap-3 rounded-pop border-[2.5px] border-ink bg-candy-teal p-3 pr-4 text-left font-extrabold text-ink shadow-[0_3px_0_var(--color-ink)]"
+      >
+        <span className="text-2xl">🎯</span>
+        <span className="flex flex-col">
+          <span>{daily.title}</span>
+          <span className="text-xs font-bold text-muted">{daily.door}</span>
+        </span>
+      </Link>
 
       <Link
         href="/lab"
