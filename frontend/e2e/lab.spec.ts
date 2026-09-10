@@ -30,6 +30,12 @@ test("두 단어를 고르면 유사도가 나오고, 한쪽을 바꾸면 아까
   await expect(page.getByTestId("lab-history")).toContainText("고양이 ↔ 강아지");
   await expect(page.getByTestId("lab-history")).toContainText(`${first}`);
   await expect(page.getByTestId("lab-history")).toContainText("고양이 ↔ 호랑이");
+
+  // 같은 쌍을 다시 재면 줄이 늘지 않고 맨 위로 올라온다
+  await pick(page, "오른쪽 단어", "강아지");
+  const rows = page.getByTestId("lab-history").getByRole("listitem");
+  await expect(rows).toHaveCount(2);
+  await expect(rows.first()).toContainText("고양이 ↔ 강아지");
 });
 
 test("가까운 말 20개가 나오고 누르면 따라간다", async ({ page }) => {

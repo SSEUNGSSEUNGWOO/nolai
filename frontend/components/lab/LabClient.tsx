@@ -76,7 +76,11 @@ export default function LabClient() {
         return;
       }
       setError(null);
-      setRows((previous) => [{ a: left, b: right, score }, ...previous].slice(0, 6));
+      // 같은 쌍을 다시 재면 옛 행을 빼고 맨 위로 올린다. 키가 겹치면 React가 행을 잘못 그린다.
+      const key = pairKey(left, right);
+      setRows((previous) =>
+        [{ a: left, b: right, score }, ...previous.filter((r) => pairKey(r.a, r.b) !== key)].slice(0, 6),
+      );
     });
     return () => {
       alive = false;
@@ -132,17 +136,22 @@ export default function LabClient() {
 
   async function save() {
     setSaveState("busy");
-    const pairs = [...starred.values()].map((item) => [item.a.id, item.b.id]);
+    // 요청에 담은 것만 기억한다. 저장 중에 새로 남긴 쌍은 다음 저장에 간다.
+    const sent = [...starred.entries()];
     const response = await fetch("/api/words/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pairs }),
+      body: JSON.stringify({ pairs: sent.map(([, item]) => [item.a.id, item.b.id]) }),
     }).catch(() => null);
     if (!response?.ok) {
       setSaveState("failed");
       return;
     }
-    setStarred(new Map());
+    setStarred((previous) => {
+      const next = new Map(previous);
+      for (const [key] of sent) next.delete(key);
+      return next;
+    });
     setSaveState("saved");
   }
 

@@ -66,6 +66,7 @@ export const account = {
   roomArtifacts: "내 작품",
   roomNoArtifacts: "아직 작품이 없어. 레슨에서 만든 게 여기 쌓여!",
   logout: "나가기",
+  logoutFailed: "지금은 나갈 수 없어. 잠시 뒤에 다시 해볼래?",
   deleteRoom: "내 방 지우기",
   deleteRoomConfirm: "정말 지울까? 배지랑 작품이 전부 사라지고 되돌릴 수 없어.",
   deleteRoomYes: "응, 지울래",
