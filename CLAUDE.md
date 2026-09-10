@@ -32,7 +32,7 @@ npm run build                            # 콘텐츠 검증도 여기서 터진�
 
 - E2E는 `reuseExistingServer: false`, `workers: 1`이 의도다. 이미 떠 있는 3000 서버를 빌리면 운영(`public`) 데이터를 지울 수 있어서 막아둔 것이니 고치지 않는다.
 - E2E는 `frontend/.env.local`을 직접 읽는다. `SUPABASE_SERVICE_ROLE_KEY`, `SESSION_SECRET`, `NEXT_PUBLIC_SUPABASE_URL`이 필요하다.
-- 데이터셋 재생성: `tools/embed/`에서 `uv run python build_dataset.py [words.yaml]` 등. 모델(`nlpai-lab/KURE-v1`)은 로컬 GPU에서 돈다. 빌더↔yaml↔레슨 대응표는 `frontend/README.md`.
+- 데이터셋 재생성: `tools/embed/`에서 `uv run python build_dataset.py [words.yaml]` 등. 모델(`nlpai-lab/KURE-v1`)은 로컬 GPU에서 돈다. 빌더↔yaml↔레슨 대응표는 `frontend/README.md`. 단어 실험실 사전은 `uv run python build_dictionary.py --upload`로 만들고 Supabase `words` 테이블에 넣는다 — 뺄 단어는 `dictionary-exclude.yaml`에 이유와 함께 적는다.
 - 그림 재생성: `tools/art/*.sh`는 bash 스크립트라 Windows에선 Git Bash로 돌린다. ComfyUI가 켜져 있어야 하고 결과는 `tools/art/out/`에 떨어진다.
 - DB 마이그레이션은 Supabase CLI가 아니라 **MCP로 운영 DB에 직접 적용**하고, `supabase/migrations/` 파일은 그 기록이다(`0004` 머리말 참고). `test` 스키마를 건드리면 `0003` 머리말의 PostgREST reload 두 줄을 같이 보내야 한다.
 

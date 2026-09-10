@@ -62,6 +62,7 @@ Route Handler가 한다. `service_role` 키는 `lib/supabase.ts`에서만 읽으
 | `feelings.yaml` | `feeling-duel` | AI랑 기분 맞히기 대결 | `build_feelings.py` |
 | `tokens.yaml` | `text-pieces` | AI는 글을 조각으로 읽어 | `build_tokens.py` |
 | `stories.yaml` | `story-next` | AI는 글을 이렇게 써 | `build_stories.py` |
+| (국립국어원 xlsx, 자동 다운로드) | `dictionary` | 단어 실험실 사전 (설계 문서 17장) | `build_dictionary.py` — `--upload`가 Supabase `words`에도 넣는다 |
 
 모두 `uv run python <빌더> [파일]`로 돌린다. 인자를 안 주면 표의 기본 파일을 쓴다.
 

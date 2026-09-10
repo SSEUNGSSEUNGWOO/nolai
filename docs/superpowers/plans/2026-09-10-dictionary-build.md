@@ -35,7 +35,7 @@
 **Files:**
 - Create: `supabase/migrations/0005_words.sql`
 
-- [ ] **Step 1: 파일 작성**
+- [x] **Step 1: 파일 작성**
 
 ```sql
 -- 단어 실험실 사전 (설계 문서 17장)
@@ -115,7 +115,7 @@ revoke execute on function test.nearest_words(integer, integer)
   from public, anon, authenticated;
 ```
 
-- [ ] **Step 2: 운영 DB에 적용**
+- [x] **Step 2: 운영 DB에 적용**
 
 Supabase MCP(`mcp__plugin_supabase_supabase__*`)로 위 SQL을 그대로 실행한다. 이어서 0003 머리말의 두 줄을 보낸다.
 
@@ -126,7 +126,7 @@ notify pgrst, 'reload schema';
 
 MCP 연결이 안 되면 Supabase 대시보드 SQL Editor에 붙여넣는다. 어느 쪽이든 파일 머리말의 날짜를 실제 적용일로 맞춘다.
 
-- [ ] **Step 3: 적용 확인**
+- [x] **Step 3: 적용 확인**
 
 MCP 또는 SQL Editor에서:
 
@@ -138,7 +138,7 @@ select * from public.nearest_words(1, 5);   -- 빈 결과, 오류 없음
 
 Expected: 세 문장 모두 오류 없이 실행된다. `nearest_words`가 `operator does not exist: extensions.vector <=> extensions.vector`를 내면 함수의 `search_path`에 `extensions`가 빠진 것이다.
 
-- [ ] **Step 4: 커밋**
+- [x] **Step 4: 커밋**
 
 ```bash
 git add supabase/migrations/0005_words.sql
@@ -154,7 +154,7 @@ git commit -m "db: words 테이블과 nearest_words 함수 — 단어 실험실 
 - Create: `tools/embed/test_build_dictionary.py`
 - Modify: `tools/embed/.gitignore`
 
-- [ ] **Step 1: 실패하는 테스트 작성**
+- [x] **Step 1: 실패하는 테스트 작성**
 
 `tools/embed/test_build_dictionary.py`:
 
@@ -238,12 +238,12 @@ def test_read_env_strips_quotes_and_skips_comments(tmp_path: Path):
     }
 ```
 
-- [ ] **Step 2: 실패 확인**
+- [x] **Step 2: 실패 확인**
 
 Run (`tools/embed/`에서): `uv run pytest test_build_dictionary.py -q`
 Expected: `ModuleNotFoundError: No module named 'build_dictionary'`
 
-- [ ] **Step 3: 최소 구현**
+- [x] **Step 3: 최소 구현**
 
 `tools/embed/build_dictionary.py`:
 
@@ -346,12 +346,12 @@ def read_env(path: Path) -> dict[str, str]:
     return env
 ```
 
-- [ ] **Step 4: 통과 확인**
+- [x] **Step 4: 통과 확인**
 
 Run: `uv run pytest test_build_dictionary.py -q`
 Expected: `7 passed`
 
-- [ ] **Step 5: `.gitignore`에 캐시와 검토 파일 추가**
+- [x] **Step 5: `.gitignore`에 캐시와 검토 파일 추가**
 
 `tools/embed/.gitignore` 끝에:
 
@@ -360,7 +360,7 @@ Expected: `7 passed`
 dictionary-review.tsv
 ```
 
-- [ ] **Step 6: 커밋**
+- [x] **Step 6: 커밋**
 
 ```bash
 git add tools/embed/build_dictionary.py tools/embed/test_build_dictionary.py tools/embed/.gitignore
@@ -377,12 +377,12 @@ git commit -m "tools: build_dictionary — 등급 목록 거르기·id 부여·e
 - Modify: `tools/embed/pyproject.toml` (`uv add openpyxl`)
 - Create: `tools/embed/dictionary-exclude.yaml`
 
-- [ ] **Step 1: openpyxl 추가**
+- [x] **Step 1: openpyxl 추가**
 
 Run (`tools/embed/`에서): `uv add openpyxl`
 Expected: `pyproject.toml`의 `dependencies`에 `openpyxl>=3.1.x`가 생기고 `uv.lock`이 바뀐다.
 
-- [ ] **Step 2: 실패하는 테스트 추가**
+- [x] **Step 2: 실패하는 테스트 추가**
 
 `test_build_dictionary.py` 끝에:
 
@@ -428,12 +428,12 @@ def test_write_client_json_and_load_existing_ids_roundtrip(tmp_path: Path):
 
 파일 맨 위 import에 `import json`을 추가한다.
 
-- [ ] **Step 3: 실패 확인**
+- [x] **Step 3: 실패 확인**
 
 Run: `uv run pytest test_build_dictionary.py -q`
 Expected: `ImportError: cannot import name 'read_source'` (2 failed)
 
-- [ ] **Step 4: 구현**
+- [x] **Step 4: 구현**
 
 `build_dictionary.py`의 `read_env` 아래에 추가:
 
@@ -505,12 +505,12 @@ def write_client_json(words: list[dict], path: Path) -> None:
     path.write_text(json.dumps(data, ensure_ascii=False) + "\n", encoding="utf-8")
 ```
 
-- [ ] **Step 5: 통과 확인**
+- [x] **Step 5: 통과 확인**
 
 Run: `uv run pytest test_build_dictionary.py -q`
 Expected: `9 passed`
 
-- [ ] **Step 6: 빈 제외 목록 파일**
+- [x] **Step 6: 빈 제외 목록 파일**
 
 `tools/embed/dictionary-exclude.yaml`:
 
@@ -523,7 +523,7 @@ Expected: `9 passed`
 exclude: []
 ```
 
-- [ ] **Step 7: `main` 작성 (업로드 없이)**
+- [x] **Step 7: `main` 작성 (업로드 없이)**
 
 `build_dictionary.py` 끝에:
 
@@ -548,7 +548,7 @@ if __name__ == "__main__":
     main()
 ```
 
-- [ ] **Step 8: 실행해서 산출물 확인**
+- [x] **Step 8: 실행해서 산출물 확인**
 
 Run: `uv run python build_dictionary.py`
 Expected: 첫 실행은 xlsx(6MB)를 받는다. 마지막 줄 `5298 words → dictionary.json, dictionary-review.tsv`. 숫자는 설계 문서 17장 "확인한 사실"의 5,298(표기 기준)과 같아야 한다 — 다르면 거르기 조건이 문서와 어긋난 것이다.
@@ -561,12 +561,12 @@ ls -la ../../frontend/datasets/dictionary.json
 
 Expected: TSV 첫 줄이 `가게\t1\t「1」작은 규모로 물건을 파는 집.`처럼 가나다순. JSON 첫 단어 id 1, 마지막 id 5404. 파일 크기 150KB 안팎.
 
-- [ ] **Step 9: 프론트 테스트가 새 JSON에 안 걸리는지 확인**
+- [x] **Step 9: 프론트 테스트가 새 JSON에 안 걸리는지 확인**
 
 Run (`frontend/`에서): `npx vitest run lib/content.test.ts lib/dataset-schema.test.ts`
 Expected: 통과. `datasets/` 폴더를 훑는 테스트는 없다(전부 `content.ts`가 import한 것만 본다).
 
-- [ ] **Step 10: 커밋**
+- [x] **Step 10: 커밋**
 
 ```bash
 git add tools/embed/build_dictionary.py tools/embed/test_build_dictionary.py tools/embed/pyproject.toml tools/embed/uv.lock tools/embed/dictionary-exclude.yaml frontend/datasets/dictionary.json
@@ -580,7 +580,7 @@ git commit -m "tools: build_dictionary — xlsx 읽기·검토용 TSV·dictionar
 **Files:**
 - Modify: `tools/embed/build_dictionary.py`
 
-- [ ] **Step 1: 업로드 함수 추가**
+- [x] **Step 1: 업로드 함수 추가**
 
 `build()` 위에:
 
@@ -676,7 +676,7 @@ def main() -> None:
         upload(words, schema)
 ```
 
-- [ ] **Step 2: 테스트로 `to_rows` 고정**
+- [x] **Step 2: 테스트로 `to_rows` 고정**
 
 `test_build_dictionary.py` 끝에:
 
@@ -700,17 +700,17 @@ def test_to_rows_pairs_each_word_with_its_vector():
 Run: `uv run pytest test_build_dictionary.py -q`
 Expected: `10 passed`
 
-- [ ] **Step 3: test 스키마에 먼저 올려서 끝까지 도는지 본다**
+- [x] **Step 3: test 스키마에 먼저 올려서 끝까지 도는지 본다**
 
 Run: `uv run python build_dictionary.py --upload --schema test`
 Expected: 모델 로드(`loading nlpai-lab/KURE-v1 on cuda`), 진행 막대, `upserted 200/5404 … 5404/5404`, 마지막 줄 `test.words: 5404 rows. 강아지 → 개, 고양이, 개집, 강아지풀, 애완동물` 같은 것. 이웃 단어는 실제 결과이며 여기 적은 것과 달라도 된다. **assert가 터지면** 벡터가 깨진 것이다 — `Content-Profile`이 안 먹어 public에 들어갔거나(0003 머리말의 reload를 안 보냈을 때), pgvector가 JSON 배열을 못 받은 것이다(그러면 `embedding`을 `str(list)`로 바꿔 다시 시도한다).
 
-- [ ] **Step 4: 재실행이 멱등인지 확인**
+- [x] **Step 4: 재실행이 멱등인지 확인**
 
 Run: `uv run python build_dictionary.py --upload --schema test`
 Expected: 같은 결과, 행 수 그대로 5404 (upsert라 늘지 않는다).
 
-- [ ] **Step 5: 커밋**
+- [x] **Step 5: 커밋**
 
 ```bash
 git add tools/embed/build_dictionary.py tools/embed/test_build_dictionary.py
@@ -724,7 +724,7 @@ git commit -m "tools: build_dictionary --upload — 임베딩해서 words 테이
 **Files:**
 - Modify: `tools/embed/dictionary-exclude.yaml`
 
-- [ ] **Step 1: 검토용 TSV를 훑어 제외 후보를 만든다**
+- [x] **Step 1: 검토용 TSV를 훑어 제외 후보를 만든다**
 
 `tools/embed/dictionary-review.tsv`(5,404줄)를 처음부터 끝까지 읽는다. 5,404줄은 한 번에 읽을 수 있는 크기다 — 표본 추출하지 않는다. 기준은 `dictionary-exclude.yaml` 머리말 그대로다.
 
@@ -740,7 +740,7 @@ exclude:
   - 거지      # 비하로 쓰임
 ```
 
-- [ ] **Step 2: 다시 빌드해 id가 흔들리지 않았는지 본다**
+- [x] **Step 2: 다시 빌드해 id가 흔들리지 않았는지 본다**
 
 Run: `uv run python build_dictionary.py`
 Expected: `(5404 - 뺀 수) words`. `dictionary.json`에서 뺀 단어만 사라지고 남은 단어의 id는 그대로다:
@@ -752,11 +752,11 @@ git diff ../../frontend/datasets/dictionary.json | grep '^[-+]' | grep -c '"id"'
 
 Expected: 두 번째 명령이 뺀 단어 수와 같다(추가된 줄 0).
 
-- [ ] **Step 3: 승우님 확인**
+- [x] **Step 3: 승우님 확인**
 
 제외 목록과 이유를 사용자에게 보여주고 승인을 받는다. 어린이 서비스의 어휘 정책은 코드가 아니라 사람의 결정이다.
 
-- [ ] **Step 4: 커밋**
+- [x] **Step 4: 커밋**
 
 ```bash
 git add tools/embed/dictionary-exclude.yaml frontend/datasets/dictionary.json
@@ -772,12 +772,12 @@ git commit -m "content: 사전 검토 — 비하어·욕설 N개 제외"
 - Modify: `CLAUDE.md` (명령 절)
 - Modify: `docs/superpowers/specs/2026-08-21-nolai-design.md` (17장 "열린 것")
 
-- [ ] **Step 1: 운영(public)에 올린다**
+- [x] **Step 1: 운영(public)에 올린다**
 
 Run: `uv run python build_dictionary.py --upload`
 Expected: `public.words: N rows. 강아지 → …`. N은 Task 5 이후 단어 수.
 
-- [ ] **Step 2: test 스키마도 같은 목록으로 맞춘다**
+- [x] **Step 2: test 스키마도 같은 목록으로 맞춘다**
 
 Run: `uv run python build_dictionary.py --upload --schema test`
 
@@ -789,7 +789,7 @@ delete from test.words   where word in ('바보', '거지');
 select count(*) from public.words;   -- dictionary.json의 단어 수와 같아야 한다
 ```
 
-- [ ] **Step 3: README 표에 한 줄**
+- [x] **Step 3: README 표에 한 줄**
 
 `frontend/README.md`의 빌더 표 마지막 줄(`stories.yaml` 행) 아래에:
 
@@ -803,7 +803,7 @@ select count(*) from public.words;   -- dictionary.json의 단어 수와 같아�
 단어 실험실 사전은 `uv run python build_dictionary.py --upload`로 만들고 Supabase `words` 테이블에 넣는다 — 뺄 단어는 `dictionary-exclude.yaml`에 이유와 함께 적는다.
 ```
 
-- [ ] **Step 4: 설계 문서 17장 "열린 것" 갱신**
+- [x] **Step 4: 설계 문서 17장 "열린 것" 갱신**
 
 `- ~~등급↔학년 대응과 최종 크기~~ …` 줄을 다음으로 바꾼다:
 
@@ -812,7 +812,7 @@ select count(*) from public.words;   -- dictionary.json의 단어 수와 같아�
 - ~~부적절어를 사람이 훑는 기준~~ — `dictionary-exclude.yaml` 머리말에 적었다: 욕설·비하는 빼고, 질병·죽음·성은 자동완성에 띄워도 되는가로 판단하며, 애매하면 남긴다
 ```
 
-- [ ] **Step 5: 전체 테스트**
+- [x] **Step 5: 전체 테스트**
 
 ```bash
 cd tools/embed && uv run pytest -q          # 24 passed
@@ -820,7 +820,7 @@ cd ../../frontend && npm run test            # 통과
 npm run lint && npm run build                # 통과
 ```
 
-- [ ] **Step 6: 커밋, 그리고 push 확인**
+- [x] **Step 6: 커밋, 그리고 push 확인**
 
 ```bash
 git add frontend/README.md CLAUDE.md docs/superpowers/specs/2026-08-21-nolai-design.md
