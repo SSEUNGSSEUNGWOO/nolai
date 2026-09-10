@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { parseArtifact } from "./artifact";
+import { parseArtifact, parseLabArtifact } from "./artifact";
 import { getLesson, listLessons } from "./content";
+import { searchWords } from "./dictionary";
 
 const lesson1 = getLesson("embedding-map");
 const lesson2 = getLesson("nearest-search");
@@ -209,5 +210,34 @@ describe("parseArtifact — 그림 레슨", () => {
       imageIds: ["heart"],
       memo: "김민수",
     })).toBeNull();
+  });
+});
+
+describe("parseLabArtifact — 단어 실험실", () => {
+  // 사전 id는 빌드 산출물이라 테스트가 숫자를 박아 두면 다음 빌드에 깨진다. 검색으로 얻는다.
+  const a = searchWords("강아지", 1)[0].id;
+  const b = searchWords("고양이", 1)[0].id;
+  const c = searchWords("호랑이", 1)[0].id;
+
+  it("사전에 있는 서로 다른 두 id의 쌍 목록을 통과시킨다", () => {
+    expect(parseLabArtifact({ datasetId: "dictionary", pairs: [[a, b], [b, c]] })).toEqual({
+      datasetId: "dictionary",
+      pairs: [[a, b], [b, c]],
+    });
+  });
+
+  it("사전에 없는 id, 같은 단어끼리, 빈 목록을 거부한다", () => {
+    expect(parseLabArtifact({ datasetId: "dictionary", pairs: [[a, 999999]] })).toBeNull();
+    expect(parseLabArtifact({ datasetId: "dictionary", pairs: [[a, a]] })).toBeNull();
+    expect(parseLabArtifact({ datasetId: "dictionary", pairs: [] })).toBeNull();
+  });
+
+  it("같은 쌍을 순서만 바꿔 두 번 담으면 거부한다", () => {
+    expect(parseLabArtifact({ datasetId: "dictionary", pairs: [[a, b], [b, a]] })).toBeNull();
+  });
+
+  it("자유 텍스트가 섞이면 거부한다", () => {
+    expect(parseLabArtifact({ datasetId: "dictionary", pairs: [["강아지", "고양이"]] })).toBeNull();
+    expect(parseLabArtifact({ datasetId: "dictionary", pairs: [[a, b]], note: "내 이름" })).toBeNull();
   });
 });

@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { Dataset } from "./dataset-schema";
 import type { Lesson } from "./lesson-schema";
 import { getDataset } from "./content";
+import { DICTIONARY_ID, isWordId } from "./dictionary";
 
 /**
  * 아이가 만든 결과물의 모양을 서버가 다시 정한다.
@@ -96,6 +97,13 @@ const passagesArtifact = z.strictObject({
   questionIds: z.array(z.string().min(1)).max(200),
 });
 
+/** 단어 실험실 -- 어떤 두 단어의 유사도를 뜻밖이라고 남겼는지. 사전 id 쌍만. */
+const pairsArtifact = z.strictObject({
+  datasetId: z.literal(DICTIONARY_ID),
+  pairs: z.array(z.tuple([z.number().int(), z.number().int()])).min(1).max(50),
+});
+
+export type PairsArtifact = z.infer<typeof pairsArtifact>;
 export type WordsArtifact = z.infer<typeof wordsArtifact>;
 export type TeachArtifact = z.infer<typeof teachArtifact>;
 export type LikesArtifact = z.infer<typeof likesArtifact>;
@@ -122,7 +130,27 @@ export type ArtifactPayload =
   | SentenceArtifact
   | DuelArtifact
   | BitsArtifact
-  | PassagesArtifact;
+  | PassagesArtifact
+  | PairsArtifact;
+
+/**
+ * 실험실 작품. 레슨이 없으므로 parseArtifact와 따로 둔다.
+ *
+ * 사전에 있는 id인지, 같은 단어끼리가 아닌지, 같은 쌍을 순서만 바꿔 두 번 담지
+ * 않았는지 본다. 사전 id는 정수라 문자열은 zod에서 이미 떨어진다.
+ */
+export function parseLabArtifact(raw: unknown): PairsArtifact | null {
+  const parsed = pairsArtifact.safeParse(raw);
+  if (!parsed.success) return null;
+
+  const keys = parsed.data.pairs.map(([a, b]) => `${Math.min(a, b)}|${Math.max(a, b)}`);
+  if (new Set(keys).size !== keys.length) return null;
+
+  const ok = parsed.data.pairs.every(([a, b]) => a !== b && isWordId(a) && isWordId(b));
+  if (!ok) return null;
+
+  return parsed.data;
+}
 
 /**
  * 레슨이 쓰는 데이터셋 종류에 맞는 결과물인지 확인한다.
