@@ -32,7 +32,7 @@ npm run build                            # 콘텐츠 검증도 여기서 터진�
 
 - E2E는 `reuseExistingServer: false`, `workers: 1`이 의도다. 이미 떠 있는 3000 서버를 빌리면 운영(`public`) 데이터를 지울 수 있어서 막아둔 것이니 고치지 않는다.
 - E2E는 `frontend/.env.local`을 직접 읽는다. `SUPABASE_SERVICE_ROLE_KEY`, `SESSION_SECRET`, `NEXT_PUBLIC_SUPABASE_URL`이 필요하다.
-- 데이터셋 재생성: `tools/embed/`에서 `uv run python build_dataset.py [words.yaml]` 등. 모델(`nlpai-lab/KURE-v1`)은 로컬 GPU에서 돈다. 빌더↔yaml↔레슨 대응표는 `frontend/README.md`. 단어 실험실 사전은 `uv run python build_dictionary.py --upload`로 만들고 Supabase `words` 테이블에 넣는다 — 뺄 단어는 `dictionary-exclude.yaml`에 이유와 함께 적는다.
+- 데이터셋 재생성: `tools/embed/`에서 `uv run python build_dataset.py [words.yaml]` 등. 모델(`nlpai-lab/KURE-v1`)은 로컬 GPU에서 돈다. 빌더↔yaml↔레슨 대응표는 `frontend/README.md`. 단어 실험실 사전은 `uv run python build_dictionary.py --upload`로 만들고 Supabase `words` 테이블에 넣는다 — 뺄 단어는 `dictionary-exclude.yaml`에 이유와 함께 적는다. 오늘의 단어 365일치는 `uv run python build_daily.py [시작날짜] --upload`가 `daily_words`에 넣는다 — **떨어지기 전에 다시 돌린다**(마지막 날짜는 `daily-review.tsv` 끝 줄).
 - 그림 재생성: `tools/art/*.sh`는 bash 스크립트라 Windows에선 Git Bash로 돌린다. ComfyUI가 켜져 있어야 하고 결과는 `tools/art/out/`에 떨어진다.
 - DB 마이그레이션은 Supabase CLI가 아니라 **MCP로 운영 DB에 직접 적용**하고, `supabase/migrations/` 파일은 그 기록이다(`0004` 머리말 참고). `test` 스키마를 건드리면 `0003` 머리말의 PostgREST reload 두 줄을 같이 보내야 한다.
 
@@ -52,7 +52,7 @@ npm run build                            # 콘텐츠 검증도 여기서 터진�
 
 **인증·진도.** 정식 회원가입 없이 닉네임 + 비밀코드(분실 시 복구 불가, 설계). 세션은 HMAC 서명된 무상태 쿠키(`lib/auth/session.ts`, 1년). 로그인 전 진도는 `localStorage`(`lib/local-progress.ts`)에 쌓이고, 가입·로그인 시 `POST /api/sync`로 서버에 합친다. 로그인·가입 시도 제한은 DB 함수 `consume_attempt`(`auth_attempts` 테이블, IP당·닉네임당)로 센다 — Vercel 서버리스라 메모리 카운터는 안 된다. 브라우저는 Supabase에 직접 붙지 않는다 — `app/api/*` Route Handler만 `lib/supabase.ts`(service_role, `server-only`)를 쓰고, 테이블은 RLS가 켜져 있지만 정책이 없다(anon 차단이 의도).
 
-**라우트.** `/` 랜딩(부모·교사용, 실제 EmbeddingMap 내장, 세션·진도 있으면 `/play`로) · `/play` 아이의 레슨 목록 · `/lesson/[lessonId]` · `/room` 내 방 · `/lab` 단어 실험실(레슨이 아니다, 설계 문서 17장. `components/lab/`, `app/api/words/*`) · `/join`·`/login` · `/parents`·`/making`·`/privacy` 어른용 설명. 절대 URL은 `lib/site.ts`의 `SITE_URL` 한곳에서 나온다 — 도메인(nolai.kr)이 아직 없어 `nolai.vercel.app`이 기본값이다.
+**라우트.** `/` 랜딩(부모·교사용, 실제 EmbeddingMap 내장, 세션·진도 있으면 `/play`로) · `/play` 아이의 레슨 목록 · `/lesson/[lessonId]` · `/room` 내 방 · `/lab` 단어 실험실(레슨이 아니다, 설계 문서 17장. `components/lab/`, `app/api/words/*`) · `/daily` 오늘의 단어(숨은 단어 맞히기와 매일 리셋 리더보드, 17장. `components/daily/`, `app/api/daily/*`) · `/join`·`/login` · `/parents`·`/making`·`/privacy` 어른용 설명. 절대 URL은 `lib/site.ts`의 `SITE_URL` 한곳에서 나온다 — 도메인(nolai.kr)이 아직 없어 `nolai.vercel.app`이 기본값이다.
 
 ## 작업 규칙
 

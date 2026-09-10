@@ -41,7 +41,7 @@
 **Files:**
 - Create: `supabase/migrations/0007_daily.sql`
 
-- [ ] **Step 1: 파일 작성**
+- [x] **Step 1: 파일 작성**
 
 ```sql
 -- 오늘의 단어 (설계 문서 17장)
@@ -215,9 +215,9 @@ revoke execute on function test.daily_popular(date, integer) from public, anon, 
 revoke execute on function test.daily_history(uuid) from public, anon, authenticated;
 ```
 
-- [ ] **Step 2: 운영 DB에 적용** — SQL Editor(또는 MCP)에 그대로 실행하고 `notify pgrst, 'reload config'; notify pgrst, 'reload schema';`.
+- [x] **Step 2: 운영 DB에 적용** — SQL Editor(또는 MCP)에 그대로 실행하고 `notify pgrst, 'reload config'; notify pgrst, 'reload schema';`.
 
-- [ ] **Step 3: 적용 확인** — `tools/embed/`에서:
+- [x] **Step 3: 적용 확인** — `tools/embed/`에서:
 
 ```bash
 uv run python -c "
@@ -233,7 +233,7 @@ for schema in ['public', 'test']:
 
 Expected: 네 줄 모두 `[]`. 오류가 나면 함수나 테이블이 그 스키마에 없는 것이다.
 
-- [ ] **Step 4: 커밋**
+- [x] **Step 4: 커밋**
 
 ```bash
 git add supabase/migrations/0007_daily.sql
@@ -250,7 +250,7 @@ git commit -m "db: daily_words·guesses와 집계 함수 셋 — 오늘의 단�
 - Create: `tools/embed/test_build_daily.py`
 - Modify: `tools/embed/.gitignore` (`daily-review.tsv`)
 
-- [ ] **Step 1: `--upload`가 벡터를 남기게**
+- [x] **Step 1: `--upload`가 벡터를 남기게**
 
 `build_dictionary.py`의 `upload()`에서 `vectors = embed(...)` 바로 뒤에:
 
@@ -262,7 +262,7 @@ git commit -m "db: daily_words·guesses와 집계 함수 셋 — 오늘의 단�
 
 파일 위 import에 `import numpy as np`.
 
-- [ ] **Step 2: 실패하는 테스트**
+- [x] **Step 2: 실패하는 테스트**
 
 `tools/embed/test_build_daily.py`:
 
@@ -318,9 +318,9 @@ def test_assign_dates_starts_at_given_day_and_is_consecutive():
     assert dates == ["2026-09-11", "2026-09-12", "2026-09-13"]
 ```
 
-- [ ] **Step 3: 실패 확인** — `uv run pytest test_build_daily.py -q` → `ModuleNotFoundError`
+- [x] **Step 3: 실패 확인** — `uv run pytest test_build_daily.py -q` → `ModuleNotFoundError`
 
-- [ ] **Step 4: 구현**
+- [x] **Step 4: 구현**
 
 `tools/embed/build_daily.py`:
 
@@ -449,9 +449,9 @@ if __name__ == "__main__":
     main()
 ```
 
-- [ ] **Step 5: 통과 확인** — `uv run pytest test_build_daily.py -q` → `4 passed`
+- [x] **Step 5: 통과 확인** — `uv run pytest test_build_daily.py -q` → `4 passed`
 
-- [ ] **Step 6: 벡터 캐시 만들고 365개 뽑아 훑기**
+- [x] **Step 6: 벡터 캐시 만들고 365개 뽑아 훑기**
 
 ```bash
 uv run python build_dictionary.py --upload --schema test      # vectors.npy를 남긴다 (2분)
@@ -461,7 +461,7 @@ head -10 daily-review.tsv
 
 Expected: `365 days from 2026-09-11 → daily-review.tsv`. 훑을 것: 첫 날들의 정답이 아이가 아는 말인가, 이웃 5개가 그럴듯한가, "-이"·"-것" 같은 접미어 단어가 정답에 있으면 `dictionary-exclude.yaml`이 아니라 여기서만 빼고 싶으므로 `pick_answers`의 후보 조건에 `not w["word"].endswith(("것", "이"))`를 넣을지 판단한다. 문제가 없으면 그대로 간다.
 
-- [ ] **Step 7: test 스키마에 올리고 다시 돌려 멱등 확인**
+- [x] **Step 7: test 스키마에 올리고 다시 돌려 멱등 확인**
 
 ```bash
 uv run python build_daily.py --upload --schema test
@@ -470,7 +470,7 @@ uv run python build_daily.py --upload --schema test
 
 Expected: 두 번 다 `test.daily_words: 365 rows`.
 
-- [ ] **Step 8: `.gitignore`와 커밋**
+- [x] **Step 8: `.gitignore`와 커밋**
 
 `tools/embed/.gitignore`에 `daily-review.tsv` 추가.
 
@@ -486,7 +486,7 @@ git commit -m "tools: build_daily — 이웃이 풍부한 정답 365개와 이�
 **Files:**
 - Create: `frontend/lib/daily.ts`, `frontend/lib/daily.test.ts`
 
-- [ ] **Step 1: 실패하는 테스트**
+- [x] **Step 1: 실패하는 테스트**
 
 ```ts
 import { describe, it, expect } from "vitest";
@@ -535,9 +535,9 @@ describe("streakOf / bestTriesOf", () => {
 });
 ```
 
-- [ ] **Step 2: 실패 확인** — `npx vitest run lib/daily.test.ts`
+- [x] **Step 2: 실패 확인** — `npx vitest run lib/daily.test.ts`
 
-- [ ] **Step 3: 구현**
+- [x] **Step 3: 구현**
 
 ```ts
 /** 오늘의 단어의 날짜·온도·기록 계산. 서버와 화면이 같이 쓴다. DB를 모른다. */
@@ -587,9 +587,9 @@ export function bestTriesOf(history: DayRecord[]): number | null {
 }
 ```
 
-- [ ] **Step 4: 통과 확인** → `5 passed` (describe 3개, it 5개)
+- [x] **Step 4: 통과 확인** → `5 passed` (describe 3개, it 5개)
 
-- [ ] **Step 5: 커밋** — `git add lib/daily.ts lib/daily.test.ts && git commit -m "daily: 날짜·온도·연속 참여 계산"`
+- [x] **Step 5: 커밋** — `git add lib/daily.ts lib/daily.test.ts && git commit -m "daily: 날짜·온도·연속 참여 계산"`
 
 ---
 
@@ -599,7 +599,7 @@ export function bestTriesOf(history: DayRecord[]): number | null {
 - Create: `frontend/lib/daily-server.ts`
 - Create: `frontend/app/api/daily/route.ts`, `guess/route.ts`, `hint/route.ts`
 
-- [ ] **Step 1: `lib/daily-server.ts`**
+- [x] **Step 1: `lib/daily-server.ts`**
 
 ```ts
 import "server-only";
@@ -725,7 +725,7 @@ export async function dailyHistory(kidId: string): Promise<DayRecord[]> {
 }
 ```
 
-- [ ] **Step 2: `GET /api/daily`**
+- [x] **Step 2: `GET /api/daily`**
 
 `frontend/app/api/daily/route.ts`:
 
@@ -785,7 +785,7 @@ export async function GET(request: Request) {
 }
 ```
 
-- [ ] **Step 3: `POST /api/daily/guess`**
+- [x] **Step 3: `POST /api/daily/guess`**
 
 ```ts
 import { z } from "zod";
@@ -825,7 +825,7 @@ export async function POST(request: Request) {
 }
 ```
 
-- [ ] **Step 4: `POST /api/daily/hint`**
+- [x] **Step 4: `POST /api/daily/hint`**
 
 ```ts
 import { z } from "zod";
@@ -874,7 +874,7 @@ export async function POST(request: Request) {
 }
 ```
 
-- [ ] **Step 5: lint·커밋**
+- [x] **Step 5: lint·커밋**
 
 ```bash
 npm run lint
@@ -891,7 +891,7 @@ git commit -m "daily: /api/daily·guess·hint — 채점·기록·리더보드 �
 - Create: `frontend/components/daily/DailyClient.tsx`, `frontend/app/daily/page.tsx`
 - Modify: `frontend/app/play/page.tsx`
 
-- [ ] **Step 1: 문구**
+- [x] **Step 1: 문구**
 
 `copy/ui.ts` 끝에:
 
@@ -934,7 +934,7 @@ export const daily = {
 } as const;
 ```
 
-- [ ] **Step 2: `DailyClient.tsx`**
+- [x] **Step 2: `DailyClient.tsx`**
 
 ```tsx
 "use client";
@@ -1180,13 +1180,13 @@ export default function DailyClient() {
 }
 ```
 
-- [ ] **Step 3: `/daily` 라우트** — `app/lab/page.tsx`를 본떠 `app/daily/page.tsx`. 제목 `daily.title`, 마스코트 `mascotArt("think")`, 본문 `<DailyClient />`. `robots: noindex`.
+- [x] **Step 3: `/daily` 라우트** — `app/lab/page.tsx`를 본떠 `app/daily/page.tsx`. 제목 `daily.title`, 마스코트 `mascotArt("think")`, 본문 `<DailyClient />`. `robots: noindex`.
 
-- [ ] **Step 4: `/play`의 문** — 실험실 문 바로 위에 같은 모양으로 `href="/daily"`, 이모지 🎯, `daily.title`·`daily.door`, `data-testid="daily-door"`. 실험실 문은 `bg-candy-yellow` 그대로, 오늘의 단어는 `bg-candy-teal`.
+- [x] **Step 4: `/play`의 문** — 실험실 문 바로 위에 같은 모양으로 `href="/daily"`, 이모지 🎯, `daily.title`·`daily.door`, `data-testid="daily-door"`. 실험실 문은 `bg-candy-yellow` 그대로, 오늘의 단어는 `bg-candy-teal`.
 
-- [ ] **Step 5: 눈으로 본다** — `npm run dev`(포트가 3001로 밀리면 그 주소)로 `/daily`. 운영 `public.daily_words`는 아직 비어 있으므로 "오늘은 단어가 준비 안 됐어"가 보여야 한다. 그 뒤 Task 6까지 끝내고 E2E 서버(test 스키마)에서 실제 흐름을 본다. 서버는 끝나면 반드시 끈다(PID까지).
+- [x] **Step 5: 눈으로 본다** — `npm run dev`(포트가 3001로 밀리면 그 주소)로 `/daily`. 운영 `public.daily_words`는 아직 비어 있으므로 "오늘은 단어가 준비 안 됐어"가 보여야 한다. 그 뒤 Task 6까지 끝내고 E2E 서버(test 스키마)에서 실제 흐름을 본다. 서버는 끝나면 반드시 끈다(PID까지).
 
-- [ ] **Step 6: lint·커밋**
+- [x] **Step 6: lint·커밋**
 
 ```bash
 git add copy/ui.ts components/daily app/daily app/play/page.tsx
@@ -1200,7 +1200,7 @@ git commit -m "daily: /daily 화면 — 넣을 때마다 온도·순위, 힌트,
 **Files:**
 - Modify: `frontend/lib/room.ts`, `frontend/app/room/page.tsx`
 
-- [ ] **Step 1: `loadRoom`에 기록 추가**
+- [x] **Step 1: `loadRoom`에 기록 추가**
 
 `Room` 인터페이스에 `dailyStreak: number; dailyBest: number | null;`. `loadRoom`의 `Promise.all`에 `dailyHistory(kidId)`를 넣고(`import { dailyHistory } from "./daily-server"`, `import { bestTriesOf, streakOf, todayKst } from "./daily"`), 반환에:
 
@@ -1209,7 +1209,7 @@ git commit -m "daily: /daily 화면 — 넣을 때마다 온도·순위, 힌트,
     dailyBest: bestTriesOf(days),
 ```
 
-- [ ] **Step 2: 내 방 화면** — 배지 섹션 위에:
+- [x] **Step 2: 내 방 화면** — 배지 섹션 위에:
 
 ```tsx
       {(room.dailyStreak > 0 || room.dailyBest !== null) && (
@@ -1223,9 +1223,9 @@ git commit -m "daily: /daily 화면 — 넣을 때마다 온도·순위, 힌트,
 
 `import { account, badgeNames, daily, lab, ui } from "@/copy/ui";`
 
-- [ ] **Step 3: 단위 테스트·lint** — `npm run test && npm run lint`
+- [x] **Step 3: 단위 테스트·lint** — `npm run test && npm run lint`
 
-- [ ] **Step 4: 커밋** — `git commit -m "daily: 내 방에 연속 참여 일수와 최소 시도"`
+- [x] **Step 4: 커밋** — `git commit -m "daily: 내 방에 연속 참여 일수와 최소 시도"`
 
 ---
 
@@ -1234,7 +1234,7 @@ git commit -m "daily: /daily 화면 — 넣을 때마다 온도·순위, 힌트,
 **Files:**
 - Create: `frontend/e2e/daily.spec.ts`
 
-- [ ] **Step 1: 테스트**
+- [x] **Step 1: 테스트**
 
 ```ts
 import { test, expect, type Page } from "@playwright/test";
@@ -1328,23 +1328,23 @@ test("정답 id는 응답에 없고, 없는 단어는 400", async ({ request }) 
 
 `tsconfig`가 JSON import를 허용하므로(`lib/dictionary.ts`가 이미 한다) `dictionary.json` import는 된다. 안 되면 `readFileSync`로 읽는다.
 
-- [ ] **Step 2: 실행** — `npx playwright test e2e/daily.spec.ts` → `4 passed`. 남은 dev 서버가 있으면 먼저 죽인다.
+- [x] **Step 2: 실행** — `npx playwright test e2e/daily.spec.ts` → `4 passed`. 남은 dev 서버가 있으면 먼저 죽인다.
 
-- [ ] **Step 3: 전체 E2E** — `npm run test:e2e` → 90 passed (86 + 4)
+- [x] **Step 3: 전체 E2E** — `npm run test:e2e` → 90 passed (86 + 4)
 
-- [ ] **Step 4: 커밋** — `git commit -m "test: 오늘의 단어 E2E — 온도·정답·비회원 유지·리더보드·내 방 기록"`
+- [x] **Step 4: 커밋** — `git commit -m "test: 오늘의 단어 E2E — 온도·정답·비회원 유지·리더보드·내 방 기록"`
 
 ---
 
 ### Task 8: 운영 데이터와 문서
 
-- [ ] **Step 1: 운영에 365일치** — `tools/embed/`에서 `uv run python build_daily.py --upload` (시작일은 기본값 내일. **오늘 것도 원하면 오늘 날짜를 인자로**). Expected `public.daily_words: 365 rows`.
+- [x] **Step 1: 운영에 365일치** — `tools/embed/`에서 `uv run python build_daily.py --upload` (시작일은 기본값 내일. **오늘 것도 원하면 오늘 날짜를 인자로**). Expected `public.daily_words: 365 rows`.
 
-- [ ] **Step 2: 문서** — `CLAUDE.md` 라우트 줄에 `/daily` 오늘의 단어(17장), 명령 절에 `build_daily.py` 한 문장("365일치가 떨어지기 전에 다시 돌린다"). `frontend/README.md`의 단어 실험실 소절 아래에 "오늘의 단어" 소절(파일 표). 17장 "순서" 3번에 완료 표시, "열린 것"에서 `오늘의 단어 365개를 고르는 기준` 항목을 "이웃 100위 안 유사도 평균 상위 600개에서 무작위 365개(`build_daily.py`)"로 해결 처리.
+- [x] **Step 2: 문서** — `CLAUDE.md` 라우트 줄에 `/daily` 오늘의 단어(17장), 명령 절에 `build_daily.py` 한 문장("365일치가 떨어지기 전에 다시 돌린다"). `frontend/README.md`의 단어 실험실 소절 아래에 "오늘의 단어" 소절(파일 표). 17장 "순서" 3번에 완료 표시, "열린 것"에서 `오늘의 단어 365개를 고르는 기준` 항목을 "이웃 100위 안 유사도 평균 상위 600개에서 무작위 365개(`build_daily.py`)"로 해결 처리.
 
-- [ ] **Step 3: 전체 검증** — `npm run test && npm run lint && npm run build`, `uv run pytest -q`
+- [x] **Step 3: 전체 검증** — `npm run test && npm run lint && npm run build`, `uv run pytest -q`
 
-- [ ] **Step 4: 커밋, push 확인** — 화면이 바뀌므로 사용자 확인 후 push. push 뒤 폰에서 `/daily`.
+- [x] **Step 4: 커밋, push 확인** — 화면이 바뀌므로 사용자 확인 후 push. push 뒤 폰에서 `/daily`.
 
 ---
 

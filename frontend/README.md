@@ -84,4 +84,16 @@ Route Handler가 한다. `service_role` 키는 `lib/supabase.ts`에서만 읽으
 | `components/lab/` | `WordPicker`(자동완성), `LabClient`(화면) |
 | `lib/artifact.ts`의 `parseLabArtifact` | 작품은 사전 id 쌍만. `artifacts.lesson_id = "word-lab"` |
 
+## 오늘의 단어 (`/daily`)
+
+꼬맨틀 방식. 숨은 단어를 넣을 때마다 유사도·순위·온도가 나온다. 정답 365일치와 정답별 이웃 1000개는 `tools/embed/build_daily.py`가 미리 넣는다(`daily_words`). 로그인한 아이의 시도는 `guesses`에, 비회원은 기기 localStorage에 남는다. 정답 id는 그날이 끝나기 전엔 어떤 응답에도 없다.
+
+| 파일 | 역할 |
+|---|---|
+| `lib/daily.ts` | 한국 시간 날짜, 순위→온도, 연속 참여·최소 시도 (순수 함수) |
+| `lib/daily-server.ts` | 정답 조회·채점·기록, 집계 rpc(`daily_board`·`daily_popular`·`daily_history`) |
+| `app/api/daily`·`guess`·`hint` | 오늘 상태 · 시도 채점 · 힌트(최고 순위의 절반 순위 단어) |
+| `components/daily/DailyClient.tsx` | 화면. `WordPicker`를 그대로 쓴다 |
+| `lib/room.ts` | 내 방의 연속 참여 일수·최소 시도 |
+
 설계 문서: `../docs/superpowers/specs/2026-08-21-nolai-design.md`
