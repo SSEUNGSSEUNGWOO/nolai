@@ -8,17 +8,18 @@ def _row(word, grade=1, pos="명사", field="일반어", meaning="뜻"):
     return {"word": word, "grade": grade, "pos": pos, "field": field, "meaning": meaning}
 
 
-def test_select_keeps_only_general_nouns_up_to_max_grade():
+def test_select_keeps_only_nouns_up_to_max_grade():
     rows = [
         _row("가게", grade=1),
-        _row("가루약", grade=2, field="전문어(약학)"),
+        # 분야 표시는 난이도가 아니다. 고양이가 "전문어(동물)"로 빠지면 안 된다.
+        _row("고양이", grade=1, field="전문어(동물)"),
         _row("가까이", grade=1, pos="부사/명사"),
         _row("달리다", grade=1, pos="동사"),
         _row("가건물", grade=4),
         _row("군밤", grade=3),
     ]
 
-    assert [w["word"] for w in select_words(rows, max_grade=3)] == ["가게", "군밤"]
+    assert [w["word"] for w in select_words(rows, max_grade=3)] == ["가게", "고양이", "군밤"]
 
 
 def test_select_merges_homographs_keeping_lowest_grade_and_its_meaning():

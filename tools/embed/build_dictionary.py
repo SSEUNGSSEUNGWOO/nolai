@@ -41,7 +41,11 @@ MAX_GRADE = 3
 
 
 def select_words(rows: list[dict], max_grade: int) -> list[dict]:
-    """일반어 명사만 남기고 같은 표기는 하나로 합친다(가장 낮은 등급, 그 뜻풀이).
+    """등급 안의 명사만 남기고 같은 표기는 하나로 합친다(가장 낮은 등급, 그 뜻풀이).
+
+    분야 열의 "전문어(동물)" 같은 표시는 거르지 않는다. 그건 난이도가 아니라 영역
+    분류라, 걸렀더니 고양이·호랑이·꽃·바다·별·지구가 빠졌다(2026-09-10). 난이도는
+    등급이 이미 거른다.
 
     임베딩은 표기 하나에 벡터 하나라 동형어를 따로 둘 수 없다. 다의어를 막지 않는
     이유는 17장 규칙 4.
@@ -49,9 +53,7 @@ def select_words(rows: list[dict], max_grade: int) -> list[dict]:
     chosen: dict[str, dict] = {}
 
     for row in rows:
-        if row["grade"] > max_grade:
-            continue
-        if row["pos"] != "명사" or "전문어" in row["field"]:
+        if row["grade"] > max_grade or row["pos"] != "명사":
             continue
 
         word = row["word"]
