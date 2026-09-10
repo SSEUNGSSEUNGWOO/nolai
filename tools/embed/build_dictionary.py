@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import sys
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -216,6 +217,14 @@ class Supabase:
             assert status in (200, 201), status
             print(f"  upserted {min(i + batch, len(rows))}/{len(rows)}")
 
+    def delete_words(self, words: list[str]) -> None:
+        """제외 목록의 행을 지운다. upsert는 더하고 고치기만 해서 뺀 단어가 DB에 남는다."""
+        if not words:
+            return
+        quoted = ",".join(f'"{w}"' for w in words)
+        query = urllib.parse.quote(f"({quoted})")
+        self._request("DELETE", f"/rest/v1/words?word=in.{query}", extra={"Prefer": "return=minimal"})
+
     def count_words(self) -> int:
         _, headers, _ = self._request(
             "GET", "/rest/v1/words?select=id", extra={"Prefer": "count=exact", "Range": "0-0"}
@@ -235,6 +244,7 @@ def upload(words: list[dict], schema: str) -> None:
 
     vectors = embed([w["word"] for w in words])
     db.upsert_words(to_rows(words, vectors))
+    db.delete_words(sorted(load_excludes(EXCLUDE_FILE)))
 
     # 검증 1: 행 수가 맞는가
     total = db.count_words()
