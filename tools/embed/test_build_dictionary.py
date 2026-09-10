@@ -118,3 +118,19 @@ def test_write_client_json_and_load_existing_ids_roundtrip(tmp_path: Path):
     assert data["words"] == [{"id": 1, "word": "가게"}, {"id": 2, "word": "나무"}]
     assert load_existing_ids(path) == {"가게": 1, "나무": 2}
     assert load_existing_ids(tmp_path / "missing.json") == {}
+
+
+def test_to_rows_pairs_each_word_with_its_vector():
+    import numpy as np
+
+    from build_dictionary import MODEL, to_rows
+
+    words = [{"id": 1, "word": "가게", "grade": 1}, {"id": 2, "word": "나무", "grade": 2}]
+    vectors = np.array([[0.5, 0.25], [1.0, 0.0]])
+
+    rows = to_rows(words, vectors)
+
+    assert rows == [
+        {"id": 1, "word": "가게", "grade": 1, "model": MODEL, "embedding": [0.5, 0.25]},
+        {"id": 2, "word": "나무", "grade": 2, "model": MODEL, "embedding": [1.0, 0.0]},
+    ]

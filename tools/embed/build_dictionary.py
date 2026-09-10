@@ -169,6 +169,86 @@ def write_client_json(words: list[dict], path: Path) -> None:
     path.write_text(json.dumps(data, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+def to_rows(words: list[dict], vectors) -> list[dict]:
+    return [
+        {
+            "id": w["id"],
+            "word": w["word"],
+            "grade": w["grade"],
+            "model": MODEL,
+            "embedding": [round(float(x), 6) for x in vectors[i]],
+        }
+        for i, w in enumerate(words)
+    ]
+
+
+class Supabase:
+    """PostgREST에 service_role로 붙는 최소 클라이언트. 표준 라이브러리만 쓴다."""
+
+    def __init__(self, url: str, key: str, schema: str):
+        self.url, self.key, self.schema = url.rstrip("/"), key, schema
+
+    def _request(self, method: str, path: str, body=None, extra: dict | None = None):
+        headers = {
+            "apikey": self.key,
+            "Authorization": f"Bearer {self.key}",
+            "Content-Type": "application/json",
+            # 읽기는 Accept-Profile, 쓰기·rpc는 Content-Profile이 스키마를 고른다.
+            "Accept-Profile": self.schema,
+            "Content-Profile": self.schema,
+            **(extra or {}),
+        }
+        data = json.dumps(body).encode() if body is not None else None
+        req = urllib.request.Request(f"{self.url}{path}", data=data, headers=headers, method=method)
+        with urllib.request.urlopen(req) as res:
+            return res.status, dict(res.headers), res.read().decode()
+
+    def upsert_words(self, rows: list[dict], batch: int = 200) -> None:
+        for i in range(0, len(rows), batch):
+            status, _, _ = self._request(
+                "POST",
+                "/rest/v1/words",
+                rows[i : i + batch],
+                {"Prefer": "resolution=merge-duplicates,return=minimal"},
+            )
+            assert status in (200, 201), status
+            print(f"  upserted {min(i + batch, len(rows))}/{len(rows)}")
+
+    def count_words(self) -> int:
+        _, headers, _ = self._request(
+            "GET", "/rest/v1/words?select=id", extra={"Prefer": "count=exact", "Range": "0-0"}
+        )
+        return int(headers["Content-Range"].split("/")[1])
+
+    def nearest(self, word_id: int, count: int) -> list[dict]:
+        _, _, body = self._request(
+            "POST", "/rest/v1/rpc/nearest_words", {"p_word_id": word_id, "p_count": count}
+        )
+        return json.loads(body)
+
+
+def upload(words: list[dict], schema: str) -> None:
+    env = read_env(ENV_FILE)
+    db = Supabase(env["NEXT_PUBLIC_SUPABASE_URL"], env["SUPABASE_SERVICE_ROLE_KEY"], schema)
+
+    vectors = embed([w["word"] for w in words])
+    db.upsert_words(to_rows(words, vectors))
+
+    # 검증 1: 행 수가 맞는가
+    total = db.count_words()
+    assert total == len(words), f"{schema}.words has {total} rows, expected {len(words)}"
+
+    # 검증 2: DB의 <=>가 로컬 코사인과 같은 답을 내는가 -- 벡터가 깨지지 않고 들어갔다는 증거
+    probe = next(w for w in words if w["word"] == "강아지")
+    from_db = [n["word"] for n in db.nearest(probe["id"], 5)]
+    sims = vectors @ vectors[words.index(probe)]
+    sims[words.index(probe)] = -1
+    local = [words[j]["word"] for j in sims.argsort()[::-1][:5]]
+    assert from_db == local, f"db {from_db} != local {local}"
+
+    print(f"{schema}.words: {total} rows. 강아지 → {', '.join(from_db)}")
+
+
 def build() -> list[dict]:
     rows = read_source(download_source(SOURCE_URL, CACHE))
     words = apply_excludes(select_words(rows, MAX_GRADE), load_excludes(EXCLUDE_FILE))
@@ -182,7 +262,11 @@ def build() -> list[dict]:
 
 
 def main() -> None:
-    build()
+    words = build()
+
+    if "--upload" in sys.argv:
+        schema = sys.argv[sys.argv.index("--schema") + 1] if "--schema" in sys.argv else "public"
+        upload(words, schema)
 
 
 if __name__ == "__main__":
