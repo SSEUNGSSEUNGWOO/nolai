@@ -4,7 +4,8 @@ import { redirect } from "next/navigation";
 import { currentKidId } from "@/lib/auth/current";
 import { loadRoom, type RoomArtifact } from "@/lib/room";
 import { getDataset, listLessons } from "@/lib/content";
-import { account, badgeNames, ui } from "@/copy/ui";
+import { account, badgeNames, lab, ui } from "@/copy/ui";
+import { LAB_ID, wordOf } from "@/lib/dictionary";
 import LogoutButton from "./LogoutButton";
 import DeleteRoomButton from "./DeleteRoomButton";
 import ArtifactCard, { type ArtifactView } from "./ArtifactCard";
@@ -26,7 +27,13 @@ export default async function RoomPage() {
   const lessons = listLessons();
   const titleOf = new Map(lessons.map((lesson) => [lesson.id, lesson.title]));
   const views = room.artifacts
-    .map((artifact) => toView(artifact, titleOf.get(artifact.lessonId) ?? artifact.lessonId))
+    .map((artifact) =>
+      toView(
+        artifact,
+        titleOf.get(artifact.lessonId) ??
+          (artifact.lessonId === LAB_ID ? lab.title : artifact.lessonId),
+      ),
+    )
     .filter((view): view is ArtifactView => view !== null);
   const done = new Set(room.completedLessons);
 
@@ -298,6 +305,26 @@ function toView(artifact: RoomArtifact, lessonTitle: string): ArtifactView | nul
         .map((id) => dataset.images.find((image) => image.id === id))
         .filter((image) => image !== undefined)
         .map((image) => ({ id: image.id, label: image.label, emoji: image.emoji }));
+
+      return {
+        id: artifact.id,
+        lessonTitle,
+        createdAt: artifact.createdAt,
+        detail: { kind: "pixels", images },
+      };
+    }
+
+    if ("pairs" in payload) {
+      // 사전이 바뀌어 id가 사라진 쌍은 빼고 그린다. 카드 모양은 조각 목록과 같다.
+      const images = payload.pairs
+        .map(([a, b]) => {
+          const left = wordOf(a);
+          const right = wordOf(b);
+          if (!left || !right) return undefined;
+
+          return { id: `${a}|${b}`, label: `${left.word} ↔ ${right.word}`, emoji: "🔬" };
+        })
+        .filter((one) => one !== undefined);
 
       return {
         id: artifact.id,

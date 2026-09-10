@@ -73,3 +73,33 @@ export const account = {
   join: "내 방 만들기",
   login: "내 방 들어가기",
 } as const;
+
+/** 단어 실험실(/lab) 문구. 아이 화면이라 반말. */
+export const lab = {
+  title: "단어 실험실",
+  door: "아무 단어나 넣어봐. 얼마나 비슷한지 컴퓨터가 잰다!",
+  introOwl: "고양이랑 강아지, 얼마나 비슷할까? 먼저 찍어봐!",
+  introChoices: ["별로 안 비슷해", "좀 비슷해", "아주 비슷해"],
+  introReveal: "컴퓨터가 잰 값이야. 이제 네가 아무 단어나 넣어봐!",
+  note: "이건 이 모델이 비슷하다고 본 정도야. 말뜻의 정답은 아니야.",
+  compareTitle: "두 단어 비교",
+  compareHint: "한쪽만 바꿔봐. 아까 잰 건 아래에 남아.",
+  score: "닮은 정도",
+  history: "아까 잰 것",
+  nearTitle: "가까운 말",
+  nearHint: "단어 하나를 고르면 가까운 말 20개가 나와. 눌러서 따라가 봐.",
+  placeholder: "단어를 쳐봐",
+  star: "남기기",
+  starred: "남겼어",
+  save: "내 방에 넣기",
+  saved: "내 방에 넣었어!",
+  saveGuest: "방을 만들면 발견을 남길 수 있어",
+  saveFailed: "지금은 못 넣었어. 잠시 뒤에 다시 해볼래?",
+  challengesTitle: "해볼래?",
+  challenges: [
+    "강아지랑 80 넘게 나오는 단어를 찾아봐",
+    "동물인데 강아지랑 60 아래인 걸 찾아봐",
+    "가까운 말 1등이 뭘지 먼저 찍고 확인해봐",
+  ],
+  loadFailed: "지금은 잴 수 없어. 잠시 뒤에 다시 해볼래?",
+} as const;
