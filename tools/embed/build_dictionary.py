@@ -17,6 +17,7 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
+import numpy as np
 import yaml
 
 from build_dataset import MODEL, OUT_DIR, embed
@@ -243,6 +244,11 @@ def upload(words: list[dict], schema: str) -> None:
     db = Supabase(env["NEXT_PUBLIC_SUPABASE_URL"], env["SUPABASE_SERVICE_ROLE_KEY"], schema)
 
     vectors = embed([w["word"] for w in words])
+    # build_daily.py가 다시 임베딩하지 않도록 남긴다. 순서는 words와 같다.
+    np.save(CACHE.parent / "vectors.npy", vectors)
+    (CACHE.parent / "vectors-ids.json").write_text(
+        json.dumps([w["id"] for w in words]), encoding="utf-8"
+    )
     db.upsert_words(to_rows(words, vectors))
     db.delete_words(sorted(load_excludes(EXCLUDE_FILE)))
 

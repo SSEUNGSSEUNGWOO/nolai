@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 .cache/
 dictionary-review.tsv
+daily-review.tsv
