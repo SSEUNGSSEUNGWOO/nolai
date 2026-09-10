@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from build_dictionary import apply_excludes, assign_ids, read_env, select_words
@@ -75,3 +76,45 @@ def test_read_env_strips_quotes_and_skips_comments(tmp_path: Path):
         "NEXT_PUBLIC_SUPABASE_URL": "https://x.supabase.co",
         "SUPABASE_SERVICE_ROLE_KEY": "abc",
     }
+
+
+def test_read_source_parses_grade_pos_field_and_first_meaning(tmp_path: Path):
+    import openpyxl
+
+    from build_dictionary import SHEET, read_source
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = SHEET
+    ws.append(["등급", "어휘", "표준동형어번호수정", "품사", "어종", "원어", "의미", "분야"])
+    ws.append(["1등급", "가게", 0, "명사", "고유어", None, "「1」작은 가게.\n「2」노점.", "일반어"])
+    # 4등급 시트는 등급 칸에 공백이 붙어 있다("4등급 ")
+    ws.append(["4등급 ", "가건물", 0, "명사", "한자어", "假建物", "임시 건물.", "일반어"])
+    ws.append([None, None, None, None, None, None, None, None])
+    path = tmp_path / "v.xlsx"
+    wb.save(path)
+
+    rows = read_source(path)
+
+    assert rows == [
+        {"word": "가게", "grade": 1, "pos": "명사", "field": "일반어", "meaning": "「1」작은 가게."},
+        {"word": "가건물", "grade": 4, "pos": "명사", "field": "일반어", "meaning": "임시 건물."},
+    ]
+
+
+def test_write_client_json_and_load_existing_ids_roundtrip(tmp_path: Path):
+    from build_dictionary import load_existing_ids, write_client_json
+
+    path = tmp_path / "dictionary.json"
+    words = [
+        {"id": 1, "word": "가게", "grade": 1, "meaning": "x"},
+        {"id": 2, "word": "나무", "grade": 2, "meaning": "y"},
+    ]
+
+    write_client_json(words, path)
+
+    data = json.loads(path.read_text(encoding="utf-8"))
+    assert data["kind"] == "dictionary"
+    assert data["words"] == [{"id": 1, "word": "가게"}, {"id": 2, "word": "나무"}]
+    assert load_existing_ids(path) == {"가게": 1, "나무": 2}
+    assert load_existing_ids(tmp_path / "missing.json") == {}

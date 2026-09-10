@@ -551,7 +551,7 @@ if __name__ == "__main__":
 - [ ] **Step 8: 실행해서 산출물 확인**
 
 Run: `uv run python build_dictionary.py`
-Expected: 첫 실행은 xlsx(6MB)를 받는다. 마지막 줄 `5404 words → dictionary.json, dictionary-review.tsv`. 숫자는 설계 문서 17장 "확인한 사실"의 5,404와 같아야 한다 — 다르면 거르기 조건이 문서와 어긋난 것이다.
+Expected: 첫 실행은 xlsx(6MB)를 받는다. 마지막 줄 `5298 words → dictionary.json, dictionary-review.tsv`. 숫자는 설계 문서 17장 "확인한 사실"의 5,298(표기 기준)과 같아야 한다 — 다르면 거르기 조건이 문서와 어긋난 것이다.
 
 ```bash
 head -5 dictionary-review.tsv
