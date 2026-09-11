@@ -4,12 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { account } from "@/copy/ui";
 import { clearProgress } from "@/lib/local-progress";
+import { clearPendingOwnedBy } from "@/lib/pending";
 
 /**
  * 내 방을 통째로 지운다. 되돌릴 수 없으므로 두 번 누르게 한다 -- 브라우저
  * confirm()은 아이가 읽기에 낯설고 설치된 앱에서는 모양이 제각각이라 직접 그린다.
  */
-export default function DeleteRoomButton() {
+export default function DeleteRoomButton({ kidId }: { kidId: string }) {
   const router = useRouter();
   const [confirming, setConfirming] = useState(false);
 
@@ -44,6 +45,8 @@ export default function DeleteRoomButton() {
               return;
             }
             clearProgress();
+            // 받아줄 방이 없어졌으니 이 아이 몫의 대기열도 버린다.
+            clearPendingOwnedBy(kidId);
             router.push("/play");
             router.refresh();
           }}

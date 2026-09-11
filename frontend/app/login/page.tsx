@@ -9,6 +9,7 @@ import {
 } from "@/lib/auth/nickname";
 import { CODE_LENGTH } from "@/lib/auth/code-format";
 import { readProgress } from "@/lib/local-progress";
+import { flushPending } from "@/lib/pending";
 import { account, ui } from "@/copy/ui";
 import { popButton } from "@/components/steps/styles";
 import MascotBubble from "@/components/MascotBubble";
@@ -52,6 +53,10 @@ export default function LoginPage() {
       );
       return;
     }
+
+    // 서버에 못 보낸 레슨 완료(작품 포함)부터 보낸다. 손님 몫과 이 아이 몫만 간다.
+    const { kidId } = (await response.json().catch(() => ({}))) as { kidId?: string };
+    if (kidId) await flushPending(kidId);
 
     const local = readProgress();
     if (local.completedLessons.length > 0) {

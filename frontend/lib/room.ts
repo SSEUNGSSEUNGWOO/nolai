@@ -112,16 +112,22 @@ export async function completeLesson(
  *
  * payload는 lib/artifact.ts의 parseArtifact를 통과한 것만 들어온다. 그래야
  * jsonb 칸에 자유 텍스트가 들어올 경로가 없다.
+ *
+ * clientId는 브라우저 대기열(lib/pending.ts)이 붙인 id다. 응답을 못 받아
+ * 같은 작품이 다시 오면 (kid_id, client_id) 유니크에 걸리는데, 이미 저장된
+ * 것이므로 성공으로 본다.
  */
 export async function saveArtifact(
   kidId: string,
   lessonId: string,
   payload: ArtifactPayload,
+  clientId: string | null = null,
 ): Promise<void> {
   const { error } = await serverSupabase()
     .from("artifacts")
-    .insert({ kid_id: kidId, lesson_id: lessonId, payload });
+    .insert({ kid_id: kidId, lesson_id: lessonId, payload, client_id: clientId });
 
+  if (error && error.code === "23505") return;
   if (error) throw error;
 }
 

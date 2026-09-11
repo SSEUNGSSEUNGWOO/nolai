@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { randomNicknames } from "@/lib/auth/nickname";
 import { readProgress } from "@/lib/local-progress";
+import { flushPending } from "@/lib/pending";
 import { account, ui } from "@/copy/ui";
 import { popButton } from "@/components/steps/styles";
 import MascotBubble from "@/components/MascotBubble";
@@ -48,8 +49,11 @@ export default function JoinClient({ initial }: { initial: string[] }) {
       return;
     }
 
-    // 계정을 만들기 전에 논 진도를 옮긴다. 실패해도 가입 자체는 성공이므로
-    // 막지 않는다 -- 아이는 코드부터 받아야 한다.
+    // 계정을 만들기 전에 논 것을 옮긴다. 먼저 서버에 못 보낸 레슨 완료(작품 포함),
+    // 다음에 진도. 실패해도 가입 자체는 성공이므로 막지 않는다 -- 아이는 코드부터
+    // 받아야 한다. 남은 것은 다음 로그인 때 다시 옮겨진다.
+    if (typeof data.kidId === "string") await flushPending(data.kidId);
+
     const local = readProgress();
     if (local.completedLessons.length > 0) {
       await fetch("/api/sync", {

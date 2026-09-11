@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 export interface Me {
+  id: string;
   nickname: string;
   completedLessons: string[];
 }
@@ -23,7 +24,11 @@ export function useMe(): { me: Me | null; loaded: boolean } {
       .then((data) =>
         setMe(
           data.kid
-            ? { nickname: data.kid.nickname, completedLessons: data.kid.completedLessons ?? [] }
+            ? {
+                id: data.kid.id,
+                nickname: data.kid.nickname,
+                completedLessons: data.kid.completedLessons ?? [],
+              }
             : null,
         ),
       )

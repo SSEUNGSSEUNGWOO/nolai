@@ -19,6 +19,7 @@ export const ui = {
   rewardTitle: "배지 획득!",
   rewardCta: "좋아!",
   lessonComplete: "레슨을 끝냈어!",
+  lessonKeptLocally: "이 기기에 보관했어. 연결되면 내 방에도 저장할게!",
   soundOn: "소리 켜기",
   soundOff: "소리 끄기",
 } as const;

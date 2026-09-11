@@ -22,7 +22,7 @@ export default async function RoomPage() {
   const room = kidId ? await loadRoom(kidId) : null;
 
   // 쿠키가 없거나, 서명은 맞는데 계정이 지워진 경우다.
-  if (!room) redirect("/join");
+  if (!kidId || !room) redirect("/join");
 
   const lessons = listLessons();
   const titleOf = new Map(lessons.map((lesson) => [lesson.id, lesson.title]));
@@ -115,7 +115,7 @@ export default async function RoomPage() {
 
       <footer className="flex items-center justify-between pt-6 text-xs text-muted">
         <Link href="/privacy" className="underline">개인정보처리방침</Link>
-        <DeleteRoomButton />
+        <DeleteRoomButton kidId={kidId} />
       </footer>
     </main>
   );

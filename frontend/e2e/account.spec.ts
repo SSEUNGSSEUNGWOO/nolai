@@ -7,7 +7,7 @@ import { clearAttempts, deleteKidsByNickname, testDb } from "./support/db";
 
 /**
  * 이 파일은 실제 Supabase 프로젝트에 계정을 만든다. 만든 닉네임만 골라 지우고,
- * 시도 제한 버킷도 이 테스트가 쓴 것만 지운다(안 지우면 한 시간에 열 번까지만
+ * 시도 제한 버킷도 이 테스트가 쓴 것만 지운다(안 지우면 한 시간에 마흔 번까지만
  * 돌릴 수 있다).
  */
 const created: string[] = [];
@@ -51,6 +51,19 @@ async function join(page: Page): Promise<{ nickname: string; code: string }> {
 /** "가장 가까운 걸 찾아줘"를 훅부터 배지까지 완주한다. 질문 5개면 목표가 찬다. */
 async function finishLesson2(page: Page) {
   await page.goto("/lesson/nearest-search");
+  await playLesson2(page);
+  // 진도 저장 응답을 기다린다. keepalive는 요청이 도착하는 것만 보장하지
+  // 서버가 DB에 쓰기를 마친 것까지 보장하지 않는다. 안 기다리면 바로 뒤에
+  // 오는 /room 검사가 간헐적으로 배지를 못 본다.
+  await Promise.all([
+    page.waitForResponse((r) => r.url().includes("/api/progress")).catch(() => null),
+    page.getByRole("button", { name: "좋아!" }).click(),
+  ]);
+  await expect(page.getByText("레슨을 끝냈어!")).toBeVisible();
+}
+
+/** 이미 열린 레슨 화면에서 보상 화면("좋아!" 직전)까지 간다. 네트워크를 쓰지 않는다. */
+async function playLesson2(page: Page) {
   await page.getByRole("button", { name: "궁금해!" }).click();
   for (const id of ["q01", "q05", "q08", "q13", "q20"]) {
     await page.getByTestId(`question-${id}`).click();
@@ -63,14 +76,6 @@ async function finishLesson2(page: Page) {
   await page.getByRole("button", { name: "다음으로" }).click();
   await page.getByRole("button", { name: "펭귄은 헤엄은 치지만 날지 못한다" }).click();
   await page.getByRole("button", { name: "다음으로" }).click();
-  // 진도 저장 응답을 기다린다. keepalive는 요청이 도착하는 것만 보장하지
-  // 서버가 DB에 쓰기를 마친 것까지 보장하지 않는다. 안 기다리면 바로 뒤에
-  // 오는 /room 검사가 간헐적으로 배지를 못 본다.
-  await Promise.all([
-    page.waitForResponse((r) => r.url().includes("/api/progress")).catch(() => null),
-    page.getByRole("button", { name: "좋아!" }).click(),
-  ]);
-  await expect(page.getByText("레슨을 끝냈어!")).toBeVisible();
 }
 
 test("가입하고 레슨을 끝내면 내 방에 배지가 꽂힌다", async ({ page }) => {
@@ -107,6 +112,48 @@ test("나갔다가 닉네임과 코드로 다시 들어오면 진도가 그대�
 
   await expect(page.getByRole("heading", { name: `${nickname}의 내 방` })).toBeVisible();
   await expect(page.getByTestId("badge-path-finder")).toBeVisible();
+});
+
+test("나가면 브라우저에 남은 진도가 다음 아이에게 넘어가지 않는다", async ({ page }) => {
+  // 교실 공용 기기: A가 나간 뒤 B가 같은 브라우저를 쓴다.
+  await join(page);
+  await finishLesson2(page);
+
+  await page.goto("/room");
+  await page.getByTestId("logout").click();
+  await expect(page.getByTestId("to-join")).toBeVisible();
+
+  await expect(page.getByTestId("lesson-nearest-search")).not.toHaveAttribute(
+    "data-done",
+    "true",
+  );
+});
+
+test("연결이 끊긴 채 레슨을 끝내도 작품이 나중에 내 방에 저장된다", async ({ page, context }) => {
+  const { nickname } = await join(page);
+
+  await page.goto("/lesson/nearest-search");
+  // 로그인 여부(/api/me)를 받은 뒤에 끊는다. 그래야 "보관했어" 안내가 뜬다.
+  await page.waitForResponse((r) => r.url().endsWith("/api/me"));
+  await context.setOffline(true);
+  await playLesson2(page);
+  await page.getByRole("button", { name: "좋아!" }).click();
+  await expect(page.getByTestId("kept-locally")).toBeVisible();
+
+  // 다시 연결되면 다음 방문 때 보낸다. /room은 서버가 그리므로 보내기가 끝난 뒤 연다.
+  await context.setOffline(false);
+  await Promise.all([
+    page.waitForResponse((r) => r.url().includes("/api/progress") && r.ok()),
+    page.goto("/play"),
+  ]);
+
+  await page.goto("/room");
+  await expect(page.getByRole("heading", { name: `${nickname}의 내 방` })).toBeVisible();
+  await expect(page.getByTestId("badge-path-finder")).toBeVisible();
+  await expect(page.getByTestId("artifact-shelf")).toContainText("질문 5개를 찾아봤어");
+
+  // 보낸 뒤에는 대기열이 비어 있어야 한다. 남으면 방문마다 다시 보낸다.
+  expect(await page.evaluate(() => localStorage.getItem("nolai:pending"))).toBe("[]");
 });
 
 test("소문자로 코드를 쳐도 들어갈 수 있다", async ({ page }) => {

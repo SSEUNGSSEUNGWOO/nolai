@@ -8,6 +8,8 @@ const body = z.strictObject({
   lessonId: z.string().min(1),
   // 모양 검사는 서버가 한다(lib/artifact.ts). 여기서는 있는지만 본다.
   artifact: z.unknown().optional(),
+  // 브라우저 대기열이 붙인 id. 재전송을 한 번만 저장하는 데 쓴다.
+  clientId: z.uuid().optional(),
 });
 
 export async function POST(request: Request) {
@@ -36,7 +38,9 @@ export async function POST(request: Request) {
   // 결과물이 모양에 안 맞으면 조용히 버린다. 레슨을 끝낸 것은 사실이고,
   // 작품 하나 때문에 배지를 못 받게 하는 것이 더 나쁘다.
   const artifact = parseArtifact(lesson, parsed.data.artifact);
-  if (artifact) await saveArtifact(kidId, lesson.id, artifact);
+  if (artifact) {
+    await saveArtifact(kidId, lesson.id, artifact, parsed.data.clientId ?? null);
+  }
 
   return Response.json({ ok: true, artifactSaved: artifact !== null });
 }

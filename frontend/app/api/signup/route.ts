@@ -36,5 +36,5 @@ export async function POST(request: Request) {
   (await cookies()).set(issuedSessionCookie(token));
 
   // 비밀코드는 여기서 딱 한 번 나간다. 서버도 이후로는 원문을 모른다.
-  return Response.json({ nickname: result.nickname, code: result.code });
+  return Response.json({ kidId: result.kidId, nickname: result.nickname, code: result.code });
 }

@@ -10,7 +10,10 @@ export async function GET() {
   const room = await loadRoom(kidId);
 
   // 서명은 유효한데 계정이 없다 -- 지워진 계정의 오래된 쿠키다.
-  return Response.json({ kid: room });
+  if (!room) return Response.json({ kid: null });
+
+  // id는 브라우저 대기열(lib/pending.ts)이 "누구 몫인지" 적어 두는 데 쓴다.
+  return Response.json({ kid: { id: kidId, ...room } });
 }
 
 /**

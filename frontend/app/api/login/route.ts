@@ -10,10 +10,11 @@ import { requireSessionSecret, signSession } from "@/lib/auth/session";
 const ATTEMPTS_PER_NICKNAME_PER_MINUTE = 5;
 
 /**
- * IP당은 훨씬 넉넉하다. 교실은 공인 IP 하나를 25명이 나눠 쓰므로 5회면
- * 여섯 번째 아이부터 막힌다(설계 문서 14장, 2026-09-10).
+ * IP당은 훨씬 넉넉하다. 교실은 공인 IP 하나를 한 반이 나눠 쓰므로 5회면
+ * 여섯 번째 아이부터 막힌다(설계 문서 14장, 2026-09-10·09-11). 실제 차단
+ * 상황을 보고 조정한다.
  */
-const ATTEMPTS_PER_IP_PER_MINUTE = 30;
+const ATTEMPTS_PER_IP_PER_MINUTE = 60;
 
 const body = z.strictObject({
   nickname: z.string().min(1),
@@ -61,5 +62,6 @@ export async function POST(request: Request) {
   const token = signSession(kidId, requireSessionSecret());
   (await cookies()).set(issuedSessionCookie(token));
 
-  return Response.json({ nickname });
+  // kidId는 브라우저 대기열(lib/pending.ts)이 이 아이 몫을 골라 보내는 데 쓴다.
+  return Response.json({ kidId, nickname });
 }
