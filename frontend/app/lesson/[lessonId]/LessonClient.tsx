@@ -21,23 +21,31 @@ export default function LessonClient({
   const { me } = useMe();
   const [done, setDone] = useState(false);
   const [outcome, setOutcome] = useState<SendOutcome | null>(null);
+  const [stored, setStored] = useState(true);
 
   function handleComplete(result: LessonResult) {
     completeLesson(result.lessonId, result.badge);
 
     // 브라우저에 먼저 넣고 서버로 보낸다. 통신이 끊기거나 로그인 전이면 대기열에
     // 남아 다음 방문·로그인 때 다시 나간다(lib/pending.ts).
-    const item = enqueuePending({
+    const queued = enqueuePending({
       lessonId: result.lessonId,
       artifact: result.artifact?.payload ?? null,
       owner: me?.id ?? null,
     });
+    setStored(queued.stored);
     setDone(true);
-    void sendPending(item).then(setOutcome);
+    void sendPending(queued.item).then(setOutcome);
   }
 
   // 로그인한 아이인데 서버에 못 남겼을 때만 알린다. 손님은 원래 서버에 안 간다.
-  const keptLocally = me !== null && outcome === "kept";
+  // 브라우저에도 못 남겼으면(저장소 가득 참) 보관했다고 말하면 거짓말이다.
+  const notice =
+    me !== null && outcome === "kept"
+      ? stored
+        ? { testId: "kept-locally", text: ui.lessonKeptLocally }
+        : { testId: "not-saved", text: ui.lessonNotSaved }
+      : null;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col gap-4 px-5 py-6 lg:max-w-5xl">
@@ -52,9 +60,9 @@ export default function LessonClient({
       {done ? (
         <div className="flex flex-col items-center gap-4 py-16">
           <p className="text-xl font-black">{ui.lessonComplete}</p>
-          {keptLocally && (
-            <p data-testid="kept-locally" className="text-sm font-extrabold text-muted">
-              {ui.lessonKeptLocally}
+          {notice && (
+            <p data-testid={notice.testId} className="text-sm font-extrabold text-muted">
+              {notice.text}
             </p>
           )}
           <Link
