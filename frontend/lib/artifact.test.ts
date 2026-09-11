@@ -174,6 +174,17 @@ describe("parseArtifact — 모든 레슨을 덮는다", () => {
     },
   };
 
+  it("비교 쌍에 세 번째 조각이 붙어 오면 거부한다", () => {
+    // 앞 두 id만 검사하면 뒤에 붙은 임의의 글자가 그대로 DB에 남는다.
+    const lesson = getLesson("compare-meter");
+    for (const pair of ["big|small|아무글자", "big|small|"]) {
+      expect(parseArtifact(lesson, {
+        datasetId: "words-compare",
+        compared: [pair],
+      }), pair).toBeNull();
+    }
+  });
+
   it("레슨마다 결과물 예시가 준비돼 있다", () => {
     expect(Object.keys(samples).sort()).toEqual(
       listLessons().map((lesson) => lesson.id).sort(),

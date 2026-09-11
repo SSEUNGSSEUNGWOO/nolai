@@ -258,8 +258,12 @@ export function parseArtifact(lesson: Lesson, raw: unknown): ArtifactPayload | n
     if (parsedSim.data.datasetId !== dataset.id) return null;
 
     const known = new Set(dataset.words.map((w) => w.id));
+    // "a|b|아무글자"처럼 세 번째 조각이 붙어 오면 앞 둘만 보고 통과시켜
+    // 임의의 글자가 저장되므로 조각이 정확히 둘인지부터 본다.
     const ok = parsedSim.data.compared.every((pair) => {
-      const [a, b] = pair.split("|");
+      const parts = pair.split("|");
+      if (parts.length !== 2) return false;
+      const [a, b] = parts;
       return known.has(a) && known.has(b) && a !== b;
     });
     if (!ok) return null;
